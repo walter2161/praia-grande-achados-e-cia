@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
+import Map from "@/components/Map";
 import { 
   categories, 
   autoListings, 
@@ -12,7 +13,7 @@ import {
   baresRestaurantesListings, 
   itensListings 
 } from "@/data/mockData";
-import { Category, Listing } from "@/types";
+import { Category, Listing, BarRestaurantListing } from "@/types";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -52,6 +53,22 @@ const CategoryPage = () => {
   };
   
   const listings = getCategoryListings();
+
+  // Se bares-restaurantes, extrair pins para o mapa
+  let mapSection = null;
+  if (category.slug === "bares-restaurantes" && baresRestaurantesListings.length > 0) {
+    const pins = baresRestaurantesListings.map((b: BarRestaurantListing) => ({
+      latitude: b.latitude,
+      longitude: b.longitude,
+      title: b.title,
+    }));
+    mapSection = (
+      <div className="mb-10">
+        <h2 className="mb-3 text-xl font-bold text-beach-700">Veja no mapa</h2>
+        <Map pins={pins} height="350px" />
+      </div>
+    );
+  }
   
   return (
     <MainLayout>
@@ -60,6 +77,8 @@ const CategoryPage = () => {
           <category.icon className="h-10 w-10 text-beach-600" />
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
+        
+        {mapSection}
         
         {listings.length > 0 ? (
           <ListingGrid listings={listings} />

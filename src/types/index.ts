@@ -1,3 +1,4 @@
+
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -92,6 +93,9 @@ export type BarRestaurantListing = {
   description: string;
   images: string[];
   location: string;
+  address: string; // NOVO: campo de endereço
+  latitude: number; // NOVO: coordenada para o mapa
+  longitude: number; // NOVO: coordenada para o mapa
   date: string;
   sellerName: string;
   sellerContact: string;
@@ -114,3 +118,4 @@ export type ItemListing = {
 };
 
 export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing | BarRestaurantListing | ItemListing;
+

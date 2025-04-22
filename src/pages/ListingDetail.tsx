@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,6 +14,7 @@ import {
   Settings
 } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
+import Map from "@/components/Map";
 import { allListings, categories } from "@/data/mockData";
 import { formatDistanceToNow, parseISO, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -105,7 +105,35 @@ const ListingDetail = () => {
   } else {
     displayPrice = formatPrice(listing.price);
   }
-  
+
+  // Map section para bares e restaurantes
+  let barMapSection = null;
+  if (
+    categorySlug === "bares-restaurantes" &&
+    "address" in listing &&
+    "latitude" in listing &&
+    "longitude" in listing
+  ) {
+    barMapSection = (
+      <div className="my-8">
+        <h2 className="text-lg font-semibold mb-3 text-beach-700">Localização no mapa:</h2>
+        <Map
+          pins={[
+            {
+              latitude: listing.latitude,
+              longitude: listing.longitude,
+              title: listing.title,
+            },
+          ]}
+          height="300px"
+          initialCenter={[listing.longitude, listing.latitude]}
+          zoom={15}
+        />
+        <div className="mt-2 text-sm text-muted-foreground">{listing.address}</div>
+      </div>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="container py-8">
@@ -148,6 +176,9 @@ const ListingDetail = () => {
                 className="h-full w-full object-cover"
               />
             </div>
+
+            {/* Mostrar mapa para bares e restaurantes */}
+            {barMapSection}
             
             <div>
               <h2 className="text-xl font-semibold mb-4">Descrição</h2>

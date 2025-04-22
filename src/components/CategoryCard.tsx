@@ -12,9 +12,6 @@ type CategoryCardProps = {
 const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const { name, icon: Icon, slug, subcategories } = category;
   const [showSubcategories, setShowSubcategories] = useState(false);
-  
-  // Ajuste de fonte apenas para Bares & Restaurantes
-  const isBaresRestaurantes = slug === "bares-restaurantes";
 
   return (
     <div>
@@ -22,13 +19,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         <Card className="transition-all hover:shadow-md hover:-translate-y-1">
           <CardContent className="flex flex-col items-center justify-center p-6">
             <Icon className="h-12 w-12 mb-4 text-beach-600" />
-            <h3
-              className={`text-xl font-semibold text-center`}
-              style={isBaresRestaurantes ? { fontSize: "70%" } : undefined}
-            >
+            <h3 className="text-xl font-semibold text-center">
               {name}
             </h3>
-            
             {subcategories && subcategories.length > 0 && (
               <button 
                 onClick={(e) => {
@@ -49,7 +42,6 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
           </CardContent>
         </Card>
       </Link>
-      
       {showSubcategories && subcategories && subcategories.length > 0 && (
         <div className="mt-2 p-2 bg-background border rounded-md shadow-sm">
           <ul className="space-y-1">
