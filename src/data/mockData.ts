@@ -1,6 +1,5 @@
-
 import { AutoListing, JobListing, RealEstateListing, ServiceListing, Category } from "@/types";
-import { Car, Briefcase, House, Settings } from "lucide-react";
+import { Car, Briefcase, House, Settings, Utensils } from "lucide-react";
 
 export const categories: Category[] = [
   {
@@ -26,6 +25,12 @@ export const categories: Category[] = [
     name: "SERVIÇOS",
     icon: Settings,
     slug: "servicos",
+  },
+  {
+    id: "5",
+    name: "BARES & RESTAURANTES",
+    icon: Utensils,
+    slug: "bares-restaurantes",
   },
 ];
 
