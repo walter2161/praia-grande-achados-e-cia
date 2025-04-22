@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -72,8 +71,9 @@ const Index = () => {
         <div className="container space-y-8">
           <h2 className="text-3xl font-bold text-center">Navegue por Categorias</h2>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {categories.map((category) => (
+          {/* Grade responsiva: 3 colunas por linha */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {categories.slice(0, 6).map((category) => (
               <CategoryCard key={category.id} category={category} />
             ))}
           </div>

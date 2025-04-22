@@ -1,39 +1,98 @@
 import { AutoListing, JobListing, RealEstateListing, ServiceListing, Category } from "@/types";
-import { Car, Briefcase, House, Settings, Utensils } from "lucide-react";
+import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 
-export const categories: Category[] = [
+export const categories: (Category & { subcategories?: string[] })[] = [
   {
     id: "1",
     name: "AUTOS",
     icon: Car,
     slug: "autos",
+    subcategories: [
+      "Carros",
+      "Motos",
+      "Caminhões",
+      "Peças e Acessórios",
+      "Náuticos"
+    ]
   },
   {
     id: "2",
     name: "EMPREGOS",
     icon: Briefcase,
     slug: "empregos",
+    subcategories: [
+      "Administração",
+      "Vendas",
+      "Serviços Gerais",
+      "Saúde",
+      "Educação",
+      "Tecnologia",
+      "Outros"
+    ]
   },
   {
     id: "3",
     name: "IMÓVEIS",
     icon: House,
     slug: "imoveis",
+    subcategories: [
+      "Casas",
+      "Apartamentos",
+      "Terrenos",
+      "Comercial",
+      "Cobertura",
+      "Studio",
+      "Outros"
+    ]
   },
   {
     id: "4",
     name: "SERVIÇOS",
     icon: Settings,
     slug: "servicos",
+    subcategories: [
+      "Residenciais",
+      "Educação",
+      "Beleza",
+      "Saúde",
+      "Informática",
+      "Eventos",
+      "Automotivos",
+      "Outros"
+    ]
   },
   {
     id: "5",
     name: "BARES & RESTAURANTES",
     icon: Utensils,
     slug: "bares-restaurantes",
+    subcategories: [
+      "Bares",
+      "Restaurantes",
+      "Lanchonetes",
+      "Cafeterias",
+      "Pizzarias",
+      "Outros"
+    ]
   },
+  {
+    id: "6",
+    name: "ITENS",
+    icon: Package,
+    slug: "itens",
+    subcategories: [
+      "Eletrodomésticos",
+      "Eletrônicos",
+      "Móveis",
+      "Roupas",
+      "Livros",
+      "Esportes",
+      "Outros"
+    ]
+  }
 ];
 
+// Exemplo: adicionando subcategoria nos mockListings conforme a categoria
 export const autoListings: AutoListing[] = [
   {
     id: "auto1",
@@ -53,6 +112,7 @@ export const autoListings: AutoListing[] = [
     fuel: "Flex",
     transmission: "Automático",
     color: "Prata",
+    subcategory: "Carros"
   },
   {
     id: "auto2",
@@ -72,6 +132,7 @@ export const autoListings: AutoListing[] = [
     fuel: "Flex",
     transmission: "Manual",
     color: "Vermelho",
+    subcategory: "Carros"
   },
   {
     id: "auto3",
@@ -91,6 +152,7 @@ export const autoListings: AutoListing[] = [
     fuel: "Flex",
     transmission: "Automático",
     color: "Preto",
+    subcategory: "Carros"
   },
   {
     id: "auto4",
@@ -110,6 +172,7 @@ export const autoListings: AutoListing[] = [
     fuel: "Flex",
     transmission: "Automático",
     color: "Branco",
+    subcategory: "Carros"
   },
   {
     id: "auto5",
@@ -129,6 +192,7 @@ export const autoListings: AutoListing[] = [
     fuel: "Flex",
     transmission: "Manual",
     color: "Cinza",
+    subcategory: "Carros"
   },
   {
     id: "auto6",
@@ -148,6 +212,142 @@ export const autoListings: AutoListing[] = [
     fuel: "Flex",
     transmission: "Manual",
     color: "Azul",
+    subcategory: "Carros"
+  },
+];
+
+// Exemplo em realEstateListings:
+export const realEstateListings: RealEstateListing[] = [
+  {
+    id: "realestate1",
+    title: "Apartamento 2 dormitórios a 100m da praia",
+    price: 280000,
+    description: "Lindo apartamento com 2 dormitórios, sala ampla, cozinha planejada e uma vaga de garagem. Localização privilegiada.",
+    images: ["/placeholder.svg"],
+    location: "Guilhermina, Praia Grande",
+    date: "2023-04-22",
+    sellerName: "Imobiliária Litoral",
+    sellerContact: "(13) 3456-7891",
+    category: "imoveis",
+    propertyType: "Apartamento",
+    size: 65,
+    bedrooms: 2,
+    bathrooms: 1,
+    hasGarage: true,
+    amenities: ["Piscina", "Salão de Festas", "Portaria 24h"],
+    subcategory: "Apartamentos"
+  },
+  {
+    id: "realestate2",
+    title: "Casa em condomínio fechado",
+    price: 420000,
+    description: "Casa em condomínio fechado com 3 dormitórios sendo 1 suíte, sala de estar e jantar, cozinha americana, área gourmet com churrasqueira e 2 vagas de garagem.",
+    images: ["/placeholder.svg"],
+    location: "Canto do Forte, Praia Grande",
+    date: "2023-04-20",
+    sellerName: "Marcos Imóveis",
+    sellerContact: "(13) 98765-4321",
+    category: "imoveis",
+    propertyType: "Casa",
+    size: 110,
+    bedrooms: 3,
+    bathrooms: 2,
+    hasGarage: true,
+    amenities: ["Churrasqueira", "Área de lazer", "Segurança 24h"],
+    subcategory: "Casas"
+  },
+  {
+    id: "realestate3",
+    title: "Studio mobiliado frente ao mar",
+    price: 190000,
+    description: "Studio completamente mobiliado com vista panorâmica para o mar. Ótima oportunidade para investimento ou moradia.",
+    images: ["/placeholder.svg"],
+    location: "Aviação, Praia Grande",
+    date: "2023-04-18",
+    sellerName: "Bella Imóveis",
+    sellerContact: "(13) 99876-5432",
+    category: "imoveis",
+    propertyType: "Studio",
+    size: 38,
+    bedrooms: 1,
+    bathrooms: 1,
+    hasGarage: false,
+    amenities: ["Academia", "Lavanderia Coletiva", "Rooftop"],
+    subcategory: "Studio"
+  },
+  {
+    id: "realestate4",
+    title: "Sobrado novo a 500m da praia",
+    price: 380000,
+    description: "Sobrado novo com 3 dormitórios, sendo 1 suíte, sala ampla, cozinha planejada, área de serviço e 2 vagas de garagem. Excelente localização.",
+    images: ["/placeholder.svg"],
+    location: "Tupi, Praia Grande",
+    date: "2023-04-16",
+    sellerName: "Costa Imóveis",
+    sellerContact: "(13) 98888-7777",
+    category: "imoveis",
+    propertyType: "Sobrado",
+    size: 125,
+    bedrooms: 3,
+    bathrooms: 2,
+    hasGarage: true,
+    amenities: ["Área gourmet", "Jardim"],
+    subcategory: "Casas"
+  },
+  {
+    id: "realestate5",
+    title: "Terreno em área nobre",
+    price: 220000,
+    description: "Terreno plano em área nobre, pronto para construir. Documentação 100% em ordem.",
+    images: ["/placeholder.svg"],
+    location: "Cidade Ocian, Praia Grande",
+    date: "2023-04-14",
+    sellerName: "Capital Imóveis",
+    sellerContact: "(13) 97777-6666",
+    category: "imoveis",
+    propertyType: "Terreno",
+    size: 250,
+    bedrooms: 0,
+    bathrooms: 0,
+    hasGarage: false,
+    amenities: ["Documentação em dia", "Pronto para construir"],
+    subcategory: "Terrenos"
+  },
+  {
+    id: "realestate6",
+    title: "Cobertura duplex com vista para o mar",
+    price: 750000,
+    description: "Magnífica cobertura duplex com vista panorâmica para o mar, 3 suítes, sala ampla, cozinha gourmet e terraço com piscina privativa.",
+    images: ["/placeholder.svg"],
+    location: "Boqueirão, Praia Grande",
+    date: "2023-04-12",
+    sellerName: "Premium Imóveis",
+    sellerContact: "(13) 96666-5555",
+    category: "imoveis",
+    propertyType: "Cobertura",
+    size: 180,
+    bedrooms: 3,
+    bathrooms: 3,
+    hasGarage: true,
+    amenities: ["Piscina privativa", "Terraço gourmet", "Vista para o mar", "Sauna"],
+    subcategory: "Cobertura"
+  },
+];
+
+// Adicionando um produto exemplo da categoria ITENS
+export const itemListings = [
+  {
+    id: "item1",
+    title: "Sofá Retrátil Novo",
+    price: 850,
+    description: "Sofá retrátil e reclinável, pouco uso, ótimo estado.",
+    images: ["/placeholder.svg"],
+    location: "Canto do Forte, Praia Grande",
+    date: "2023-04-20",
+    sellerName: "Mariana Souza",
+    sellerContact: "(13) 98654-3210",
+    category: "itens",
+    subcategory: "Móveis"
   },
 ];
 
@@ -167,6 +367,7 @@ export const jobListings: JobListing[] = [
     education: "Ensino Médio Completo",
     experience: "Mínimo 1 ano",
     benefits: ["Vale Transporte", "Vale Refeição", "Plano de Saúde"],
+    subcategory: "Administração"
   },
   {
     id: "job2",
@@ -183,6 +384,7 @@ export const jobListings: JobListing[] = [
     education: "Ensino Médio Completo",
     experience: "Mínimo 6 meses",
     benefits: ["Comissão sobre vendas", "Vale Transporte", "Desconto em produtos"],
+    subcategory: "Vendas"
   },
   {
     id: "job3",
@@ -199,6 +401,7 @@ export const jobListings: JobListing[] = [
     education: "Ensino Médio Completo",
     experience: "Mínimo 1 ano",
     benefits: ["Vale Transporte", "Vale Alimentação", "Plano de Saúde"],
+    subcategory: "Serviços Gerais"
   },
   {
     id: "job4",
@@ -215,6 +418,7 @@ export const jobListings: JobListing[] = [
     education: "Ensino Fundamental Completo",
     experience: "Não exigida",
     benefits: ["Vale Transporte", "Refeição no local"],
+    subcategory: "Serviços Gerais"
   },
   {
     id: "job5",
@@ -231,6 +435,7 @@ export const jobListings: JobListing[] = [
     education: "Curso Técnico em Informática",
     experience: "Mínimo 2 anos",
     benefits: ["Vale Transporte", "Vale Refeição", "Plano de Saúde", "PLR"],
+    subcategory: "Tecnologia"
   },
   {
     id: "job6",
@@ -247,117 +452,7 @@ export const jobListings: JobListing[] = [
     education: "Superior Completo",
     experience: "Mínimo 1 ano",
     benefits: ["Horário flexível", "Bônus por turma"],
-  },
-];
-
-export const realEstateListings: RealEstateListing[] = [
-  {
-    id: "realestate1",
-    title: "Apartamento 2 dormitórios a 100m da praia",
-    price: 280000,
-    description: "Lindo apartamento com 2 dormitórios, sala ampla, cozinha planejada e uma vaga de garagem. Localização privilegiada, a apenas 100 metros da praia.",
-    images: ["/placeholder.svg"],
-    location: "Guilhermina, Praia Grande",
-    date: "2023-04-22",
-    sellerName: "Imobiliária Litoral",
-    sellerContact: "(13) 3456-7891",
-    category: "imoveis",
-    propertyType: "Apartamento",
-    size: 65,
-    bedrooms: 2,
-    bathrooms: 1,
-    hasGarage: true,
-    amenities: ["Piscina", "Salão de Festas", "Portaria 24h"],
-  },
-  {
-    id: "realestate2",
-    title: "Casa em condomínio fechado",
-    price: 420000,
-    description: "Casa em condomínio fechado com 3 dormitórios sendo 1 suíte, sala de estar e jantar, cozinha americana, área gourmet com churrasqueira e 2 vagas de garagem.",
-    images: ["/placeholder.svg"],
-    location: "Canto do Forte, Praia Grande",
-    date: "2023-04-20",
-    sellerName: "Marcos Imóveis",
-    sellerContact: "(13) 98765-4321",
-    category: "imoveis",
-    propertyType: "Casa",
-    size: 110,
-    bedrooms: 3,
-    bathrooms: 2,
-    hasGarage: true,
-    amenities: ["Churrasqueira", "Área de lazer", "Segurança 24h"],
-  },
-  {
-    id: "realestate3",
-    title: "Studio mobiliado frente ao mar",
-    price: 190000,
-    description: "Studio completamente mobiliado com vista panorâmica para o mar. Ótima oportunidade para investimento ou moradia.",
-    images: ["/placeholder.svg"],
-    location: "Aviação, Praia Grande",
-    date: "2023-04-18",
-    sellerName: "Bella Imóveis",
-    sellerContact: "(13) 99876-5432",
-    category: "imoveis",
-    propertyType: "Studio",
-    size: 38,
-    bedrooms: 1,
-    bathrooms: 1,
-    hasGarage: false,
-    amenities: ["Academia", "Lavanderia Coletiva", "Rooftop"],
-  },
-  {
-    id: "realestate4",
-    title: "Sobrado novo a 500m da praia",
-    price: 380000,
-    description: "Sobrado novo com 3 dormitórios, sendo 1 suíte, sala ampla, cozinha planejada, área de serviço e 2 vagas de garagem. Excelente localização.",
-    images: ["/placeholder.svg"],
-    location: "Tupi, Praia Grande",
-    date: "2023-04-16",
-    sellerName: "Costa Imóveis",
-    sellerContact: "(13) 98888-7777",
-    category: "imoveis",
-    propertyType: "Sobrado",
-    size: 125,
-    bedrooms: 3,
-    bathrooms: 2,
-    hasGarage: true,
-    amenities: ["Área gourmet", "Jardim"],
-  },
-  {
-    id: "realestate5",
-    title: "Terreno em área nobre",
-    price: 220000,
-    description: "Terreno plano em área nobre, pronto para construir. Documentação 100% em ordem.",
-    images: ["/placeholder.svg"],
-    location: "Cidade Ocian, Praia Grande",
-    date: "2023-04-14",
-    sellerName: "Capital Imóveis",
-    sellerContact: "(13) 97777-6666",
-    category: "imoveis",
-    propertyType: "Terreno",
-    size: 250,
-    bedrooms: 0,
-    bathrooms: 0,
-    hasGarage: false,
-    amenities: ["Documentação em dia", "Pronto para construir"],
-  },
-  {
-    id: "realestate6",
-    title: "Cobertura duplex com vista para o mar",
-    price: 750000,
-    description: "Magnífica cobertura duplex com vista panorâmica para o mar, 3 suítes, sala ampla, cozinha gourmet e terraço com piscina privativa.",
-    images: ["/placeholder.svg"],
-    location: "Boqueirão, Praia Grande",
-    date: "2023-04-12",
-    sellerName: "Premium Imóveis",
-    sellerContact: "(13) 96666-5555",
-    category: "imoveis",
-    propertyType: "Cobertura",
-    size: 180,
-    bedrooms: 3,
-    bathrooms: 3,
-    hasGarage: true,
-    amenities: ["Piscina privativa", "Terraço gourmet", "Vista para o mar", "Sauna"],
+    subcategory: "Educação"
   },
 ];
 
@@ -377,6 +472,7 @@ export const serviceListings: ServiceListing[] = [
     availability: "Segunda a Sábado, 8h às 18h",
     experience: "15 anos",
     rating: 4.8,
+    subcategory: "Residenciais"
   },
   {
     id: "service2",
@@ -393,6 +489,7 @@ export const serviceListings: ServiceListing[] = [
     availability: "Segunda a Sexta, 8h às 17h",
     experience: "10 anos",
     rating: 4.9,
+    subcategory: "Residenciais"
   },
   {
     id: "service3",
@@ -409,6 +506,7 @@ export const serviceListings: ServiceListing[] = [
     availability: "Todos os dias, 24h",
     experience: "20 anos",
     rating: 4.7,
+    subcategory: "Residenciais"
   },
   {
     id: "service4",
@@ -425,6 +523,7 @@ export const serviceListings: ServiceListing[] = [
     availability: "Segunda a Sexta, 14h às 20h",
     experience: "8 anos",
     rating: 4.9,
+    subcategory: "Educação"
   },
   {
     id: "service5",
@@ -441,6 +540,7 @@ export const serviceListings: ServiceListing[] = [
     availability: "Todos os dias, 9h às 20h",
     experience: "12 anos",
     rating: 4.6,
+    subcategory: "Beleza"
   },
   {
     id: "service6",
@@ -457,6 +557,7 @@ export const serviceListings: ServiceListing[] = [
     availability: "Agendamento prévio",
     experience: "10 anos",
     rating: 4.8,
+    subcategory: "Eventos"
   },
 ];
 
@@ -464,5 +565,6 @@ export const allListings = [
   ...autoListings, 
   ...jobListings, 
   ...realEstateListings, 
-  ...serviceListings
+  ...serviceListings,
+  ...itemListings
 ];

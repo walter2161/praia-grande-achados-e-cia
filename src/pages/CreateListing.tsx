@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -12,11 +11,20 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import MainLayout from "@/components/layout/MainLayout";
 import { categories } from "@/data/mockData";
+import { useEffect } from "react";
 
 const CreateListing = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [category, setCategory] = useState("autos");
+  const [subcategory, setSubcategory] = useState("");
+  const [subcategoriesOptions, setSubcategoriesOptions] = useState<string[]>([]);
+
+  useEffect(() => {
+    const found = categories.find((cat) => cat.slug === category);
+    setSubcategoriesOptions(found?.subcategories || []);
+    setSubcategory("");
+  }, [category]);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,217 +38,248 @@ const CreateListing = () => {
   };
   
   const renderAutoForm = () => (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="brand">Marca</Label>
-          <Input id="brand" placeholder="Ex: Toyota, Honda, Volkswagen" />
+    <>
+      {renderSubcategorySelector()}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="brand">Marca</Label>
+            <Input id="brand" placeholder="Ex: Toyota, Honda, Volkswagen" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="model">Modelo</Label>
+            <Input id="model" placeholder="Ex: Corolla, Civic, Gol" />
+          </div>
         </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="year">Ano</Label>
+            <Input id="year" type="number" placeholder="Ex: 2020" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="mileage">Quilometragem</Label>
+            <Input id="mileage" type="number" placeholder="Ex: 45000" />
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="fuel">Combustível</Label>
+            <Select defaultValue="flex">
+              <SelectTrigger id="fuel">
+                <SelectValue placeholder="Selecione o combustível" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="flex">Flex</SelectItem>
+                <SelectItem value="gasolina">Gasolina</SelectItem>
+                <SelectItem value="etanol">Etanol</SelectItem>
+                <SelectItem value="diesel">Diesel</SelectItem>
+                <SelectItem value="eletrico">Elétrico</SelectItem>
+                <SelectItem value="hibrido">Híbrido</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="transmission">Câmbio</Label>
+            <Select defaultValue="automatico">
+              <SelectTrigger id="transmission">
+                <SelectValue placeholder="Selecione o câmbio" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="automatico">Automático</SelectItem>
+                <SelectItem value="manual">Manual</SelectItem>
+                <SelectItem value="semi-automatico">Semi-automático</SelectItem>
+                <SelectItem value="cvt">CVT</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        
         <div className="space-y-2">
-          <Label htmlFor="model">Modelo</Label>
-          <Input id="model" placeholder="Ex: Corolla, Civic, Gol" />
+          <Label htmlFor="color">Cor</Label>
+          <Input id="color" placeholder="Ex: Prata, Preto, Branco" />
         </div>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="year">Ano</Label>
-          <Input id="year" type="number" placeholder="Ex: 2020" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="mileage">Quilometragem</Label>
-          <Input id="mileage" type="number" placeholder="Ex: 45000" />
-        </div>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="fuel">Combustível</Label>
-          <Select defaultValue="flex">
-            <SelectTrigger id="fuel">
-              <SelectValue placeholder="Selecione o combustível" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="flex">Flex</SelectItem>
-              <SelectItem value="gasolina">Gasolina</SelectItem>
-              <SelectItem value="etanol">Etanol</SelectItem>
-              <SelectItem value="diesel">Diesel</SelectItem>
-              <SelectItem value="eletrico">Elétrico</SelectItem>
-              <SelectItem value="hibrido">Híbrido</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="transmission">Câmbio</Label>
-          <Select defaultValue="automatico">
-            <SelectTrigger id="transmission">
-              <SelectValue placeholder="Selecione o câmbio" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="automatico">Automático</SelectItem>
-              <SelectItem value="manual">Manual</SelectItem>
-              <SelectItem value="semi-automatico">Semi-automático</SelectItem>
-              <SelectItem value="cvt">CVT</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="color">Cor</Label>
-        <Input id="color" placeholder="Ex: Prata, Preto, Branco" />
-      </div>
-    </div>
+    </>
   );
   
   const renderJobForm = () => (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="jobType">Tipo de contrato</Label>
-        <Select defaultValue="clt">
-          <SelectTrigger id="jobType">
-            <SelectValue placeholder="Selecione o tipo de contrato" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="clt">CLT</SelectItem>
-            <SelectItem value="pj">PJ</SelectItem>
-            <SelectItem value="temporario">Temporário</SelectItem>
-            <SelectItem value="estagio">Estágio</SelectItem>
-            <SelectItem value="freelancer">Freelancer</SelectItem>
-          </SelectContent>
-        </Select>
+    <>
+      {renderSubcategorySelector()}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="jobType">Tipo de contrato</Label>
+          <Select defaultValue="clt">
+            <SelectTrigger id="jobType">
+              <SelectValue placeholder="Selecione o tipo de contrato" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="clt">CLT</SelectItem>
+              <SelectItem value="pj">PJ</SelectItem>
+              <SelectItem value="temporario">Temporário</SelectItem>
+              <SelectItem value="estagio">Estágio</SelectItem>
+              <SelectItem value="freelancer">Freelancer</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="education">Escolaridade</Label>
+          <Select defaultValue="medio">
+            <SelectTrigger id="education">
+              <SelectValue placeholder="Selecione a escolaridade" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="fundamental">Ensino Fundamental</SelectItem>
+              <SelectItem value="medio">Ensino Médio</SelectItem>
+              <SelectItem value="tecnico">Ensino Técnico</SelectItem>
+              <SelectItem value="superior">Ensino Superior</SelectItem>
+              <SelectItem value="pos">Pós-graduação</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="experience">Experiência</Label>
+          <Select defaultValue="1ano">
+            <SelectTrigger id="experience">
+              <SelectValue placeholder="Selecione a experiência" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="nenhuma">Não exigida</SelectItem>
+              <SelectItem value="6meses">Até 6 meses</SelectItem>
+              <SelectItem value="1ano">Até 1 ano</SelectItem>
+              <SelectItem value="2anos">De 1 a 2 anos</SelectItem>
+              <SelectItem value="3anos">De 2 a 3 anos</SelectItem>
+              <SelectItem value="5anos">De 3 a 5 anos</SelectItem>
+              <SelectItem value="5mais">Mais de 5 anos</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="benefits">Benefícios (separados por vírgula)</Label>
+          <Textarea id="benefits" placeholder="Ex: Vale Transporte, Vale Refeição, Plano de Saúde" />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="companyName">Nome da Empresa</Label>
+          <Input id="companyName" placeholder="Ex: Empresa XYZ" />
+        </div>
       </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="education">Escolaridade</Label>
-        <Select defaultValue="medio">
-          <SelectTrigger id="education">
-            <SelectValue placeholder="Selecione a escolaridade" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="fundamental">Ensino Fundamental</SelectItem>
-            <SelectItem value="medio">Ensino Médio</SelectItem>
-            <SelectItem value="tecnico">Ensino Técnico</SelectItem>
-            <SelectItem value="superior">Ensino Superior</SelectItem>
-            <SelectItem value="pos">Pós-graduação</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="experience">Experiência</Label>
-        <Select defaultValue="1ano">
-          <SelectTrigger id="experience">
-            <SelectValue placeholder="Selecione a experiência" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="nenhuma">Não exigida</SelectItem>
-            <SelectItem value="6meses">Até 6 meses</SelectItem>
-            <SelectItem value="1ano">Até 1 ano</SelectItem>
-            <SelectItem value="2anos">De 1 a 2 anos</SelectItem>
-            <SelectItem value="3anos">De 2 a 3 anos</SelectItem>
-            <SelectItem value="5anos">De 3 a 5 anos</SelectItem>
-            <SelectItem value="5mais">Mais de 5 anos</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="benefits">Benefícios (separados por vírgula)</Label>
-        <Textarea id="benefits" placeholder="Ex: Vale Transporte, Vale Refeição, Plano de Saúde" />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="companyName">Nome da Empresa</Label>
-        <Input id="companyName" placeholder="Ex: Empresa XYZ" />
-      </div>
-    </div>
+    </>
   );
   
   const renderRealEstateForm = () => (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <Label htmlFor="propertyType">Tipo de Imóvel</Label>
-        <Select defaultValue="apartamento">
-          <SelectTrigger id="propertyType">
-            <SelectValue placeholder="Selecione o tipo de imóvel" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="apartamento">Apartamento</SelectItem>
-            <SelectItem value="casa">Casa</SelectItem>
-            <SelectItem value="sobrado">Sobrado</SelectItem>
-            <SelectItem value="terreno">Terreno</SelectItem>
-            <SelectItem value="comercial">Comercial</SelectItem>
-            <SelectItem value="cobertura">Cobertura</SelectItem>
-            <SelectItem value="studio">Studio</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <>
+      {renderSubcategorySelector()}
+      <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="size">Área (m²)</Label>
-          <Input id="size" type="number" placeholder="Ex: 70" />
+          <Label htmlFor="propertyType">Tipo de Imóvel</Label>
+          <Select defaultValue="apartamento">
+            <SelectTrigger id="propertyType">
+              <SelectValue placeholder="Selecione o tipo de imóvel" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="apartamento">Apartamento</SelectItem>
+              <SelectItem value="casa">Casa</SelectItem>
+              <SelectItem value="sobrado">Sobrado</SelectItem>
+              <SelectItem value="terreno">Terreno</SelectItem>
+              <SelectItem value="comercial">Comercial</SelectItem>
+              <SelectItem value="cobertura">Cobertura</SelectItem>
+              <SelectItem value="studio">Studio</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="size">Área (m²)</Label>
+            <Input id="size" type="number" placeholder="Ex: 70" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bedrooms">Dormitórios</Label>
+            <Input id="bedrooms" type="number" placeholder="Ex: 2" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bathrooms">Banheiros</Label>
+            <Input id="bathrooms" type="number" placeholder="Ex: 1" />
+          </div>
+        </div>
+        
+        <div className="flex items-center space-x-2">
+          <Switch id="hasGarage" />
+          <Label htmlFor="hasGarage">Possui vaga de garagem</Label>
+        </div>
+        
         <div className="space-y-2">
-          <Label htmlFor="bedrooms">Dormitórios</Label>
-          <Input id="bedrooms" type="number" placeholder="Ex: 2" />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="bathrooms">Banheiros</Label>
-          <Input id="bathrooms" type="number" placeholder="Ex: 1" />
+          <Label htmlFor="amenities">Comodidades (separadas por vírgula)</Label>
+          <Textarea id="amenities" placeholder="Ex: Piscina, Salão de Festas, Portaria 24h" />
         </div>
       </div>
-      
-      <div className="flex items-center space-x-2">
-        <Switch id="hasGarage" />
-        <Label htmlFor="hasGarage">Possui vaga de garagem</Label>
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="amenities">Comodidades (separadas por vírgula)</Label>
-        <Textarea id="amenities" placeholder="Ex: Piscina, Salão de Festas, Portaria 24h" />
-      </div>
-    </div>
+    </>
   );
   
   const renderServiceForm = () => (
-    <div className="space-y-4">
+    <>
+      {renderSubcategorySelector()}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="serviceType">Tipo de Serviço</Label>
+          <Select defaultValue="residenciais">
+            <SelectTrigger id="serviceType">
+              <SelectValue placeholder="Selecione o tipo de serviço" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="residenciais">Serviços Residenciais</SelectItem>
+              <SelectItem value="educacao">Educação</SelectItem>
+              <SelectItem value="beleza">Beleza</SelectItem>
+              <SelectItem value="saude">Saúde</SelectItem>
+              <SelectItem value="informatica">Informática</SelectItem>
+              <SelectItem value="eventos">Eventos</SelectItem>
+              <SelectItem value="automotivos">Automotivos</SelectItem>
+              <SelectItem value="outros">Outros</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="availability">Disponibilidade</Label>
+          <Input id="availability" placeholder="Ex: Segunda a Sexta, 8h às 18h" />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="experience">Experiência</Label>
+          <Input id="experience" placeholder="Ex: 5 anos na área" />
+        </div>
+        
+        <div className="space-y-2">
+          <Label htmlFor="providerName">Nome do Profissional</Label>
+          <Input id="providerName" placeholder="Ex: João Silva" />
+        </div>
+      </div>
+    </>
+  );
+
+  const renderSubcategorySelector = () =>
+    subcategoriesOptions.length > 0 && (
       <div className="space-y-2">
-        <Label htmlFor="serviceType">Tipo de Serviço</Label>
-        <Select defaultValue="residenciais">
-          <SelectTrigger id="serviceType">
-            <SelectValue placeholder="Selecione o tipo de serviço" />
+        <Label htmlFor="subcategory">Subcategoria</Label>
+        <Select value={subcategory} onValueChange={setSubcategory}>
+          <SelectTrigger id="subcategory">
+            <SelectValue placeholder="Selecione a subcategoria" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="residenciais">Serviços Residenciais</SelectItem>
-            <SelectItem value="educacao">Educação</SelectItem>
-            <SelectItem value="beleza">Beleza</SelectItem>
-            <SelectItem value="saude">Saúde</SelectItem>
-            <SelectItem value="informatica">Informática</SelectItem>
-            <SelectItem value="eventos">Eventos</SelectItem>
-            <SelectItem value="automotivos">Automotivos</SelectItem>
-            <SelectItem value="outros">Outros</SelectItem>
+            {subcategoriesOptions.map((subcat) => (
+              <SelectItem key={subcat} value={subcat}>
+                {subcat}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="availability">Disponibilidade</Label>
-        <Input id="availability" placeholder="Ex: Segunda a Sexta, 8h às 18h" />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="experience">Experiência</Label>
-        <Input id="experience" placeholder="Ex: 5 anos na área" />
-      </div>
-      
-      <div className="space-y-2">
-        <Label htmlFor="providerName">Nome do Profissional</Label>
-        <Input id="providerName" placeholder="Ex: João Silva" />
-      </div>
-    </div>
-  );
+    );
   
   const renderFormByCategory = () => {
     switch (category) {
