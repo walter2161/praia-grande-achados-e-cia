@@ -54,11 +54,21 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center justify-between px-4 sm:px-4">
         <div className="flex items-center gap-4">
-          {/* Botão Hamburguer - Mais visível agora */}
+          {/* Logo */}
+          <Link to="/" className="flex items-center ml-2">
+            <img
+              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
+              alt="Logo GuíaPG"
+              className="h-10 max-h-10 w-auto object-contain"
+              style={{ maxWidth: 180 }}
+            />
+          </Link>
+
+          {/* Botão Hamburguer - Movido para o lado direito */}
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-            <DrawerTrigger asChild>
+            <DrawerTrigger asChild className="md:hidden ml-auto">
               <button
-                className="flex h-10 w-10 items-center justify-center rounded-md md:hidden border border-border bg-accent hover:bg-accent/80 transition"
+                className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-accent hover:bg-accent/80 transition"
                 aria-label="Menu"
               >
                 <Menu className="h-6 w-6" />
@@ -95,18 +105,9 @@ export default function Header() {
               </nav>
             </DrawerContent>
           </Drawer>
-
-          {/* Logo com tamanho aumentado */}
-          <Link to="/" className="flex items-center ml-2">
-            <img
-              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
-              alt="Logo GuíaPG"
-              className="h-10 max-h-10 w-auto object-contain"
-              style={{ maxWidth: 180 }}
-            />
-          </Link>
         </div>
         
+        {/* Rest of the existing header code remains the same */}
         <form
           onSubmit={handleSearch}
           className="hidden md:flex relative w-1/3"
