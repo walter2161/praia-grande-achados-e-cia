@@ -2,21 +2,29 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut, Menu } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { user, logout, isAdmin, isAuthenticated } = useAuth();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,25 +35,87 @@ export default function Header() {
     }
   };
 
+  // Todas as rotas principais do site
+  const menuLinks = [
+    { to: "/", label: "Início" },
+    { to: "/todos-anuncios", label: "Todos Anúncios" },
+    { to: "/criar-anuncio", label: "Anunciar" },
+    { to: "/sobre", label: "Sobre" },
+    { to: "/contato", label: "Contato" },
+    { to: "/termos", label: "Termos de Uso" },
+    { to: "/privacidade", label: "Privacidade" },
+    ...(isAuthenticated() ? [{ to: "/perfil", label: "Meu Perfil" }] : []),
+    ...(isAdmin() ? [{ to: "/admin", label: "Administração" }] : []),
+    ...(isAuthenticated()
+      ? [{ to: "#logout", label: "Sair", onClick: logout, danger: true }]
+      : [{ to: "/login", label: "Entrar" }]),
+  ];
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="container flex h-16 items-center justify-between px-0 sm:px-0">
+        <div className="flex items-center gap-2">
+          {/* Botão Hamburguer */}
+          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+            <DrawerTrigger asChild>
+              <button
+                className="mr-2 flex h-10 w-10 items-center justify-center rounded-md md:hidden border border-border bg-background hover:bg-accent transition"
+                aria-label="Menu"
+              >
+                <Menu className="h-6 w-6" />
+              </button>
+            </DrawerTrigger>
+            <DrawerContent className="max-w-[340px] mx-auto">
+              <DrawerHeader>
+                <DrawerTitle>Menu</DrawerTitle>
+              </DrawerHeader>
+              <nav className="flex flex-col gap-2 px-4 pb-4">
+                {menuLinks.map((link) =>
+                  link.to === "#logout" ? (
+                    <button
+                      key={link.label}
+                      onClick={() => {
+                        setDrawerOpen(false);
+                        logout();
+                      }}
+                      className="text-left w-full px-4 py-2 rounded hover:bg-destructive/10 text-destructive font-medium"
+                    >
+                      {link.label}
+                    </button>
+                  ) : (
+                    <Link
+                      key={link.to}
+                      to={link.to}
+                      onClick={() => setDrawerOpen(false)}
+                      className={`block px-4 py-2 rounded hover:bg-accent/80 text-foreground ${link.danger ? "text-destructive" : ""}`}
+                    >
+                      {link.label}
+                    </Link>
+                  )
+                )}
+              </nav>
+            </DrawerContent>
+          </Drawer>
+
+          {/* Logo reduzido */}
           <Link to="/" className="flex items-center">
-            <img 
-              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
+            <img
+              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
               alt="Logo GuíaPG"
-              className="h-[calc(100%-16px)] max-h-14 w-auto object-contain"
-              style={{ maxWidth: 300 }}
+              className="h-8 max-h-8 w-auto object-contain"
+              style={{ maxWidth: 160 }}
             />
           </Link>
         </div>
-        <form onSubmit={handleSearch} className="hidden md:flex relative w-1/3">
+        <form
+          onSubmit={handleSearch}
+          className="hidden md:flex relative w-1/3"
+        >
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input 
+          <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar em Praia Grande" 
+            placeholder="Buscar em Praia Grande"
             className="pl-10"
           />
         </form>
@@ -64,7 +134,6 @@ export default function Header() {
           <Button size="icon" variant="ghost">
             <Bell className="h-5 w-5" />
           </Button>
-          
           {isAuthenticated() ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
