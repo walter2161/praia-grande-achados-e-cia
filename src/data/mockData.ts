@@ -722,4 +722,4 @@ export const itensListings: ItemListing[] = [
     location: "Guilhermina, Praia Grande",
     date: "2023-04-15",
     sellerName: "Aline Santos",
-    sellerContact: "(
+    seller
