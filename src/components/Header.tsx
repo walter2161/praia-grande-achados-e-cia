@@ -12,10 +12,9 @@ export default function Header() {
           <Link to="/" className="flex items-center gap-2">
             <img 
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
-              alt="GuíaPG Logo" 
-              className="h-10 w-10 object-contain"
+              alt="350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
+              className="w-[300px] h-auto object-contain"
             />
-            <span className="text-2xl font-bold text-[#FF6600]">GuíaPG</span>
           </Link>
         </div>
         
@@ -50,4 +49,3 @@ export default function Header() {
     </header>
   );
 }
-
