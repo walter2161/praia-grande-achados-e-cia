@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut, Menu } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut, EllipsisVertical } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -65,14 +64,14 @@ export default function Header() {
             />
           </Link>
 
-          {/* Botão Hamburguer - Visível em desktop e mobile */}
+          {/* Botão Menu 3 pontos */}
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger asChild>
               <button
-                className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-accent hover:bg-accent/80 transition"
+                className="flex h-10 w-10 items-center justify-center rounded-md transition hover:bg-beach-50"
                 aria-label="Menu"
               >
-                <Menu className="h-6 w-6" />
+                <EllipsisVertical className="h-6 w-6 text-beach-DEFAULT" />
               </button>
             </DrawerTrigger>
             <DrawerContent className="max-w-[340px] mx-auto">
@@ -108,7 +107,6 @@ export default function Header() {
           </Drawer>
         </div>
         
-        {/* Rest of the existing header code remains the same */}
         <form
           onSubmit={handleSearch}
           className="hidden md:flex relative w-1/3"
@@ -194,4 +192,3 @@ export default function Header() {
     </header>
   );
 }
-
