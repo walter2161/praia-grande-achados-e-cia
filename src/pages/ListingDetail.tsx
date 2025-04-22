@@ -18,6 +18,7 @@ import Map from "@/components/Map";
 import { allListings, categories } from "@/data/mockData";
 import { formatDistanceToNow, parseISO, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import WhatsAppContact from "@/components/WhatsAppContact";
 
 const getCategoryIcon = (categorySlug: string) => {
   switch (categorySlug) {
@@ -308,16 +309,19 @@ const ListingDetail = () => {
               <p className="text-3xl font-bold text-beach-700 mb-4">{displayPrice}</p>
               
               <Separator className="my-4" />
-              
+
               <p className="font-medium mb-2">Contato:</p>
-              <p className="mb-4">{contactName}</p>
-              
-              <div className="space-y-3">
+              <p className="mb-2">{contactName}</p>
+
+              {/* WHATSAPP CONTACTO VISÍVEL PARA TODOS */}
+              <WhatsAppContact rawPhone={contactInfo} listingTitle={listing.title} />
+
+              <div className="space-y-3 mt-4">
+                {/* Mantém os botões de telefone/email gerais */}
                 <Button className="w-full gap-2 bg-beach-600 hover:bg-beach-700">
                   <Phone className="h-4 w-4" />
-                  {contactInfo.includes('@') ? 'Enviar mensagem' : 'Ligar'}
+                  {contactInfo.includes('@') ? "Enviar mensagem" : "Ligar"}
                 </Button>
-                
                 <Button className="w-full gap-2" variant="outline">
                   <Mail className="h-4 w-4" />
                   Enviar e-mail
