@@ -1,4 +1,3 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Search, Bell, User, Plus } from "lucide-react";
@@ -13,7 +12,7 @@ export default function Header() {
             <img 
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
               alt="350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
-              className="w-[300px] h-auto object-contain"
+              className="w-[300px] h-auto object-contain p-2"
             />
           </Link>
         </div>
