@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -66,6 +65,7 @@ export type RealEstateListing = {
   hasGarage: boolean;
   amenities: string[];
   subcategory?: string;
+  finalidade?: string; // Adding the finalidade property
 };
 
 export type ServiceListing = {
@@ -118,4 +118,3 @@ export type ItemListing = {
 };
 
 export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing | BarRestaurantListing | ItemListing;
-

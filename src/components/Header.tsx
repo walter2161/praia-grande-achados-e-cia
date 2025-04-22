@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut, Menu, Hamburger } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut, Menu } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -70,7 +70,7 @@ export default function Header() {
                 style={{ background: "none", border: "none", marginRight: 10 }}
                 aria-label="Categorias"
               >
-                <Hamburger className="h-7 w-7 text-[#F97316]" /> {/* ícone hamburger */}
+                <Menu className="h-7 w-7 text-[#F97316]" /> {/* Using Menu icon instead of Hamburger */}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
