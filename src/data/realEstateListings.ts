@@ -19,13 +19,14 @@ export const realEstateListings: RealEstateListing[] = [
     bathrooms: 1,
     hasGarage: true,
     amenities: ["Piscina", "Salão de Festas", "Portaria 24h"],
-    subcategory: "Apartamento"
+    subcategory: "Apartamento",
+    finalidade: "Venda"
   },
   {
     id: "realestate2",
-    title: "Casa térrea com quintal",
-    price: 370000,
-    description: "Casa ampla, excelente para família, com 3 dormitórios e quintal com churrasqueira.",
+    title: "Casa térrea para locação com quintal",
+    price: 2500,
+    description: "Casa ampla para locação, excelente para família, com 3 dormitórios e quintal com churrasqueira.",
     images: ["/placeholder.svg"],
     location: "Maracanã, Praia Grande",
     date: "2023-04-20",
@@ -38,11 +39,12 @@ export const realEstateListings: RealEstateListing[] = [
     bathrooms: 2,
     hasGarage: true,
     amenities: ["Churrasqueira", "Quintal"],
-    subcategory: "Casa"
+    subcategory: "Casa",
+    finalidade: "Locação"
   },
   {
     id: "realestate3",
-    title: "Cobertura vista mar",
+    title: "Cobertura à venda com vista mar",
     price: 850000,
     description: "Cobertura duplex com vista maravilhosa, 4 suítes, piscina privativa.",
     images: ["/placeholder.svg"],
@@ -57,12 +59,13 @@ export const realEstateListings: RealEstateListing[] = [
     bathrooms: 5,
     hasGarage: true,
     amenities: ["Piscina Privativa", "Vista Mar"],
-    subcategory: "Cobertura"
+    subcategory: "Cobertura",
+    finalidade: "Venda"
   },
   {
     id: "realestate4",
-    title: "Kitnet mobiliada próximo à praia",
-    price: 105000,
+    title: "Kitnet mobiliada para locação próximo à praia",
+    price: 1400,
     description: "Kitnet para solteiro ou casal, toda mobiliada, baixo condomínio.",
     images: ["/placeholder.svg"],
     location: "Tupi, Praia Grande",
@@ -76,13 +79,14 @@ export const realEstateListings: RealEstateListing[] = [
     bathrooms: 1,
     hasGarage: false,
     amenities: ["Mobiliada", "Portaria 24h"],
-    subcategory: "Kitnet"
+    subcategory: "Kitnet",
+    finalidade: "Locação"
   },
   {
     id: "realestate5",
-    title: "Terreno 250m2 em bairro nobre",
+    title: "Terreno para troca em bairro nobre",
     price: 230000,
-    description: "Ótima oportunidade para construir sua casa dos sonhos. Próximo ao comércio e transporte.",
+    description: "Ótima oportunidade para construir sua casa dos sonhos. Proprietário aceita troca com imóvel menor.",
     images: ["/placeholder.svg"],
     location: "Canto do Forte, Praia Grande",
     date: "2023-04-22",
@@ -95,11 +99,12 @@ export const realEstateListings: RealEstateListing[] = [
     bathrooms: 0,
     hasGarage: false,
     amenities: [],
-    subcategory: "Terreno"
+    subcategory: "Terreno",
+    finalidade: "Troca"
   },
   {
     id: "realestate6",
-    title: "Sala comercial no Centro",
+    title: "Sala comercial à venda no Centro",
     price: 165000,
     description: "Sala comercial em prédio moderno, pronta para escritório ou consultório.",
     images: ["/placeholder.svg"],
@@ -114,6 +119,7 @@ export const realEstateListings: RealEstateListing[] = [
     bathrooms: 1,
     hasGarage: false,
     amenities: ["Elevador", "Portaria"],
-    subcategory: "Comercial"
+    subcategory: "Comercial",
+    finalidade: "Venda"
   },
 ];

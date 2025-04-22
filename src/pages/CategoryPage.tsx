@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -55,7 +54,6 @@ const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedSubcategory = searchParams.get("subcategoria") ?? "todas";
-  // Novo estado para o filtro de finalidade
   const finalidadeFromParams = searchParams.get("finalidade") ?? "todas";
   const [finalidade, setFinalidade] = useState<string>(finalidadeFromParams);
 
@@ -91,7 +89,6 @@ const CategoryPage = () => {
     }
   };
 
-  // Novo handler para filtro de finalidade
   const handleChangeFinalidade = (val: string) => {
     setFinalidade(val);
     if (val === "todas") {
@@ -108,15 +105,11 @@ const CategoryPage = () => {
     if (selectedSubcategory !== "todas") {
       filtered = filtered.filter(listing => listing.subcategory === selectedSubcategory);
     }
-    // Aplica somente para imóveis
     if (category.slug === "imoveis" && finalidade !== "todas") {
       filtered = filtered.filter(listing => {
-        // A suposição é que o campo propertyType é usado para diferenciar finalidade.
-        // Caso seu mockData use outro nome/tipo para finalidade, ajuste abaixo:
         const realListing = listing as RealEstateListing;
-        // Garante que busca é case in-sensitive
         return (
-          String(realListing.propertyType ?? "")
+          String(realListing.finalidade ?? "")
             .toLowerCase()
             .includes(finalidade.toLowerCase())
         );
@@ -148,7 +141,6 @@ const CategoryPage = () => {
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
 
-        {/* FILTRO DE FINALIDADE (somente imóveis) */}
         {category.slug === "imoveis" && (
           <div className="mb-6 flex flex-wrap gap-4">
             <RadioGroup
@@ -176,7 +168,6 @@ const CategoryPage = () => {
           </div>
         )}
 
-        {/* Filtro de subcategorias */}
         <div className="mb-8">
           <RadioGroup
             value={selectedSubcategory}

@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut, Menu } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut, Menu, Hamburger } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -60,16 +59,18 @@ export default function Header() {
               style={{ maxWidth: 180 }}
             />
           </Link>
+        </div>
 
+        <div className="flex items-center" style={{ marginRight: 10 }}>
           {/* Menu Hamburguer (Categorias c/ Subcategorias) */}
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className="flex h-10 w-10 items-center justify-center ml-2 p-0 rounded-md"
-                style={{background: "none", border: "none"}}
+                className="flex h-10 w-10 items-center justify-center ml-0 p-0 rounded-md"
+                style={{ background: "none", border: "none", marginRight: 10 }}
                 aria-label="Categorias"
               >
-                <Menu className="h-7 w-7 text-[#F97316]" /> {/* Laranja da marca */}
+                <Hamburger className="h-7 w-7 text-[#F97316]" /> {/* ícone hamburger */}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -77,7 +78,7 @@ export default function Header() {
               side="bottom"
               sideOffset={0}
               className="w-[290px] p-0 border rounded-md bg-background z-[60] shadow-xl"
-              style={{marginTop: 6}}
+              style={{ marginTop: 6 }}
             >
               <div className="py-2">
                 {categories.map((cat) => (
@@ -110,21 +111,20 @@ export default function Header() {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
+          {/* Barra de busca */}
+          <form
+            onSubmit={handleSearch}
+            className="hidden md:flex relative w-1/3"
+          >
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar em Praia Grande"
+              className="pl-10"
+            />
+          </form>
         </div>
-
-        {/* Barra de busca */}
-        <form
-          onSubmit={handleSearch}
-          className="hidden md:flex relative w-1/3"
-        >
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar em Praia Grande"
-            className="pl-10"
-          />
-        </form>
 
         <div className="flex items-center gap-2">
           {isAuthenticated() ? (
