@@ -1,4 +1,3 @@
-
 import { Home, Car, Briefcase, Phone, Utensils, ShoppingBag } from "lucide-react";
 
 // Restructured real estate subcategories hierarchy for imóveis
@@ -411,7 +410,11 @@ export const itemListingsData = [
   },
 ];
 
+// Combine all listings into one array
 export const listings = [...autoListingsData, ...jobListingsData, ...realEstateListingsData, ...serviceListingsData, ...barRestaurantListingsData, ...itemListingsData];
+
+// Add the missing allListings export (alias to listings)
+export const allListings = listings;
 
 // Export individual array variables to fix import issues
 export const autoListings = autoListingsData;
