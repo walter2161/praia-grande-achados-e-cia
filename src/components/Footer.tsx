@@ -59,14 +59,14 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-4">Entre em Contato</h3>
           <p className="text-muted-foreground">
             Praia Grande, SP<br />
-            contato@praiagrande-achados.com<br />
-            (13) 99999-9999
+            contato@guiapg.com.br<br />
+            (11) 9 7469-8846
           </p>
         </div>
       </div>
       
       <div className="container mt-8 pt-4 border-t text-center text-sm text-muted-foreground">
-        <p>© 2023 GuíaPG. Todos os direitos reservados.</p>
+        <p>© 2025 GuíaPG. Todos os direitos reservados.</p>
       </div>
     </footer>
   );

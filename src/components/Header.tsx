@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Search, Bell, User, Plus } from "lucide-react";
@@ -8,15 +9,15 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center">
             <img 
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
-              alt="350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
-              className="w-[300px] h-auto object-contain p-2"
+              alt="Logo GuíaPG"
+              className="w-[300px] h-auto object-contain m-2"
+              style={{ maxWidth: 300, margin: 8 }}
             />
           </Link>
         </div>
-        
         <div className="hidden md:flex relative w-1/3">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input 
@@ -24,7 +25,6 @@ export default function Header() {
             className="pl-10"
           />
         </div>
-        
         <div className="flex items-center gap-2">
           <Link to="/criar-anuncio">
             <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">

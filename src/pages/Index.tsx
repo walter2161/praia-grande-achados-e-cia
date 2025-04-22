@@ -1,5 +1,6 @@
 
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
@@ -11,11 +12,21 @@ import { allListings, categories } from "@/data/mockData";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const navigate = useNavigate();
+
   // Get the 8 most recent listings
   const recentListings = [...allListings]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 8);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/todos-anuncios?busca=${encodeURIComponent(searchQuery)}`);
+    } else {
+      navigate("/todos-anuncios");
+    }
+  };
 
   return (
     <MainLayout>
@@ -29,7 +40,7 @@ const Index = () => {
             O melhor guia local de produtos e serviços para todas as suas necessidades.
           </p>
           
-          <div className="relative max-w-md mx-auto mt-8">
+          <form onSubmit={handleSearch} className="relative max-w-md mx-auto mt-8">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
             <Input 
               value={searchQuery}
@@ -38,12 +49,13 @@ const Index = () => {
               className="pl-10 h-12 bg-white text-black"
             />
             <Button 
+              type="submit"
               className="absolute right-0 top-0 h-12 rounded-l-none bg-[#FF6600] hover:bg-[#FF6600]/90"
               size="lg"
             >
               Buscar
             </Button>
-          </div>
+          </form>
           
           <div className="mt-6">
             <Link to="/criar-anuncio">
