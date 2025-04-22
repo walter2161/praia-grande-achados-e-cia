@@ -10,8 +10,7 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-beach-600">PraiaGrande</span>
-            <span className="text-xl font-semibold text-beach-500">Achados&Cia</span>
+            <span className="text-2xl font-bold text-[#FF6600]">GuíaPG</span>
           </Link>
         </div>
         
@@ -25,7 +24,7 @@ export default function Header() {
         
         <div className="flex items-center gap-2">
           <Link to="/criar-anuncio">
-            <Button className="hidden md:flex gap-2 bg-beach-600 hover:bg-beach-700">
+            <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
               <Plus className="h-4 w-4" />
               Anunciar
             </Button>

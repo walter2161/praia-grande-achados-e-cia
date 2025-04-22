@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="w-full border-t bg-background py-8">
       <div className="container grid gap-8 md:grid-cols-2 lg:grid-cols-4">
         <div>
-          <h3 className="text-lg font-semibold mb-4">PraiaGrande Achados&Cia</h3>
+          <h3 className="text-lg font-semibold mb-4 text-[#FF6600]">GuíaPG</h3>
           <p className="text-muted-foreground mb-4">
             Seu guia local de produtos e serviços em Praia Grande.
           </p>
@@ -66,7 +66,7 @@ export default function Footer() {
       </div>
       
       <div className="container mt-8 pt-4 border-t text-center text-sm text-muted-foreground">
-        <p>© 2023 PraiaGrande Achados&Cia. Todos os direitos reservados.</p>
+        <p>© 2023 GuíaPG. Todos os direitos reservados.</p>
       </div>
     </footer>
   );

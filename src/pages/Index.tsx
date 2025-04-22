@@ -20,7 +20,7 @@ const Index = () => {
   return (
     <MainLayout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-beach-600 to-beach-700 text-white py-16">
+      <section className="bg-gradient-to-b from-[#FF6600] to-[#FF6600]/80 text-white py-16">
         <div className="container text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold">
             Compre, venda e encontre tudo em Praia Grande
@@ -38,7 +38,7 @@ const Index = () => {
               className="pl-10 h-12 bg-white text-black"
             />
             <Button 
-              className="absolute right-0 top-0 h-12 rounded-l-none"
+              className="absolute right-0 top-0 h-12 rounded-l-none bg-[#FF6600] hover:bg-[#FF6600]/90"
               size="lg"
             >
               Buscar
@@ -47,7 +47,7 @@ const Index = () => {
           
           <div className="mt-6">
             <Link to="/criar-anuncio">
-              <Button size="lg" variant="secondary" className="font-semibold">
+              <Button size="lg" variant="secondary" className="font-semibold bg-white text-[#FF6600] hover:bg-gray-100">
                 Anunciar Grátis
               </Button>
             </Link>
