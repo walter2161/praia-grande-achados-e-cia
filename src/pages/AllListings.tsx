@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -15,13 +15,57 @@ import {
   serviceListings,
   categories 
 } from "@/data/mockData";
+import { useSearchParams } from "react-router-dom";
 
 const AllListings = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQuery = searchParams.get("busca") || "";
+  
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [sortOption, setSortOption] = useState("recent");
+  const [activeTab, setActiveTab] = useState("all");
+  
+  // Update URL when search query changes
+  useEffect(() => {
+    if (searchQuery) {
+      searchParams.set("busca", searchQuery);
+    } else {
+      searchParams.delete("busca");
+    }
+    setSearchParams(searchParams);
+  }, [searchQuery, setSearchParams]);
+  
+  // Filter listings based on search query
+  const filterListings = (listings) => {
+    if (!searchQuery.trim()) return listings;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return listings.filter(listing => {
+      // Search in title
+      if (listing.title.toLowerCase().includes(query)) return true;
+      
+      // Search in description
+      if (listing.description.toLowerCase().includes(query)) return true;
+      
+      // Search in brand and model for auto listings
+      if (listing.category === "autos" && 
+         (listing.brand?.toLowerCase().includes(query) || 
+          listing.model?.toLowerCase().includes(query))) {
+        return true;
+      }
+      
+      // Search in other relevant fields depending on listing type
+      if (listing.category === "empregos" && 
+          listing.companyName?.toLowerCase().includes(query)) {
+        return true;
+      }
+      
+      return false;
+    });
+  };
   
   // Sort listings based on selected option
-  const sortListings = (listings: typeof allListings) => {
+  const sortListings = (listings) => {
     const listingsCopy = [...listings];
     
     switch (sortOption) {
@@ -56,12 +100,24 @@ const AllListings = () => {
     }
   };
   
+  // Process listings with filter and sort
+  const processListings = (listings) => {
+    const filtered = filterListings(listings);
+    return sortListings(filtered);
+  };
+  
+  // Handle search submission
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // The search is already applied through the state change
+  };
+  
   return (
     <MainLayout>
       <div className="container py-8">
         <h1 className="text-3xl font-bold mb-8">Todos os Anúncios</h1>
         
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
+        <form onSubmit={handleSearch} className="mb-8 flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input 
@@ -82,9 +138,11 @@ const AllListings = () => {
               <SelectItem value="priceDesc">Maior preço</SelectItem>
             </SelectContent>
           </Select>
-        </div>
+          
+          <Button type="submit" className="md:hidden">Buscar</Button>
+        </form>
         
-        <Tabs defaultValue="all" className="mb-8">
+        <Tabs defaultValue="all" className="mb-8" onValueChange={setActiveTab}>
           <TabsList className="w-full md:w-auto">
             <TabsTrigger value="all">Todos</TabsTrigger>
             {categories.map((category) => (
@@ -95,23 +153,53 @@ const AllListings = () => {
           </TabsList>
           
           <TabsContent value="all">
-            <ListingGrid listings={sortListings(allListings)} />
+            {processListings(allListings).length > 0 ? (
+              <ListingGrid listings={processListings(allListings)} />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg">Nenhum anúncio encontrado com os termos de busca.</p>
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="autos">
-            <ListingGrid listings={sortListings(autoListings)} />
+            {processListings(autoListings).length > 0 ? (
+              <ListingGrid listings={processListings(autoListings)} />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg">Nenhum anúncio de automóveis encontrado com os termos de busca.</p>
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="empregos">
-            <ListingGrid listings={sortListings(jobListings)} />
+            {processListings(jobListings).length > 0 ? (
+              <ListingGrid listings={processListings(jobListings)} />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg">Nenhum anúncio de empregos encontrado com os termos de busca.</p>
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="imoveis">
-            <ListingGrid listings={sortListings(realEstateListings)} />
+            {processListings(realEstateListings).length > 0 ? (
+              <ListingGrid listings={processListings(realEstateListings)} />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg">Nenhum anúncio de imóveis encontrado com os termos de busca.</p>
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="servicos">
-            <ListingGrid listings={sortListings(serviceListings)} />
+            {processListings(serviceListings).length > 0 ? (
+              <ListingGrid listings={processListings(serviceListings)} />
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-lg">Nenhum anúncio de serviços encontrado com os termos de busca.</p>
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
