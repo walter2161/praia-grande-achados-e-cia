@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -68,6 +68,8 @@ const ListingDetail = () => {
       </MainLayout>
     );
   }
+
+  const [mainImage, setMainImage] = useState(0);
   
   const category = categories.find(cat => cat.slug === categorySlug);
   const CategoryIcon = getCategoryIcon(categorySlug || "");
@@ -106,6 +108,9 @@ const ListingDetail = () => {
   } else {
     displayPrice = formatPrice(listing.price);
   }
+
+  // Para evitar erro se não houver imagens
+  const validImages = listing.images.filter(Boolean).slice(0, 6);
 
   // Map section para bares e restaurantes
   let barMapSection = null;
@@ -169,13 +174,50 @@ const ListingDetail = () => {
                 </div>
               </div>
             </div>
-            
-            <div className="aspect-video overflow-hidden rounded-lg">
-              <img
-                src={listing.images[0] || "/placeholder.svg"}
-                alt={listing.title}
-                className="h-full w-full object-cover"
-              />
+
+            {/* Galeria de imagens customizada */}
+            <div className="w-full flex flex-col md:flex-row gap-4 items-start">
+              {/* Thumbnails - vertical no desktop, horizontal no mobile */}
+              <div className="flex md:flex-col flex-row gap-2 md:gap-2 md:mr-2">
+                {validImages.slice(0, 6).map((img, idx) => (
+                  <button
+                    key={img + idx}
+                    type="button"
+                    aria-label={`Ver imagem ${idx + 1}`}
+                    className={`w-[78px] h-[78px] md:w-[130px] md:h-[130px] flex items-center justify-center border rounded-md overflow-hidden
+                      ${mainImage === idx ? "ring-2 ring-beach-400 border-beach-500" : "border-muted"}
+                      bg-white transition-all`}
+                    style={{ aspectRatio: "1/1", minWidth: 78, minHeight: 78, maxWidth: 130, maxHeight: 130 }}
+                    onClick={() => setMainImage(idx)}
+                  >
+                    <img
+                      src={img}
+                      alt={`Miniatura ${idx + 1} de ${listing.title}`}
+                      className="object-cover w-full h-full"
+                      style={{ width: "100%", height: "100%", maxWidth: 130, maxHeight: 130 }}
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+              {/* Área principal da foto */}
+              <div
+                className="w-full max-w-[420px] aspect-square bg-muted rounded-lg overflow-hidden border mx-auto flex items-center justify-center"
+                style={{
+                  width: "100%",
+                  maxWidth: 420,
+                  minWidth: 220,
+                  aspectRatio: "1/1",
+                  height: "auto",
+                }}
+              >
+                <img
+                  src={validImages[mainImage] || "/placeholder.svg"}
+                  alt={`${listing.title} imagem ${mainImage + 1}`}
+                  className="w-full h-full object-cover"
+                  style={{ maxWidth: 420, maxHeight: 420, aspectRatio: "1/1" }}
+                />
+              </div>
             </div>
 
             {/* Mostrar mapa para bares e restaurantes */}

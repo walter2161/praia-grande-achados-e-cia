@@ -370,7 +370,9 @@ const CreateListing = () => {
               <Card>
                 <CardHeader>
                   <CardTitle>Adicionar Fotos</CardTitle>
-                  <CardDescription>Adicione até 6 fotos do seu produto ou serviço</CardDescription>
+                  <CardDescription>
+                    Adicione até <b>6 fotos</b> reais, de alta qualidade. Apenas as 6 primeiras serão exibidas em destaque!
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4">
@@ -378,10 +380,21 @@ const CreateListing = () => {
                       <div
                         key={index}
                         className="aspect-square border-2 border-dashed rounded-md flex items-center justify-center bg-muted cursor-pointer"
+                        style={{
+                          width: 130,
+                          height: 130,
+                          minWidth: 80,
+                          minHeight: 80,
+                          maxWidth: 130,
+                          maxHeight: 130,
+                        }}
                       >
                         <p className="text-sm text-muted-foreground">+ Adicionar foto</p>
                       </div>
                     ))}
+                  </div>
+                  <div className="pt-2 text-xs text-muted-foreground">
+                    Limite máximo de 6 imagens por anúncio.
                   </div>
                 </CardContent>
               </Card>
