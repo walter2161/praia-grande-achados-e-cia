@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -64,9 +65,9 @@ export default function Header() {
             />
           </Link>
 
-          {/* Botão Hamburguer - Movido para o lado direito */}
+          {/* Botão Hamburguer - Visível em desktop e mobile */}
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-            <DrawerTrigger asChild className="md:hidden ml-auto">
+            <DrawerTrigger asChild>
               <button
                 className="flex h-10 w-10 items-center justify-center rounded-md border border-border bg-accent hover:bg-accent/80 transition"
                 aria-label="Menu"
@@ -193,3 +194,4 @@ export default function Header() {
     </header>
   );
 }
+
