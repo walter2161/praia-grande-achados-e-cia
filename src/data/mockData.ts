@@ -1,5 +1,7 @@
+
 import { Home, Car, Briefcase, Phone, Utensils, ShoppingBag } from "lucide-react";
 
+// Restructured real estate subcategories hierarchy for imóveis
 export const categories = [
   {
     id: "1",
@@ -20,13 +22,65 @@ export const categories = [
     name: "Imóveis",
     icon: Home,
     slug: "imoveis",
+    // 1-level deep; menu logic in UI will interpret this hierarchy
     subcategories: [
-      "Apartamentos",
-      "Casas",
-      "Terrenos",
-      "Comercial",
-      "Rural",
-      "Temporada",
+      "Venda",
+      "Locação",
+      "Troca",
+      // The UI should nest the next types and conditions under these when rendering
+    ],
+    hierarchy: [
+      {
+        label: "Venda",
+        children: [
+          {
+            label: "Casa",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+          {
+            label: "Apartamento",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+          {
+            label: "Terreno",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+        ],
+      },
+      {
+        label: "Locação",
+        children: [
+          {
+            label: "Casa",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+          {
+            label: "Apartamento",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+          {
+            label: "Terreno",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+        ],
+      },
+      {
+        label: "Troca",
+        children: [
+          {
+            label: "Casa",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+          {
+            label: "Apartamento",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+          {
+            label: "Terreno",
+            children: ["Usado", "Novo", "Lançamento"],
+          },
+        ],
+      },
     ],
   },
   {
