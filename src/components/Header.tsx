@@ -168,10 +168,8 @@ export default function Header() {
           )}
 
           {/* NOVO LINK PLANOS */}
-          <Link to="/planos">
-            <Button className="hidden md:flex gap-2 bg-[#f97316] hover:bg-[#f97316]/90" variant="outline">
-              Planos
-            </Button>
+          <Link to="/planos" className="text-foreground hover:text-primary">
+            Planos
           </Link>
 
           {isAuthenticated() ? (
