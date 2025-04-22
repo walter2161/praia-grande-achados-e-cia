@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut, EllipsisVertical } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut, EllipsisVertical, ChevronDown } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -12,18 +13,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { user, logout, isAdmin, isAuthenticated } = useAuth();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,26 +64,28 @@ export default function Header() {
           </Link>
 
           {/* Botão Menu 3 pontos */}
-          <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
-            <DrawerTrigger asChild>
+          <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+            <PopoverTrigger asChild>
               <button
                 className="flex h-10 w-10 items-center justify-center rounded-md transition hover:bg-beach-50"
                 aria-label="Menu"
               >
-                <EllipsisVertical className="h-6 w-6 text-beach-DEFAULT" />
+                <EllipsisVertical className="h-6 w-6 text-[#FF6600]" />
               </button>
-            </DrawerTrigger>
-            <DrawerContent className="max-w-[340px] mx-auto">
-              <DrawerHeader>
-                <DrawerTitle>Menu</DrawerTitle>
-              </DrawerHeader>
-              <nav className="flex flex-col gap-2 px-4 pb-4">
+            </PopoverTrigger>
+            <PopoverContent 
+              className="w-[300px] p-0 border rounded-md" 
+              align="start"
+              side="bottom"
+              sideOffset={5}
+            >
+              <nav className="flex flex-col gap-0.5 py-2">
                 {menuLinks.map((link) =>
                   link.to === "#logout" ? (
                     <button
                       key={link.label}
                       onClick={() => {
-                        setDrawerOpen(false);
+                        setIsMenuOpen(false);
                         logout();
                       }}
                       className="text-left w-full px-4 py-2 rounded hover:bg-destructive/10 text-destructive font-medium"
@@ -95,16 +96,16 @@ export default function Header() {
                     <Link
                       key={link.to}
                       to={link.to}
-                      onClick={() => setDrawerOpen(false)}
-                      className={`block px-4 py-2 rounded hover:bg-accent/80 text-foreground ${link.danger ? "text-destructive" : ""}`}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={`block px-4 py-2 rounded hover:bg-accent text-foreground ${link.danger ? "text-destructive" : ""}`}
                     >
                       {link.label}
                     </Link>
                   )
                 )}
               </nav>
-            </DrawerContent>
-          </Drawer>
+            </PopoverContent>
+          </Popover>
         </div>
         
         <form
