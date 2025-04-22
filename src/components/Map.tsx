@@ -1,5 +1,7 @@
 
 import React, { useEffect, useRef } from "react";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 type Pin = {
   latitude: number;
@@ -14,43 +16,47 @@ type MapProps = {
   zoom?: number;
 };
 
-// Vamos utilizar OpenStreetMap via iframe simples para evitar dependências e tokens
-// O iframe monta a URL com a latitude e longitude e zoom.
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || ""; // Espera variável no .env
 
 const Map: React.FC<MapProps> = ({
   pins,
   height = "300px",
-  initialCenter = [-24.01556, -46.41322],
+  initialCenter = [-46.41322, -24.01556], // Praia Grande SP aprox.
   zoom = 13,
 }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
+  const mapContainer = useRef<HTMLDivElement>(null);
 
-  // Para simplificar, mostramos na URL do iframe o centro e o zoom.
-  // Indicamos todos os pins no mapa usando marcadores.
-  // OpenStreetMap não oferece múltiplos marcadores via URL nativo, então vamos marcar só o primeiro pin se houver.
+  useEffect(() => {
+    if (!mapContainer.current || !MAPBOX_TOKEN) return;
 
-  const center = pins.length > 0
-    ? [pins[0].latitude, pins[0].longitude]
-    : initialCenter;
+    mapboxgl.accessToken = MAPBOX_TOKEN;
+    const map = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: initialCenter,
+      zoom: zoom,
+      attributionControl: false,
+    });
 
-  // Construir a URL do mapa OSM com centro e zoom
-  const osmUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${center[1] - 0.05}%2C${center[0] - 0.05}%2C${center[1] + 0.05}%2C${center[0] + 0.05}&layer=mapnik&marker=${center[0]}%2C${center[1]}`;
+    // Adiciona os pins
+    pins.forEach((pin) => {
+      new mapboxgl.Marker()
+        .setLngLat([pin.longitude, pin.latitude])
+        .setPopup(new mapboxgl.Popup({ offset: 25 }).setText(pin.title))
+        .addTo(map);
+    });
+
+    return () => map.remove();
+  }, [pins]);
 
   return (
-    <div
-      className="relative w-full rounded-lg shadow"
-      style={{ height }}
-      ref={mapRef}
-    >
-      <iframe
-        title="Mapa OpenStreetMap"
-        width="100%"
-        height="100%"
-        frameBorder="0"
-        scrolling="no"
-        src={osmUrl}
-        style={{ borderRadius: "0.5rem" }}
-      ></iframe>
+    <div className="relative w-full" style={{ height }}>
+      {!MAPBOX_TOKEN && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80">
+          <span className="text-red-600 text-sm">Insira sua VITE_MAPBOX_TOKEN no .env para visualizar o mapa.</span>
+        </div>
+      )}
+      <div ref={mapContainer} className="w-full h-full rounded-lg shadow" />
     </div>
   );
 };

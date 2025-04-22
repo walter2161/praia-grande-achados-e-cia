@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,12 +8,11 @@ import { Search } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import { 
+  allListings, 
   autoListings, 
   jobListings, 
   realEstateListings, 
   serviceListings,
-  barRestaurantListings,
-  itemListings,
   categories 
 } from "@/data/mockData";
 import { useSearchParams } from "react-router-dom";
@@ -34,16 +34,6 @@ const AllListings = () => {
     }
     setSearchParams(searchParams);
   }, [searchQuery, setSearchParams]);
-  
-  // Combine all listings for the "all" tab
-  const allListings = [
-    ...autoListings,
-    ...jobListings,
-    ...realEstateListings,
-    ...serviceListings,
-    ...barRestaurantListings,
-    ...itemListings
-  ];
   
   // Filter listings based on search query
   const filterListings = (listings) => {
@@ -208,26 +198,6 @@ const AllListings = () => {
             ) : (
               <div className="text-center py-8">
                 <p className="text-lg">Nenhum anúncio de serviços encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="bares-restaurantes">
-            {processListings(barRestaurantListings).length > 0 ? (
-              <ListingGrid listings={processListings(barRestaurantListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio de bares e restaurantes encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="itens">
-            {processListings(itemListings).length > 0 ? (
-              <ListingGrid listings={processListings(itemListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio de itens encontrado com os termos de busca.</p>
               </div>
             )}
           </TabsContent>

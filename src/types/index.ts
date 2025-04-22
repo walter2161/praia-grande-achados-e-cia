@@ -1,3 +1,4 @@
+
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -47,11 +48,6 @@ export type JobListing = {
   subcategory?: string;
 };
 
-export type RealEstateSubSubcategory = "Usado" | "Novo" | "Lançamento";
-export type RealEstateSubcategoryType = "Casa" | "Apartamento" | "Terreno";
-export type RealEstateNegotiationType = "Venda" | "Locação" | "Troca";
-
-// Updated RealEstateListing
 export type RealEstateListing = {
   id: string;
   title: string;
@@ -63,9 +59,7 @@ export type RealEstateListing = {
   sellerName: string;
   sellerContact: string;
   category: "imoveis";
-  negotiationType: RealEstateNegotiationType;
-  propertyType: RealEstateSubcategoryType;
-  usageType: RealEstateSubSubcategory;
+  propertyType: string;
   size: number;
   bedrooms: number;
   bathrooms: number;
@@ -124,3 +118,4 @@ export type ItemListing = {
 };
 
 export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing | BarRestaurantListing | ItemListing;
+

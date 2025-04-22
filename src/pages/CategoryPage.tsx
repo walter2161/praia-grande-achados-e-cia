@@ -1,28 +1,28 @@
+
 import { useEffect } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import Map from "@/components/Map";
-import {
-  categories,
-  autoListings,
-  jobListings,
-  realEstateListings,
+import { 
+  categories, 
+  autoListings, 
+  jobListings, 
+  realEstateListings, 
   serviceListings,
-  barRestaurantListings,
-  itemListings,
+  baresRestaurantesListings, 
+  itensListings 
 } from "@/data/mockData";
-import { Category, Listing, BarRestaurantListing, AutoListing, JobListing, RealEstateListing, ServiceListing, ItemListing } from "@/types";
+import { Category, Listing, BarRestaurantListing } from "@/types";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const [search] = useSearchParams();
-  const category = categories.find((cat) => cat.slug === slug) as Category | undefined;
-
+  const category = categories.find(cat => cat.slug === slug) as Category;
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
-
+  
   if (!category) {
     return (
       <MainLayout>
@@ -36,43 +36,28 @@ const CategoryPage = () => {
   const getCategoryListings = (): Listing[] => {
     switch (category.slug) {
       case "autos":
-        // Forçar el tipo category específico em cada listagem
-        return autoListings.map((l) => ({ ...l, category: "autos" } as AutoListing));
+        return autoListings;
       case "empregos":
-        return jobListings.map((l) => ({ ...l, category: "empregos" } as JobListing));
+        return jobListings;
       case "imoveis":
-        // Filter using query params for hierarchical filtering, if provided
-        const tipo = search.get("tipo");
-        const imovel = search.get("imovel");
-        const estado = search.get("estado");
-        let filtered = realEstateListings.map((l) => ({ ...l, category: "imoveis" } as RealEstateListing));
-        if (tipo)
-          filtered = filtered.filter((l) => l.negotiationType === tipo);
-        if (imovel)
-          filtered = filtered.filter((l) => l.propertyType === imovel);
-        if (estado)
-          filtered = filtered.filter((l) => l.usageType === estado);
-        return filtered;
+        return realEstateListings;
       case "servicos":
-        return serviceListings.map((l) => ({ ...l, category: "servicos" } as ServiceListing));
+        return serviceListings;
       case "bares-restaurantes":
-        return barRestaurantListings.map((l) => ({ ...l, category: "bares-restaurantes" } as BarRestaurantListing));
+        return baresRestaurantesListings;
       case "itens":
-        return itemListings.map((l) => ({ ...l, category: "itens" } as ItemListing));
+        return itensListings;
       default:
         return [];
     }
   };
-
+  
   const listings = getCategoryListings();
 
-  // Only show map for bares e restaurantes
+  // Se bares-restaurantes, extrair pins para o mapa
   let mapSection = null;
-  if (
-    category.slug === "bares-restaurantes" &&
-    barRestaurantListings.length > 0
-  ) {
-    const pins = barRestaurantListings.map((b) => ({
+  if (category.slug === "bares-restaurantes" && baresRestaurantesListings.length > 0) {
+    const pins = baresRestaurantesListings.map((b: BarRestaurantListing) => ({
       latitude: b.latitude,
       longitude: b.longitude,
       title: b.title,
@@ -84,7 +69,7 @@ const CategoryPage = () => {
       </div>
     );
   }
-
+  
   return (
     <MainLayout>
       <div className="container py-12">
@@ -92,13 +77,13 @@ const CategoryPage = () => {
           <category.icon className="h-10 w-10 text-beach-600" />
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
+        
         {mapSection}
+        
         {listings.length > 0 ? (
           <ListingGrid listings={listings} />
         ) : (
-          <p className="text-muted-foreground">
-            Nenhum anúncio encontrado nesta categoria.
-          </p>
+          <p className="text-muted-foreground">Nenhum anúncio encontrado nesta categoria.</p>
         )}
       </div>
     </MainLayout>

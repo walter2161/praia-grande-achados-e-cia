@@ -8,15 +8,7 @@ import { Input } from "@/components/ui/input";
 import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
-import { 
-  autoListings, 
-  jobListings, 
-  realEstateListings, 
-  serviceListings, 
-  barRestaurantListings, 
-  itemListings, 
-  categories 
-} from "@/data/mockData";
+import { allListings, categories, baresRestaurantesListings, itensListings } from "@/data/mockData";
 import { getRandomBannerImage } from "@/lib/heroImages";
 
 const Index = () => {
@@ -28,12 +20,9 @@ const Index = () => {
 
   // Get the 8 most recent listings
   const recentListings = [
-    ...autoListings,
-    ...jobListings,
-    ...realEstateListings,
-    ...serviceListings,
-    ...barRestaurantListings,
-    ...itemListings,
+    ...allListings,
+    ...baresRestaurantesListings,
+    ...itensListings,
   ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 8);
@@ -156,3 +145,4 @@ const Index = () => {
 };
 
 export default Index;
+
