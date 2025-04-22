@@ -16,7 +16,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     sellerName: "Quiosque Beira Mar",
     sellerContact: "(13) 3333-2222",
     category: "bares-restaurantes",
-    subcategory: "bar"
+    subcategory: "Quiosque"
   },
   {
     id: "bar2",
@@ -32,7 +32,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     sellerName: "Bar do Léo",
     sellerContact: "(13) 99800-5522",
     category: "bares-restaurantes",
-    subcategory: "bar"
+    subcategory: "Bar"
   },
   {
     id: "rest1",
@@ -48,7 +48,54 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     sellerName: "Restaurante Terraço",
     sellerContact: "(13) 98765-3333",
     category: "bares-restaurantes",
-    subcategory: "restaurante"
-  }
-  // ... adicione mais bares/restaurantes conforme necessário
+    subcategory: "Restaurante"
+  },
+  {
+    id: "cafe1",
+    title: "Café da Praça",
+    price: "Cafés gourmet a partir de R$ 8",
+    description: "Ambiente aconchegante para um café da manhã ou da tarde especial.",
+    images: ["/placeholder.svg"],
+    location: "Centro, Praia Grande",
+    address: "Praça da Paz, 56 - Centro, Praia Grande - SP, 11700-160",
+    latitude: -24.008145,
+    longitude: -46.399705,
+    date: "2023-04-21",
+    sellerName: "Café da Praça",
+    sellerContact: "(13) 90001-2323",
+    category: "bares-restaurantes",
+    subcategory: "Café"
+  },
+  {
+    id: "pizzaria1",
+    title: "Pizzaria Bella Itália",
+    price: "Rodízio a partir de R$ 39",
+    description: "Pizzas artesanais, ambiente familiar e delivery rápido até 23h.",
+    images: ["/placeholder.svg"],
+    location: "Guilhermina, Praia Grande",
+    address: "Av. Guilhermina, 1820 - Guilhermina, Praia Grande - SP, 11701-370",
+    latitude: -24.002478,
+    longitude: -46.410123,
+    date: "2023-04-23",
+    sellerName: "Pizzaria Bella Itália",
+    sellerContact: "(13) 90009-4040",
+    category: "bares-restaurantes",
+    subcategory: "Pizzaria"
+  },
+  {
+    id: "sushi1",
+    title: "Sushi House",
+    price: "Combinados a partir de R$ 49",
+    description: "Sushis frescos, combos promocionais, delivery eficiente.",
+    images: ["/placeholder.svg"],
+    location: "Tupi, Praia Grande",
+    address: "Rua Japão, 120 - Tupi, Praia Grande - SP, 11701-180",
+    latitude: -24.007700,
+    longitude: -46.405022,
+    date: "2023-04-27",
+    sellerName: "Sushi House",
+    sellerContact: "(13) 94567-3223",
+    category: "bares-restaurantes",
+    subcategory: "Sushi Bar"
+  },
 ];
