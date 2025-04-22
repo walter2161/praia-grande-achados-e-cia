@@ -171,6 +171,88 @@ const CreateListing = () => {
     </>
   );
   
+const realEstateNegotiationTypes = ["Venda", "Locação", "Troca"] as const;
+const realEstatePropertyTypes = ["Casa", "Apartamento", "Terreno"] as const;
+const realEstateUsageTypes = ["Usado", "Novo", "Lançamento"] as const;
+
+const renderRealEstateForm = () => {
+  const [negotiationType, setNegotiationType] = useState<typeof realEstateNegotiationTypes[number]>("Venda");
+  const [propertyType, setPropertyType] = useState<typeof realEstatePropertyTypes[number]>("Apartamento");
+  const [usageType, setUsageType] = useState<typeof realEstateUsageTypes[number]>("Usado");
+  // Use local states for these selectors instead of hidden fields
+
+  return (
+    <>
+      {renderSubcategorySelector()}
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="negotiationType">Negociação</Label>
+            <Select value={negotiationType} onValueChange={setNegotiationType}>
+              <SelectTrigger id="negotiationType">
+                <SelectValue placeholder="Selecione o tipo" />
+              </SelectTrigger>
+              <SelectContent>
+                {realEstateNegotiationTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="propertyType">Tipo de imóvel</Label>
+            <Select value={propertyType} onValueChange={setPropertyType}>
+              <SelectTrigger id="propertyType">
+                <SelectValue placeholder="Selecione o tipo de imóvel" />
+              </SelectTrigger>
+              <SelectContent>
+                {realEstatePropertyTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="usageType">Conservação</Label>
+            <Select value={usageType} onValueChange={setUsageType}>
+              <SelectTrigger id="usageType">
+                <SelectValue placeholder="Selecione o estado" />
+              </SelectTrigger>
+              <SelectContent>
+                {realEstateUsageTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="space-y-2">
+            <Label htmlFor="size">Área (m²)</Label>
+            <Input id="size" type="number" placeholder="Ex: 70" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bedrooms">Dormitórios</Label>
+            <Input id="bedrooms" type="number" placeholder="Ex: 2" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bathrooms">Banheiros</Label>
+            <Input id="bathrooms" type="number" placeholder="Ex: 1" />
+          </div>
+        </div>
+        <div className="flex items-center space-x-2">
+          <Switch id="hasGarage" />
+          <Label htmlFor="hasGarage">Possui vaga de garagem</Label>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="amenities">Comodidades (separadas por vírgula)</Label>
+          <Textarea id="amenities" placeholder="Ex: Piscina, Salão de Festas, Portaria 24h" />
+        </div>
+      </div>
+    </>
+  );
+};
+  
   const renderRealEstateForm = () => (
     <>
       {renderSubcategorySelector()}
