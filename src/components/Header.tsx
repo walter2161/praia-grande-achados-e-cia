@@ -26,8 +26,8 @@ export default function Header() {
             <img 
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
               alt="Logo GuíaPG"
-              className="w-[300px] h-auto object-contain p-2"
-              style={{ maxWidth: 300, margin: 8 }}
+              className="h-[calc(100%-16px)] max-h-14 w-auto object-contain"
+              style={{ maxWidth: 300 }}
             />
           </Link>
         </div>
