@@ -29,11 +29,11 @@ const WhatsAppContact: React.FC<WhatsAppContactProps> = ({
 
   return (
     <div>
-      <div className="flex items-center gap-2">
-        <span className="text-muted-foreground">
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
           <MessageCircle className="inline-block mr-1 h-4 w-4 text-green-600" />
-          WhatsApp:
-        </span>
+          <span className="text-muted-foreground font-medium">WhatsApp</span>
+        </div>
         {isAuthenticated() ? (
           <a
             href={whatsappUrl}
