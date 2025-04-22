@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { icons } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 
 type WhatsAppContactProps = {
   rawPhone?: string;
@@ -18,7 +18,6 @@ const WhatsAppContact: React.FC<WhatsAppContactProps> = ({
   listingTitle = "",
 }) => {
   const { isAuthenticated } = useAuth();
-  const WhatsappIcon = icons["whatsapp"];
 
   if (!rawPhone) return null;
 
@@ -32,7 +31,7 @@ const WhatsAppContact: React.FC<WhatsAppContactProps> = ({
     <div>
       <div className="flex items-center gap-2">
         <span className="text-muted-foreground">
-          <WhatsappIcon className="inline-block mr-1 h-4 w-4 text-green-600" />
+          <MessageCircle className="inline-block mr-1 h-4 w-4 text-green-600" />
           WhatsApp:
         </span>
         {isAuthenticated() ? (
