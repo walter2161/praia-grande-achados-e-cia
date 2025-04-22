@@ -315,18 +315,6 @@ const ListingDetail = () => {
 
               {/* WHATSAPP CONTACTO VISÍVEL PARA TODOS */}
               <WhatsAppContact rawPhone={contactInfo} listingTitle={listing.title} />
-
-              <div className="space-y-3 mt-4">
-                {/* Mantém os botões de telefone/email gerais */}
-                <Button className="w-full gap-2 bg-beach-600 hover:bg-beach-700">
-                  <Phone className="h-4 w-4" />
-                  {contactInfo.includes('@') ? "Enviar mensagem" : "Ligar"}
-                </Button>
-                <Button className="w-full gap-2" variant="outline">
-                  <Mail className="h-4 w-4" />
-                  Enviar e-mail
-                </Button>
-              </div>
             </div>
             
             <div className="bg-beach-50 p-6 rounded-lg">
