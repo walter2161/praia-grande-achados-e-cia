@@ -13,7 +13,7 @@ import {
   baresRestaurantesListings,
   itensListings
 } from "@/data/mockData";
-import { Category, Listing, BarRestaurantListing } from "@/types";
+import { Category, Listing, BarRestaurantListing, RealEstateListing } from "@/types";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
@@ -44,16 +44,30 @@ const listingsMap: Record<string, { listings: Listing[]; subcategories: string[]
   },
 };
 
+const finalidadeOptions = [
+  { value: "todas", label: "Todas" },
+  { value: "Locação", label: "Locação" },
+  { value: "Venda", label: "Venda" },
+  { value: "Troca", label: "Troca" }
+];
+
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedSubcategory = searchParams.get("subcategoria") ?? "todas";
+  // Novo estado para o filtro de finalidade
+  const finalidadeFromParams = searchParams.get("finalidade") ?? "todas";
+  const [finalidade, setFinalidade] = useState<string>(finalidadeFromParams);
 
   const category = categories.find(cat => cat.slug === slug) as Category;
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
+
+  useEffect(() => {
+    setFinalidade(finalidadeFromParams);
+  }, [finalidadeFromParams, slug]);
 
   if (!category) {
     return (
@@ -67,10 +81,49 @@ const CategoryPage = () => {
 
   const { listings, subcategories } = listingsMap[category.slug] || { listings: [], subcategories: [] };
 
+  const handleChangeFiltro = (val: string) => {
+    if (val === "todas") {
+      searchParams.delete("subcategoria");
+      setSearchParams(searchParams);
+    } else {
+      searchParams.set("subcategoria", val);
+      setSearchParams(searchParams);
+    }
+  };
+
+  // Novo handler para filtro de finalidade
+  const handleChangeFinalidade = (val: string) => {
+    setFinalidade(val);
+    if (val === "todas") {
+      searchParams.delete("finalidade");
+      setSearchParams(searchParams);
+    } else {
+      searchParams.set("finalidade", val);
+      setSearchParams(searchParams);
+    }
+  };
+
   const filteredListings = useMemo(() => {
-    if (selectedSubcategory === "todas") return listings;
-    return listings.filter(listing => listing.subcategory === selectedSubcategory);
-  }, [listings, selectedSubcategory]);
+    let filtered = listings;
+    if (selectedSubcategory !== "todas") {
+      filtered = filtered.filter(listing => listing.subcategory === selectedSubcategory);
+    }
+    // Aplica somente para imóveis
+    if (category.slug === "imoveis" && finalidade !== "todas") {
+      filtered = filtered.filter(listing => {
+        // A suposição é que o campo propertyType é usado para diferenciar finalidade.
+        // Caso seu mockData use outro nome/tipo para finalidade, ajuste abaixo:
+        const realListing = listing as RealEstateListing;
+        // Garante que busca é case in-sensitive
+        return (
+          String(realListing.propertyType ?? "")
+            .toLowerCase()
+            .includes(finalidade.toLowerCase())
+        );
+      });
+    }
+    return filtered;
+  }, [listings, selectedSubcategory, category.slug, finalidade]);
 
   let mapSection = null;
   if (category.slug === "bares-restaurantes" && baresRestaurantesListings.length > 0) {
@@ -87,17 +140,6 @@ const CategoryPage = () => {
     );
   }
 
-  // Filtros de subcategoria no topo
-  const handleChangeFiltro = (val: string) => {
-    if (val === "todas") {
-      searchParams.delete("subcategoria");
-      setSearchParams(searchParams);
-    } else {
-      searchParams.set("subcategoria", val);
-      setSearchParams(searchParams);
-    }
-  };
-
   return (
     <MainLayout>
       <div className="container py-12">
@@ -105,6 +147,34 @@ const CategoryPage = () => {
           <category.icon className="h-10 w-10 text-beach-600" />
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
+
+        {/* FILTRO DE FINALIDADE (somente imóveis) */}
+        {category.slug === "imoveis" && (
+          <div className="mb-6 flex flex-wrap gap-4">
+            <RadioGroup
+              value={finalidade}
+              onValueChange={handleChangeFinalidade}
+              className="flex flex-wrap gap-4"
+            >
+              {finalidadeOptions.map(opt => (
+                <div key={opt.value}>
+                  <RadioGroupItem
+                    value={opt.value}
+                    id={`finalidade-${opt.value}`}
+                    className="peer sr-only"
+                  />
+                  <label
+                    htmlFor={`finalidade-${opt.value}`}
+                    className={`cursor-pointer px-4 py-1.5 rounded border border-muted-foreground transition
+                      ${finalidade === opt.value ? "bg-[#F97316]/90 text-white border-[#F97316]" : "hover:bg-muted"}`}
+                  >
+                    {opt.label}
+                  </label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        )}
 
         {/* Filtro de subcategorias */}
         <div className="mb-8">
