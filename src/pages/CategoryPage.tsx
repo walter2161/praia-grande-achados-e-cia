@@ -72,7 +72,7 @@ const CategoryPage = () => {
     category.slug === "bares-restaurantes" &&
     barRestaurantListings.length > 0
   ) {
-    const pins = barRestaurantListings.map((b: BarRestaurantListing) => ({
+    const pins = (barRestaurantListings as BarRestaurantListing[]).map((b) => ({
       latitude: b.latitude,
       longitude: b.longitude,
       title: b.title,
