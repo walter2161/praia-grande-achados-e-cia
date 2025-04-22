@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -106,7 +105,11 @@ const Index = () => {
           {/* Grade responsiva: 3 colunas por linha */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {categories.slice(0, 6).map((category) => (
-              <CategoryCard key={category.id} category={category} />
+              <CategoryCard 
+                key={category.id} 
+                category={category} 
+                showSubcategoriesButton={false} // não mostrar subcategorias aqui!
+              />
             ))}
           </div>
         </div>
@@ -145,4 +148,3 @@ const Index = () => {
 };
 
 export default Index;
-

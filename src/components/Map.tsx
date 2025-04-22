@@ -1,7 +1,5 @@
 
-import React, { useEffect, useRef } from "react";
-import mapboxgl from "mapbox-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import React from "react";
 
 type Pin = {
   latitude: number;
@@ -16,47 +14,48 @@ type MapProps = {
   zoom?: number;
 };
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN || ""; // Espera variável no .env
+// Gera um src para o iframe do Google Maps focado no marcador principal
+function generateGoogleMapsEmbedSrc({
+  latitude,
+  longitude,
+  zoom = 15,
+  title = '',
+}: { latitude: number; longitude: number; zoom?: number; title?: string }) {
+  // Embed padrão, funciona sem API key para view estática
+  return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
+}
 
 const Map: React.FC<MapProps> = ({
   pins,
   height = "300px",
-  initialCenter = [-46.41322, -24.01556], // Praia Grande SP aprox.
-  zoom = 13,
+  initialCenter,
+  zoom = 15,
 }) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!mapContainer.current || !MAPBOX_TOKEN) return;
-
-    mapboxgl.accessToken = MAPBOX_TOKEN;
-    const map = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: initialCenter,
-      zoom: zoom,
-      attributionControl: false,
-    });
-
-    // Adiciona os pins
-    pins.forEach((pin) => {
-      new mapboxgl.Marker()
-        .setLngLat([pin.longitude, pin.latitude])
-        .setPopup(new mapboxgl.Popup({ offset: 25 }).setText(pin.title))
-        .addTo(map);
-    });
-
-    return () => map.remove();
-  }, [pins]);
+  // Usa o primeiro pin como central do mapa
+  const centerPin =
+    pins && pins.length > 0
+      ? pins[0]
+      : { latitude: -24.01556, longitude: -46.41322, title: "" };
+  const mapSrc = generateGoogleMapsEmbedSrc({
+    latitude: centerPin.latitude,
+    longitude: centerPin.longitude,
+    zoom,
+    title: centerPin.title,
+  });
 
   return (
-    <div className="relative w-full" style={{ height }}>
-      {!MAPBOX_TOKEN && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80">
-          <span className="text-red-600 text-sm">Insira sua VITE_MAPBOX_TOKEN no .env para visualizar o mapa.</span>
-        </div>
-      )}
-      <div ref={mapContainer} className="w-full h-full rounded-lg shadow" />
+    <div className="relative w-full rounded-lg shadow" style={{ height }}>
+      <iframe
+        title={centerPin.title || "Mapa"}
+        src={mapSrc}
+        width="100%"
+        height="100%"
+        className="rounded-lg border-0"
+        loading="lazy"
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+        style={{ minHeight: height, border: 0 }}
+      />
     </div>
   );
 };
