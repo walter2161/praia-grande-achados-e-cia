@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -6,6 +5,7 @@ export type Category = {
   name: string;
   icon: LucideIcon;
   slug: string;
+  subcategories?: string[];
 };
 
 export type AutoListing = {
