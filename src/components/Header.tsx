@@ -114,7 +114,7 @@ export default function Header() {
           {/* Barra de busca */}
           <form
             onSubmit={handleSearch}
-            className="hidden md:flex relative w-1/3"
+            className="hidden md:flex relative w-[200px]"  // Updated width to 200px
           >
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
