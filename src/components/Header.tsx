@@ -2,12 +2,21 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut } from "lucide-react";
 import { Input } from "./ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuSeparator, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const { user, logout, isAdmin, isAuthenticated } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,9 +64,39 @@ export default function Header() {
           <Button size="icon" variant="ghost">
             <Bell className="h-5 w-5" />
           </Button>
-          <Button size="icon" variant="ghost">
-            <User className="h-5 w-5" />
-          </Button>
+          
+          {isAuthenticated() ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="icon" variant="ghost">
+                  <User className="h-5 w-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <div className="px-2 py-1.5 text-sm font-medium">
+                  {user?.username}
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/perfil">Meu Perfil</Link>
+                </DropdownMenuItem>
+                {isAdmin() && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin">Painel Admin</Link>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout} className="text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sair
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link to="/login">
+              <Button variant="outline">Entrar</Button>
+            </Link>
+          )}
         </div>
       </div>
     </header>
