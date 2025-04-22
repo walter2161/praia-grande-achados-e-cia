@@ -96,13 +96,13 @@ export default function Header() {
             </DrawerContent>
           </Drawer>
 
-          {/* Logo com margem à esquerda */}
+          {/* Logo com tamanho aumentado */}
           <Link to="/" className="flex items-center ml-2">
             <img
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
               alt="Logo GuíaPG"
-              className="h-7 max-h-7 w-auto object-contain"
-              style={{ maxWidth: 140 }}
+              className="h-10 max-h-10 w-auto object-contain"
+              style={{ maxWidth: 180 }}
             />
           </Link>
         </div>

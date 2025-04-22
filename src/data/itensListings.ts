@@ -12,7 +12,8 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-20",
     sellerName: "Mariana Souza",
     sellerContact: "(13) 98654-3210",
-    category: "itens"
-  }
+    category: "itens",
+    subcategory: "móveis"
+  },
   // ... adicione mais itens conforme necessário
 ];
