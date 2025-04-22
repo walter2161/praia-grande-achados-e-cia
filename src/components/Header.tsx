@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -50,7 +49,19 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center justify-between px-4 sm:px-4 relative">
-        <div className="flex items-center gap-2" style={{ flex: 1 }}>
+        <div className="flex items-center gap-2">
+          {/* Logo */}
+          <Link to="/" className="flex items-center ml-2">
+            <img
+              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
+              alt="Logo GuíaPG"
+              className="h-10 max-h-10 w-auto object-contain"
+              style={{ maxWidth: 180 }}
+            />
+          </Link>
+        </div>
+
+        <div className="flex items-center" style={{ marginRight: 10 }}>
           {/* Menu Hamburguer (Categorias c/ Subcategorias) */}
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
@@ -59,7 +70,7 @@ export default function Header() {
                 style={{ background: "none", border: "none", marginRight: 10 }}
                 aria-label="Categorias"
               >
-                <Menu className="h-7 w-7 text-[#F97316]" />
+                <Menu className="h-7 w-7 text-[#F97316]" /> {/* Using Menu icon instead of Hamburger */}
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -100,23 +111,10 @@ export default function Header() {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
-          {/* Logo */}
-          <Link to="/" className="flex items-center ml-2">
-            <img
-              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
-              alt="Logo GuíaPG"
-              className="h-10 max-h-10 w-auto object-contain"
-              style={{ maxWidth: 180 }}
-            />
-          </Link>
-        </div>
-
-        <div className="flex items-center" style={{ marginLeft: 10, marginRight: 10, flex: 2 }}>
           {/* Barra de busca */}
           <form
             onSubmit={handleSearch}
-            className="hidden md:flex relative w-full"
-            style={{ flexGrow: 1 }}
+            className="hidden md:flex relative w-1/3"
           >
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input

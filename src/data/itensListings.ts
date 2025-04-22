@@ -12,7 +12,6 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-20",
     sellerName: "Mariana Souza",
     sellerContact: "(13) 98654-3210",
-    whatsappContact: "(13) 9 ****-****",
     category: "itens",
     subcategory: "Móveis"
   },
@@ -26,7 +25,6 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-22",
     sellerName: "Eduardo F.",
     sellerContact: "(13) 98123-4321",
-    whatsappContact: "(13) 9 ****-****",
     category: "itens",
     subcategory: "Esporte e Lazer"
   },
@@ -40,7 +38,6 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-21",
     sellerName: "Rita Moreira",
     sellerContact: "(13) 99856-7777",
-    whatsappContact: "(13) 9 ****-****",
     category: "itens",
     subcategory: "Eletrodomésticos"
   },
@@ -54,7 +51,6 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-19",
     sellerName: "Lucas Campos",
     sellerContact: "(13) 97777-8877",
-    whatsappContact: "(13) 9 ****-****",
     category: "itens",
     subcategory: "Games"
   },
@@ -68,7 +64,6 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-18",
     sellerName: "Dona Cida Artesanato",
     sellerContact: "(13) 90098-1212",
-    whatsappContact: "(13) 9 ****-****",
     category: "itens",
     subcategory: "Decoração"
   },
@@ -82,7 +77,6 @@ export const itensListings: ItemListing[] = [
     date: "2023-04-23",
     sellerName: "Vinicius Toledo",
     sellerContact: "(13) 90905-4343",
-    whatsappContact: "(13) 9 ****-****",
     category: "itens",
     subcategory: "Informática"
   },

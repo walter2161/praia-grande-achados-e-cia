@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -19,7 +18,6 @@ export type AutoListing = {
   date: string;
   sellerName: string;
   sellerContact: string;
-  whatsappContact?: string;
   category: "autos";
   brand: string;
   model: string;
@@ -29,7 +27,6 @@ export type AutoListing = {
   transmission: string;
   color: string;
   subcategory?: string;
-  finalidade?: string;
 };
 
 export type JobListing = {
@@ -42,7 +39,6 @@ export type JobListing = {
   date: string;
   companyName: string;
   companyContact: string;
-  whatsappContact?: string;
   category: "empregos";
   jobType: string;
   education: string;
@@ -61,7 +57,6 @@ export type RealEstateListing = {
   date: string;
   sellerName: string;
   sellerContact: string;
-  whatsappContact?: string;
   category: "imoveis";
   propertyType: string;
   size: number;
@@ -70,7 +65,7 @@ export type RealEstateListing = {
   hasGarage: boolean;
   amenities: string[];
   subcategory?: string;
-  finalidade?: string;
+  finalidade?: string; // Adding the finalidade property
 };
 
 export type ServiceListing = {
@@ -83,7 +78,6 @@ export type ServiceListing = {
   date: string;
   providerName: string;
   providerContact: string;
-  whatsappContact?: string;
   category: "servicos";
   serviceType: string;
   availability: string;
@@ -99,13 +93,12 @@ export type BarRestaurantListing = {
   description: string;
   images: string[];
   location: string;
-  address: string;
-  latitude: number;
-  longitude: number;
+  address: string; // NOVO: campo de endereço
+  latitude: number; // NOVO: coordenada para o mapa
+  longitude: number; // NOVO: coordenada para o mapa
   date: string;
   sellerName: string;
   sellerContact: string;
-  whatsappContact?: string;
   category: "bares-restaurantes";
   subcategory: string;
 };
@@ -120,7 +113,6 @@ export type ItemListing = {
   date: string;
   sellerName: string;
   sellerContact: string;
-  whatsappContact?: string;
   category: "itens";
   subcategory: string;
 };

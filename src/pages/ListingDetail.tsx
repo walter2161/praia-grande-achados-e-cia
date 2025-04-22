@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { 
@@ -11,15 +11,13 @@ import {
   Car,
   Briefcase,
   House,
-  Settings,
-  Whatsapp
+  Settings
 } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import Map from "@/components/Map";
 import { allListings, categories } from "@/data/mockData";
 import { formatDistanceToNow, parseISO, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { useAuth } from "@/contexts/AuthContext";
 
 const getCategoryIcon = (categorySlug: string) => {
   switch (categorySlug) {
@@ -46,21 +44,10 @@ const formatPrice = (price: number | string) => {
   return price;
 };
 
-// Utilitário para mascarar um número (fornecido)
-const maskWhatsapp = (number?: string) => {
-  if (!number) return "";
-  // Exemplo: (13) 9 1234-5678 => (13) 9 ****-****
-  const match = number.match(/\((\d{2})\)\s?9?\s?(\d{4})-?(\d{4})/);
-  if (match) return `(${match[1]}) 9 ****-****`;
-  return number.replace(/\d{4,}/g, "****");
-};
-
 const ListingDetail = () => {
   const { categorySlug, id } = useParams<{ categorySlug: string; id: string }>();
   const listing = allListings.find(item => item.id === id && item.category === categorySlug);
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
@@ -96,33 +83,18 @@ const ListingDetail = () => {
   // Determine which contact info to show based on listing type
   let contactName = "";
   let contactInfo = "";
-  let whatsappContact = listing.whatsappContact; // novo campo
-
+  
   if ("sellerName" in listing) {
     contactName = listing.sellerName;
     contactInfo = listing.sellerContact;
-    // Caso não tenha whatsappContact, mascara o sellerContact
-    if (!whatsappContact && contactInfo) whatsappContact = maskWhatsapp(contactInfo);
   } else if ("companyName" in listing) {
     contactName = listing.companyName;
     contactInfo = listing.companyContact;
-    if (!whatsappContact && contactInfo) whatsappContact = maskWhatsapp(contactInfo);
   } else if ("providerName" in listing) {
     contactName = listing.providerName;
     contactInfo = listing.providerContact;
-    if (!whatsappContact && contactInfo) whatsappContact = maskWhatsapp(contactInfo);
   }
-
-  // Obter número limpo para URL do WhatsApp (só se autenticado)
-  let whatsappNumber = "";
-  if (isAuthenticated()) {
-    // Pegar o número real do campo de contato, tirar espaços/dígitos extras
-    const contactRaw = contactInfo.replace(/[^\d]/g, "");
-    if (contactRaw.length >= 10) {
-      whatsappNumber = `55${contactRaw}`;
-    }
-  }
-
+  
   // Determine which price to display based on listing type
   let displayPrice;
   let priceLabel = "Preço:";
@@ -328,55 +300,31 @@ const ListingDetail = () => {
               )}
             </div>
           </div>
+          
           {/* Right column - Sidebar */}
           <div className="space-y-6">
             <div className="bg-white p-6 rounded-lg border shadow-sm">
               <p className="text-lg mb-2">{priceLabel}</p>
               <p className="text-3xl font-bold text-beach-700 mb-4">{displayPrice}</p>
+              
               <Separator className="my-4" />
-              {/* Contato WhatsApp */}
-              <p className="font-medium mb-2 flex items-center gap-2">WhatsApp:</p>
-              {isAuthenticated() ? (
-                <>
-                  <a
-                    href={`https://wa.me/${whatsappNumber}?text=Olá!%20Vi%20seu%20anúncio%20no%20GuiaPG:%20${encodeURIComponent(listing.title)}.`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 font-semibold text-green-700 hover:underline"
-                  >
-                    <Whatsapp className="h-4 w-4" />
-                    {contactInfo}
-                  </a>
-                  <p className="text-xs text-muted-foreground mt-1">Clique para conversar diretamente no WhatsApp.</p>
-                </>
-              ) : (
-                <>
-                  <span className="inline-flex items-center gap-2 font-semibold text-muted-foreground">
-                    <Whatsapp className="h-4 w-4" />
-                    {whatsappContact}
-                  </span>
-                  <p className="text-xs text-red-700 mt-1">
-                    Faça <button className="underline text-blue-600 pl-1 pr-1" type="button" onClick={() => navigate("/login?redirect=" + window.location.pathname)}>login</button> ou 
-                    <button className="underline text-blue-600 pl-1" type="button" onClick={() => navigate("/login?redirect=" + window.location.pathname)}>cadastre-se</button>
-                    {" "}
-                    para ver o número completo e falar com o anunciante.
-                  </p>
-                </>
-              )}
-              <Separator className="my-4" />
+              
               <p className="font-medium mb-2">Contato:</p>
               <p className="mb-4">{contactName}</p>
+              
               <div className="space-y-3">
                 <Button className="w-full gap-2 bg-beach-600 hover:bg-beach-700">
                   <Phone className="h-4 w-4" />
                   {contactInfo.includes('@') ? 'Enviar mensagem' : 'Ligar'}
                 </Button>
+                
                 <Button className="w-full gap-2" variant="outline">
                   <Mail className="h-4 w-4" />
                   Enviar e-mail
                 </Button>
               </div>
             </div>
+            
             <div className="bg-beach-50 p-6 rounded-lg">
               <h3 className="font-semibold mb-2">Dicas de segurança</h3>
               <ul className="text-sm space-y-2">
@@ -386,6 +334,7 @@ const ListingDetail = () => {
                 <li>• Saiba mais sobre o vendedor</li>
               </ul>
             </div>
+            
             <div className="bg-white p-6 rounded-lg border shadow-sm">
               <p className="font-medium mb-2">ID do anúncio:</p>
               <p className="text-muted-foreground">{listing.id}</p>
