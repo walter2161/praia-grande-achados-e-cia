@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,7 @@ import Privacidade from "./pages/Privacidade";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import Planos from "./pages/Planos";
 
 // Protected route component
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
@@ -48,6 +48,7 @@ const App = () => (
             <Route path="/login" element={<Login />} />
             <Route path="/perfil" element={<Profile />} />
             <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/planos" element={<Planos />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
