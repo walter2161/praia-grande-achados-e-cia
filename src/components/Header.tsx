@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -49,8 +50,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex h-16 items-center justify-between px-4 sm:px-4 relative">
+        {/* Left: logo */}
         <div className="flex items-center gap-2">
-          {/* Logo */}
           <Link to="/" className="flex items-center ml-2">
             <img
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
@@ -61,7 +62,19 @@ export default function Header() {
           </Link>
         </div>
 
-        <div className="flex items-center" style={{ marginRight: 10 }}>
+        {/* Center: menu + search - now using flex-1 to allow 50% width */}
+        <div
+          className="
+            flex items-center
+            flex-1
+            justify-center
+            min-w-[200px]
+            max-w-full
+            md:basis-1/2
+            px-2
+          "
+          style={{ flexBasis: "50%", minWidth: 0 }}
+        >
           {/* Menu Hamburguer (Categorias c/ Subcategorias) */}
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
@@ -70,7 +83,7 @@ export default function Header() {
                 style={{ background: "none", border: "none", marginRight: 10 }}
                 aria-label="Categorias"
               >
-                <Menu className="h-7 w-7 text-[#F97316]" /> {/* Using Menu icon instead of Hamburger */}
+                <Menu className="h-7 w-7 text-[#F97316]" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -114,18 +127,30 @@ export default function Header() {
           {/* Barra de busca */}
           <form
             onSubmit={handleSearch}
-            className="hidden md:flex relative w-[300px] min-w-[250px]"  // Increased width and added min-width
+            className="
+              hidden md:flex relative
+              flex-1
+              max-w-full
+              min-w-[200px]
+              ml-2
+            "
+            style={{
+              minWidth: 200,
+              width: "100%",
+              maxWidth: "500px",
+            }}
           >
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar em Praia Grande"
-              className="pl-10"
+              className="pl-10 w-full"
             />
           </form>
         </div>
 
+        {/* Right: actions */}
         <div className="flex items-center gap-2">
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
