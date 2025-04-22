@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -53,13 +52,13 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container flex h-16 items-center justify-between px-0 sm:px-0">
-        <div className="flex items-center gap-2">
-          {/* Botão Hamburguer */}
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-4">
+        <div className="flex items-center gap-4">
+          {/* Botão Hamburguer - Mais visível agora */}
           <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
             <DrawerTrigger asChild>
               <button
-                className="mr-2 flex h-10 w-10 items-center justify-center rounded-md md:hidden border border-border bg-background hover:bg-accent transition"
+                className="flex h-10 w-10 items-center justify-center rounded-md md:hidden border border-border bg-accent hover:bg-accent/80 transition"
                 aria-label="Menu"
               >
                 <Menu className="h-6 w-6" />
@@ -97,16 +96,17 @@ export default function Header() {
             </DrawerContent>
           </Drawer>
 
-          {/* Logo reduzido */}
-          <Link to="/" className="flex items-center">
+          {/* Logo com margem à esquerda */}
+          <Link to="/" className="flex items-center ml-2">
             <img
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
               alt="Logo GuíaPG"
-              className="h-8 max-h-8 w-auto object-contain"
-              style={{ maxWidth: 160 }}
+              className="h-7 max-h-7 w-auto object-contain"
+              style={{ maxWidth: 140 }}
             />
           </Link>
         </div>
+        
         <form
           onSubmit={handleSearch}
           className="hidden md:flex relative w-1/3"
@@ -119,21 +119,42 @@ export default function Header() {
             className="pl-10"
           />
         </form>
+        
         <div className="flex items-center gap-2">
-          <Link to="/criar-anuncio">
-            <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
-              <Plus className="h-4 w-4" />
-              Anunciar
-            </Button>
-          </Link>
-          <Link to="/criar-anuncio" className="md:hidden">
-            <Button size="icon" variant="ghost">
-              <Plus className="h-5 w-5" />
-            </Button>
-          </Link>
+          {isAuthenticated() ? (
+            <Link to="/criar-anuncio">
+              <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
+                <Plus className="h-4 w-4" />
+                Anunciar
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/login?redirect=/criar-anuncio">
+              <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
+                <Plus className="h-4 w-4" />
+                Anunciar
+              </Button>
+            </Link>
+          )}
+          
+          {isAuthenticated() ? (
+            <Link to="/criar-anuncio" className="md:hidden">
+              <Button size="icon" variant="ghost">
+                <Plus className="h-5 w-5" />
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/login?redirect=/criar-anuncio" className="md:hidden">
+              <Button size="icon" variant="ghost">
+                <Plus className="h-5 w-5" />
+              </Button>
+            </Link>
+          )}
+          
           <Button size="icon" variant="ghost">
             <Bell className="h-5 w-5" />
           </Button>
+          
           {isAuthenticated() ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

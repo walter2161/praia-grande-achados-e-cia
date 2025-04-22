@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,10 +14,17 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
-
-  // If already logged in, redirect to home
+  const location = useLocation();
+  
+  // Get redirect URL from query parameters
+  const getRedirectUrl = () => {
+    const searchParams = new URLSearchParams(location.search);
+    return searchParams.get("redirect") || "/";
+  };
+  
+  // If already logged in, redirect to home or the redirect URL
   if (isAuthenticated()) {
-    return <Navigate to="/" />;
+    return <Navigate to={getRedirectUrl()} />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +34,7 @@ const Login = () => {
     try {
       const success = login(username, password);
       if (success) {
-        navigate("/");
+        navigate(getRedirectUrl());
       }
     } finally {
       setIsLoading(false);
@@ -66,6 +73,9 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+              </div>
+              <div className="text-sm">
+                <p>Demo: usuário "user" senha "1234" ou "admin" senha "9764"</p>
               </div>
             </CardContent>
             <CardFooter>
