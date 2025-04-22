@@ -1,3 +1,4 @@
+
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -84,4 +85,32 @@ export type ServiceListing = {
   subcategory?: string;
 };
 
-export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing;
+export type BarRestaurantListing = {
+  id: string;
+  title: string;
+  price: string | number;
+  description: string;
+  images: string[];
+  location: string;
+  date: string;
+  sellerName: string;
+  sellerContact: string;
+  category: "bares-restaurantes";
+  subcategory: string;
+};
+
+export type ItemListing = {
+  id: string;
+  title: string;
+  price: number | string;
+  description: string;
+  images: string[];
+  location: string;
+  date: string;
+  sellerName: string;
+  sellerContact: string;
+  category: "itens";
+  subcategory: string;
+};
+
+export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing | BarRestaurantListing | ItemListing;

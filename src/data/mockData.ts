@@ -1,4 +1,12 @@
-import { AutoListing, JobListing, RealEstateListing, ServiceListing, Category } from "@/types";
+import { 
+  AutoListing, 
+  JobListing, 
+  RealEstateListing, 
+  ServiceListing, 
+  Category,
+  BarRestaurantListing,
+  ItemListing 
+} from "@/types";
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 
 export const categories: (Category & { subcategories?: string[] })[] = [
@@ -546,7 +554,7 @@ export const serviceListings: ServiceListing[] = [
 ];
 
 // 6 Anúncios para Bares & Restaurantes
-export const baresRestaurantesListings = [
+export const baresRestaurantesListings: BarRestaurantListing[] = [
   {
     id: "bar1",
     title: "Bar do Zé - Chopp Gelado",
@@ -628,7 +636,7 @@ export const baresRestaurantesListings = [
 ];
 
 // 6 Anúncios para Itens
-export const itensListings = [
+export const itensListings: ItemListing[] = [
   {
     id: "item1",
     title: "Sofá Retrátil Novo",
