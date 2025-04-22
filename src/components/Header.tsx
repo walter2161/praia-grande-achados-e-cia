@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut, EllipsisVertical, ChevronDown } from "lucide-react";
+import { Search, Bell, User, Plus, LogOut, Menu } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -12,17 +12,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { categories } from "@/data/mockData";
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const { user, logout, isAdmin, isAuthenticated } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Alinha o menu hambúrguer com a barra de busca
+  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +31,7 @@ export default function Header() {
     }
   };
 
-  // Todas as rotas principais do site
+  // Mantém os links do menu para popover extra (reserva)
   const menuLinks = [
     { to: "/", label: "Início" },
     { to: "/todos-anuncios", label: "Todos Anúncios" },
@@ -51,8 +49,8 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-4">
-        <div className="flex items-center gap-4">
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-4 relative">
+        <div className="flex items-center gap-2">
           {/* Logo */}
           <Link to="/" className="flex items-center ml-2">
             <img
@@ -63,51 +61,58 @@ export default function Header() {
             />
           </Link>
 
-          {/* Botão Menu 3 pontos */}
-          <Popover open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <PopoverTrigger asChild>
+          {/* Menu Hamburguer (Categorias c/ Subcategorias) */}
+          <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
+            <DropdownMenuTrigger asChild>
               <button
-                className="flex h-10 w-10 items-center justify-center rounded-md transition hover:bg-beach-50"
-                aria-label="Menu"
+                className="flex h-10 w-10 items-center justify-center ml-2 p-0 rounded-md"
+                style={{background: "none", border: "none"}}
+                aria-label="Categorias"
               >
-                <EllipsisVertical className="h-6 w-6 text-[#FF6600]" />
+                <Menu className="h-7 w-7 text-[#F97316]" /> {/* Laranja da marca */}
               </button>
-            </PopoverTrigger>
-            <PopoverContent 
-              className="w-[300px] p-0 border rounded-md" 
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
               align="start"
               side="bottom"
-              sideOffset={5}
+              sideOffset={0}
+              className="w-[290px] p-0 border rounded-md bg-background z-[60] shadow-xl"
+              style={{marginTop: 6}}
             >
-              <nav className="flex flex-col gap-0.5 py-2">
-                {menuLinks.map((link) =>
-                  link.to === "#logout" ? (
-                    <button
-                      key={link.label}
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        logout();
-                      }}
-                      className="text-left w-full px-4 py-2 rounded hover:bg-destructive/10 text-destructive font-medium"
-                    >
-                      {link.label}
-                    </button>
-                  ) : (
+              <div className="py-2">
+                {categories.map((cat) => (
+                  <div key={cat.slug}>
                     <Link
-                      key={link.to}
-                      to={link.to}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={`block px-4 py-2 rounded hover:bg-accent text-foreground ${link.danger ? "text-destructive" : ""}`}
+                      to={`/categoria/${cat.slug}`}
+                      className="flex items-center gap-3 px-4 py-2 hover:bg-accent text-foreground transition-all"
+                      onClick={() => setCategoryMenuOpen(false)}
                     >
-                      {link.label}
+                      <cat.icon className="h-5 w-5 text-[#F97316]" />
+                      <span className="font-medium">{cat.name}</span>
                     </Link>
-                  )
-                )}
-              </nav>
-            </PopoverContent>
-          </Popover>
+                    {/* Subcategorias */}
+                    {cat.subcategories && cat.subcategories.length > 0 && (
+                      <div className="ml-9 pt-1 pb-2">
+                        {cat.subcategories.map((sub) => (
+                          <Link
+                            key={sub}
+                            to={`/categoria/${cat.slug}?subcategoria=${encodeURIComponent(sub)}`}
+                            className="block px-2 py-1 text-muted-foreground hover:text-foreground rounded hover:bg-accent/70 text-sm transition-all"
+                            onClick={() => setCategoryMenuOpen(false)}
+                          >
+                            {sub}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-        
+
+        {/* Barra de busca */}
         <form
           onSubmit={handleSearch}
           className="hidden md:flex relative w-1/3"
@@ -120,7 +125,7 @@ export default function Header() {
             className="pl-10"
           />
         </form>
-        
+
         <div className="flex items-center gap-2">
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
@@ -137,7 +142,7 @@ export default function Header() {
               </Button>
             </Link>
           )}
-          
+
           {isAuthenticated() ? (
             <Link to="/criar-anuncio" className="md:hidden">
               <Button size="icon" variant="ghost">
@@ -151,11 +156,11 @@ export default function Header() {
               </Button>
             </Link>
           )}
-          
+
           <Button size="icon" variant="ghost">
             <Bell className="h-5 w-5" />
           </Button>
-          
+
           {isAuthenticated() ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

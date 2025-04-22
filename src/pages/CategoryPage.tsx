@@ -1,28 +1,60 @@
 
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import Map from "@/components/Map";
-import { 
-  categories, 
-  autoListings, 
-  jobListings, 
-  realEstateListings, 
+import {
+  categories,
+  autoListings,
+  jobListings,
+  realEstateListings,
   serviceListings,
-  baresRestaurantesListings, 
-  itensListings 
+  baresRestaurantesListings,
+  itensListings
 } from "@/data/mockData";
 import { Category, Listing, BarRestaurantListing } from "@/types";
+import { Button } from "@/components/ui/button";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+const listingsMap: Record<string, { listings: Listing[]; subcategories: string[] }> = {
+  autos: {
+    listings: autoListings,
+    subcategories: [...new Set(autoListings.map(item => item.subcategory))],
+  },
+  empregos: {
+    listings: jobListings,
+    subcategories: [...new Set(jobListings.map(item => item.subcategory))],
+  },
+  imoveis: {
+    listings: realEstateListings,
+    subcategories: [...new Set(realEstateListings.map(item => item.subcategory))],
+  },
+  servicos: {
+    listings: serviceListings,
+    subcategories: [...new Set(serviceListings.map(item => item.subcategory))],
+  },
+  "bares-restaurantes": {
+    listings: baresRestaurantesListings,
+    subcategories: [...new Set(baresRestaurantesListings.map(item => item.subcategory))],
+  },
+  itens: {
+    listings: itensListings,
+    subcategories: [...new Set(itensListings.map(item => item.subcategory))],
+  },
+};
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const selectedSubcategory = searchParams.get("subcategoria") ?? "todas";
+
   const category = categories.find(cat => cat.slug === slug) as Category;
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
-  
+
   if (!category) {
     return (
       <MainLayout>
@@ -33,28 +65,13 @@ const CategoryPage = () => {
     );
   }
 
-  const getCategoryListings = (): Listing[] => {
-    switch (category.slug) {
-      case "autos":
-        return autoListings;
-      case "empregos":
-        return jobListings;
-      case "imoveis":
-        return realEstateListings;
-      case "servicos":
-        return serviceListings;
-      case "bares-restaurantes":
-        return baresRestaurantesListings;
-      case "itens":
-        return itensListings;
-      default:
-        return [];
-    }
-  };
-  
-  const listings = getCategoryListings();
+  const { listings, subcategories } = listingsMap[category.slug] || { listings: [], subcategories: [] };
 
-  // Se bares-restaurantes, extrair pins para o mapa
+  const filteredListings = useMemo(() => {
+    if (selectedSubcategory === "todas") return listings;
+    return listings.filter(listing => listing.subcategory === selectedSubcategory);
+  }, [listings, selectedSubcategory]);
+
   let mapSection = null;
   if (category.slug === "bares-restaurantes" && baresRestaurantesListings.length > 0) {
     const pins = baresRestaurantesListings.map((b: BarRestaurantListing) => ({
@@ -69,7 +86,18 @@ const CategoryPage = () => {
       </div>
     );
   }
-  
+
+  // Filtros de subcategoria no topo
+  const handleChangeFiltro = (val: string) => {
+    if (val === "todas") {
+      searchParams.delete("subcategoria");
+      setSearchParams(searchParams);
+    } else {
+      searchParams.set("subcategoria", val);
+      setSearchParams(searchParams);
+    }
+  };
+
   return (
     <MainLayout>
       <div className="container py-12">
@@ -77,13 +105,53 @@ const CategoryPage = () => {
           <category.icon className="h-10 w-10 text-beach-600" />
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
-        
+
+        {/* Filtro de subcategorias */}
+        <div className="mb-8">
+          <RadioGroup
+            value={selectedSubcategory}
+            onValueChange={handleChangeFiltro}
+            className="flex flex-wrap gap-4"
+          >
+            <div>
+              <RadioGroupItem
+                value="todas"
+                id="subcat-todas"
+                className="peer sr-only"
+              />
+              <label
+                htmlFor="subcat-todas"
+                className={`cursor-pointer px-4 py-1.5 rounded border border-muted-foreground transition 
+                  ${selectedSubcategory === "todas" ? "bg-[#F97316]/90 text-white border-[#F97316]" : "hover:bg-muted"}`}
+              >
+                Todas
+              </label>
+            </div>
+            {subcategories.map((sub) => (
+              <div key={sub}>
+                <RadioGroupItem
+                  value={sub}
+                  id={`subcat-${sub}`}
+                  className="peer sr-only"
+                />
+                <label
+                  htmlFor={`subcat-${sub}`}
+                  className={`cursor-pointer px-4 py-1.5 rounded border border-muted-foreground transition
+                    ${selectedSubcategory === sub ? "bg-[#F97316]/90 text-white border-[#F97316]" : "hover:bg-muted"}`}
+                >
+                  {sub}
+                </label>
+              </div>
+            ))}
+          </RadioGroup>
+        </div>
+
         {mapSection}
-        
-        {listings.length > 0 ? (
-          <ListingGrid listings={listings} />
+
+        {filteredListings.length > 0 ? (
+          <ListingGrid listings={filteredListings} />
         ) : (
-          <p className="text-muted-foreground">Nenhum anúncio encontrado nesta categoria.</p>
+          <p className="text-muted-foreground">Nenhum anúncio encontrado nesta subcategoria.</p>
         )}
       </div>
     </MainLayout>
