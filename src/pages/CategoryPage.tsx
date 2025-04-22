@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -118,20 +119,7 @@ const CategoryPage = () => {
     return filtered;
   }, [listings, selectedSubcategory, category.slug, finalidade]);
 
-  let mapSection = null;
-  if (category.slug === "bares-restaurantes" && baresRestaurantesListings.length > 0) {
-    const pins = baresRestaurantesListings.map((b: BarRestaurantListing) => ({
-      latitude: b.latitude,
-      longitude: b.longitude,
-      title: b.title,
-    }));
-    mapSection = (
-      <div className="mb-10">
-        <h2 className="mb-3 text-xl font-bold text-beach-700">Veja no mapa</h2>
-        <Map pins={pins} height="350px" />
-      </div>
-    );
-  }
+  // Removido mapSection dos bares/restaurantes.
 
   return (
     <MainLayout>
@@ -207,7 +195,7 @@ const CategoryPage = () => {
           </RadioGroup>
         </div>
 
-        {mapSection}
+        {/* Mapa geral REMOVIDO para bares/restaurantes */}
 
         {filteredListings.length > 0 ? (
           <ListingGrid listings={filteredListings} />
@@ -220,3 +208,4 @@ const CategoryPage = () => {
 };
 
 export default CategoryPage;
+

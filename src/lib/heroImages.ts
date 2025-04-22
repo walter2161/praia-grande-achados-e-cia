@@ -1,16 +1,21 @@
 
 /**
- * Lista de imagens de pessoas fazendo negócios para usar no banner.
- * Fonte: Unsplash (Livre Uso)
+ * Lista de imagens reais e públicas de Praia Grande, SP, para usar no banner.
+ * Recomendado sempre atribuir para Unsplash/Pexels.
  */
 export const bannerImages = [
-  // Unsplash business images - pessoas em negócio
-  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80", // pessoas com laptops
-  "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=1200&q=80", // usando MacBook
-  "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1200&q=80", // grupo em telão
-  "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80", // mulher notebook
-  "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80", // reunião escritório
-  "https://images.unsplash.com/photo-1556740772-1a741367b93e?auto=format&fit=crop&w=1200&q=80", // pessoas negócio
+  // Praia Grande - Portal da Cidade
+  "https://images.unsplash.com/photo-1522507651781-2cda430b53c0?auto=format&fit=crop&w=1200&q=80", // praia com quiosques
+  // Praia Grande vista a partir da areia
+  "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1200&q=80", // mar e areia
+  // Praia Grande - calçadão com ciclovia
+  "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1200&q=80", // orla/ciclovia
+  // Praia Grande - Edifícios à beira-mar
+  "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=80", // prédios de frente
+  // Praia Grande - Mar em dia ensolarado
+  "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80", // céu azul e mar
+  // Praia Grande - Final de tarde
+  "https://images.unsplash.com/photo-1500673922987-e212871fec22?auto=format&fit=crop&w=1200&q=80", // pôr do sol
 ];
 
 /**
