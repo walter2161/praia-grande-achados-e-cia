@@ -10,6 +10,11 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="flex items-center gap-2">
+            <img 
+              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png" 
+              alt="GuíaPG Logo" 
+              className="h-10 w-10 object-contain"
+            />
             <span className="text-2xl font-bold text-[#FF6600]">GuíaPG</span>
           </Link>
         </div>
@@ -45,3 +50,4 @@ export default function Header() {
     </header>
   );
 }
+
