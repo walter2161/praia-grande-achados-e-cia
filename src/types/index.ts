@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 
 export type Category = {
@@ -26,6 +25,7 @@ export type AutoListing = {
   fuel: string;
   transmission: string;
   color: string;
+  subcategory?: string;
 };
 
 export type JobListing = {
@@ -43,6 +43,7 @@ export type JobListing = {
   education: string;
   experience: string;
   benefits: string[];
+  subcategory?: string;
 };
 
 export type RealEstateListing = {
@@ -62,6 +63,7 @@ export type RealEstateListing = {
   bathrooms: number;
   hasGarage: boolean;
   amenities: string[];
+  subcategory?: string;
 };
 
 export type ServiceListing = {
@@ -79,6 +81,7 @@ export type ServiceListing = {
   availability: string;
   experience: string;
   rating?: number;
+  subcategory?: string;
 };
 
 export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing;

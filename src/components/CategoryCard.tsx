@@ -10,7 +10,7 @@ type CategoryCardProps = {
 
 const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   const { name, icon: Icon, slug } = category;
-  // Responsivo: Se for bares e restaurantes, aplica font-size menor apenas nesta categoria
+  // Ajuste de fonte apenas para Bares & Restaurantes
   const isBaresRestaurantes = slug === "bares-restaurantes";
 
   return (
@@ -19,7 +19,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
         <CardContent className="flex flex-col items-center justify-center p-6">
           <Icon className="h-12 w-12 mb-4 text-beach-600" />
           <h3
-            className={`text-xl font-semibold text-center ${isBaresRestaurantes ? "text-[0.8rem] md:text-base leading-tight" : ""}`}
+            className={`text-xl font-semibold text-center`}
             style={isBaresRestaurantes ? { fontSize: "70%" } : undefined}
           >
             {name}

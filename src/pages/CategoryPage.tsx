@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -8,7 +7,9 @@ import {
   autoListings, 
   jobListings, 
   realEstateListings, 
-  serviceListings 
+  serviceListings,
+  baresRestaurantesListings, 
+  itensListings 
 } from "@/data/mockData";
 import { Category, Listing } from "@/types";
 
@@ -29,7 +30,7 @@ const CategoryPage = () => {
       </MainLayout>
     );
   }
-  
+
   const getCategoryListings = (): Listing[] => {
     switch (category.slug) {
       case "autos":
@@ -40,6 +41,10 @@ const CategoryPage = () => {
         return realEstateListings;
       case "servicos":
         return serviceListings;
+      case "bares-restaurantes":
+        return baresRestaurantesListings;
+      case "itens":
+        return itensListings;
       default:
         return [];
     }

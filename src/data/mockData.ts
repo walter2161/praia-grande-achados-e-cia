@@ -335,22 +335,6 @@ export const realEstateListings: RealEstateListing[] = [
 ];
 
 // Adicionando um produto exemplo da categoria ITENS
-export const itemListings = [
-  {
-    id: "item1",
-    title: "Sofá Retrátil Novo",
-    price: 850,
-    description: "Sofá retrátil e reclinável, pouco uso, ótimo estado.",
-    images: ["/placeholder.svg"],
-    location: "Canto do Forte, Praia Grande",
-    date: "2023-04-20",
-    sellerName: "Mariana Souza",
-    sellerContact: "(13) 98654-3210",
-    category: "itens",
-    subcategory: "Móveis"
-  },
-];
-
 export const jobListings: JobListing[] = [
   {
     id: "job1",
@@ -561,10 +545,175 @@ export const serviceListings: ServiceListing[] = [
   },
 ];
 
+// 6 Anúncios para Bares & Restaurantes
+export const baresRestaurantesListings = [
+  {
+    id: "bar1",
+    title: "Bar do Zé - Chopp Gelado",
+    price: "A partir de R$ 8",
+    description: "Venha experimentar nosso famoso chopp gelado, porções variadas e ambiente descontraído.",
+    images: ["/placeholder.svg"],
+    location: "Boqueirão, Praia Grande",
+    date: "2023-04-24",
+    sellerName: "Bar do Zé",
+    sellerContact: "(13) 99900-1111",
+    category: "bares-restaurantes",
+    subcategory: "Bares"
+  },
+  {
+    id: "bar2",
+    title: "Restaurante Sabor do Mar",
+    price: "A partir de R$ 35",
+    description: "Especializado em frutos do mar, pratos à la carte e buffet. Ambiente família.",
+    images: ["/placeholder.svg"],
+    location: "Canto do Forte, Praia Grande",
+    date: "2023-04-23",
+    sellerName: "Sabor do Mar",
+    sellerContact: "(13) 99880-2222",
+    category: "bares-restaurantes",
+    subcategory: "Restaurantes"
+  },
+  {
+    id: "bar3",
+    title: "Lanchonete Esquina 10",
+    price: "A partir de R$ 12",
+    description: "Lanches rápidos, sucos naturais e refeições leves. Atendimento todo dia.",
+    images: ["/placeholder.svg"],
+    location: "Aviação, Praia Grande",
+    date: "2023-04-22",
+    sellerName: "Lanchonete Esquina 10",
+    sellerContact: "(13) 99770-3333",
+    category: "bares-restaurantes",
+    subcategory: "Lanchonetes"
+  },
+  {
+    id: "bar4",
+    title: "Cafeteria Café com Leite",
+    price: "A partir de R$ 10",
+    description: "Cafés especiais, bolos caseiros e ambiente aconchegante.",
+    images: ["/placeholder.svg"],
+    location: "Guilhermina, Praia Grande",
+    date: "2023-04-21",
+    sellerName: "Café com Leite",
+    sellerContact: "(13) 99660-4444",
+    category: "bares-restaurantes",
+    subcategory: "Cafeterias"
+  },
+  {
+    id: "bar5",
+    title: "Pizzaria Bella Massa",
+    price: "A partir de R$ 49,90",
+    description: "Pizzas artesanais, atendimento delivery e espaço kids.",
+    images: ["/placeholder.svg"],
+    location: "Tupi, Praia Grande",
+    date: "2023-04-20",
+    sellerName: "Pizzaria Bella Massa",
+    sellerContact: "(13) 99550-5555",
+    category: "bares-restaurantes",
+    subcategory: "Pizzarias"
+  },
+  {
+    id: "bar6",
+    title: "Boteco do Forte",
+    price: "A partir de R$ 6",
+    description: "Porções, cerveja gelada e música ao vivo aos finais de semana.",
+    images: ["/placeholder.svg"],
+    location: "Canto do Forte, Praia Grande",
+    date: "2023-04-19",
+    sellerName: "Boteco do Forte",
+    sellerContact: "(13) 99440-6666",
+    category: "bares-restaurantes",
+    subcategory: "Bares"
+  },
+];
+
+// 6 Anúncios para Itens
+export const itensListings = [
+  {
+    id: "item1",
+    title: "Sofá Retrátil Novo",
+    price: 850,
+    description: "Sofá retrátil e reclinável, pouco uso, ótimo estado.",
+    images: ["/placeholder.svg"],
+    location: "Canto do Forte, Praia Grande",
+    date: "2023-04-20",
+    sellerName: "Mariana Souza",
+    sellerContact: "(13) 98654-3210",
+    category: "itens",
+    subcategory: "Móveis"
+  },
+  {
+    id: "item2",
+    title: "Notebook Lenovo IdeaPad 3",
+    price: 2200,
+    description: "Notebook usado, ótimo para estudos e trabalho remoto, bateria nova.",
+    images: ["/placeholder.svg"],
+    location: "Boqueirão, Praia Grande",
+    date: "2023-04-18",
+    sellerName: "Paulo Henrique",
+    sellerContact: "(13) 98777-0321",
+    category: "itens",
+    subcategory: "Eletrônicos"
+  },
+  {
+    id: "item3",
+    title: "Ar-condicionado Split 9000BTUs",
+    price: 1200,
+    description: "Econômico, pouco uso, acompanha controle e suporte de instalação.",
+    images: ["/placeholder.svg"],
+    location: "Ocian, Praia Grande",
+    date: "2023-04-17",
+    sellerName: "Renata Farias",
+    sellerContact: "(13) 98444-8122",
+    category: "itens",
+    subcategory: "Eletrodomésticos"
+  },
+  {
+    id: "item4",
+    title: "Bicicleta Aro 29 Caloi",
+    price: 950,
+    description: "Bicicleta pouco rodada, em ótimo estado, freios revisados.",
+    images: ["/placeholder.svg"],
+    location: "Tupi, Praia Grande",
+    date: "2023-04-16",
+    sellerName: "Lucas Mendes",
+    sellerContact: "(13) 98876-5231",
+    category: "itens",
+    subcategory: "Esportes"
+  },
+  {
+    id: "item5",
+    title: "Coleção de Livros Harry Potter",
+    price: 350,
+    description: "Coleção completa, livros em ótimo estado, leitura de colecionador.",
+    images: ["/placeholder.svg"],
+    location: "Guilhermina, Praia Grande",
+    date: "2023-04-15",
+    sellerName: "Aline Santos",
+    sellerContact: "(13) 98321-5512",
+    category: "itens",
+    subcategory: "Livros"
+  },
+  {
+    id: "item6",
+    title: "Camiseta Original Nike",
+    price: 69.90,
+    description: "Nova, tamanho M, tecido dry fit, entrega em Praia Grande.",
+    images: ["/placeholder.svg"],
+    location: "Mirim, Praia Grande",
+    date: "2023-04-14",
+    sellerName: "Felipe Costa",
+    sellerContact: "(13) 98244-3123",
+    category: "itens",
+    subcategory: "Roupas"
+  },
+];
+
 export const allListings = [
   ...autoListings, 
   ...jobListings, 
   ...realEstateListings, 
   ...serviceListings,
-  ...itemListings
+  ...baresRestaurantesListings,
+  ...itensListings
 ];

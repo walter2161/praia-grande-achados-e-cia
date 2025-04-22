@@ -7,17 +7,21 @@ import { Input } from "@/components/ui/input";
 import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
-import { allListings, categories } from "@/data/mockData";
+import { allListings, categories, baresRestaurantesListings, itensListings } from "@/data/mockData";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   // Get the 8 most recent listings
-  const recentListings = [...allListings]
+  const recentListings = [
+    ...allListings,
+    ...baresRestaurantesListings,
+    ...itensListings,
+  ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 8);
-
+    
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -70,7 +74,6 @@ const Index = () => {
       <section className="py-12 bg-gray-50">
         <div className="container space-y-8">
           <h2 className="text-3xl font-bold text-center">Navegue por Categorias</h2>
-          
           {/* Grade responsiva: 3 colunas por linha */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {categories.slice(0, 6).map((category) => (
@@ -79,7 +82,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Recent Listings Section */}
       <section className="py-12">
         <div className="container space-y-8">
