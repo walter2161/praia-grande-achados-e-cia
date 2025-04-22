@@ -1,4 +1,5 @@
-import { useState } from "react";
+
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,10 +9,14 @@ import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
 import { allListings, categories, baresRestaurantesListings, itensListings } from "@/data/mockData";
+import { getRandomBannerImage } from "@/lib/heroImages";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+
+  // Banner: pegar imagem aleatória só na primeira renderização:
+  const randomBanner = useMemo(() => getRandomBannerImage(), []);
 
   // Get the 8 most recent listings
   const recentListings = [
@@ -21,7 +26,7 @@ const Index = () => {
   ]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 8);
-    
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -34,8 +39,32 @@ const Index = () => {
   return (
     <MainLayout>
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-[#FF6600] to-[#FF6600]/80 text-white py-16">
-        <div className="container text-center space-y-6">
+      <section 
+        className="relative bg-gradient-to-b from-[#FF6600] to-[#FF6600]/80 text-white py-16 overflow-hidden"
+        style={{
+          minHeight: "420px",
+        }}
+      >
+        {/* BG image */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          aria-hidden="true"
+          style={{
+            backgroundImage: `url(${randomBanner})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            zIndex: 0,
+          }}
+        />
+        {/* Orange gradient overlay */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            background: "linear-gradient(180deg, rgba(255,102,0,0.70) 0%, rgba(255,102,0,0.72) 80%)",
+            zIndex: 1,
+          }}
+        />
+        <div className="container relative z-10 text-center space-y-6">
           <h1 className="text-4xl md:text-5xl font-bold">
             Compre, venda e encontre tudo em Praia Grande
           </h1>
@@ -116,3 +145,4 @@ const Index = () => {
 };
 
 export default Index;
+
