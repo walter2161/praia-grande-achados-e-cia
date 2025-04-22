@@ -15,6 +15,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     date: "2023-04-24",
     sellerName: "Quiosque Beira Mar",
     sellerContact: "(13) 3333-2222",
+    whatsappContact: "(13) 9 ****-****",
     category: "bares-restaurantes",
     subcategory: "Quiosque"
   },
@@ -31,6 +32,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     date: "2023-04-26",
     sellerName: "Bar do Léo",
     sellerContact: "(13) 99800-5522",
+    whatsappContact: "(13) 9 ****-****",
     category: "bares-restaurantes",
     subcategory: "Bar"
   },
@@ -47,6 +49,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     date: "2023-04-28",
     sellerName: "Restaurante Terraço",
     sellerContact: "(13) 98765-3333",
+    whatsappContact: "(13) 9 ****-****",
     category: "bares-restaurantes",
     subcategory: "Restaurante"
   },
@@ -63,6 +66,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     date: "2023-04-21",
     sellerName: "Café da Praça",
     sellerContact: "(13) 90001-2323",
+    whatsappContact: "(13) 9 ****-****",
     category: "bares-restaurantes",
     subcategory: "Café"
   },
@@ -79,6 +83,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     date: "2023-04-23",
     sellerName: "Pizzaria Bella Itália",
     sellerContact: "(13) 90009-4040",
+    whatsappContact: "(13) 9 ****-****",
     category: "bares-restaurantes",
     subcategory: "Pizzaria"
   },
@@ -95,6 +100,7 @@ export const baresRestaurantesListings: BarRestaurantListing[] = [
     date: "2023-04-27",
     sellerName: "Sushi House",
     sellerContact: "(13) 94567-3223",
+    whatsappContact: "(13) 9 ****-****",
     category: "bares-restaurantes",
     subcategory: "Sushi Bar"
   },
