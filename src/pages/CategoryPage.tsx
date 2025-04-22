@@ -13,12 +13,12 @@ import {
   barRestaurantListings,
   itemListings,
 } from "@/data/mockData";
-import { Category, Listing, BarRestaurantListing } from "@/types";
+import { Category, Listing, BarRestaurantListing, AutoListing, JobListing, RealEstateListing, ServiceListing, ItemListing } from "@/types";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
   const [search] = useSearchParams();
-  const category = categories.find((cat) => cat.slug === slug) as Category;
+  const category = categories.find((cat) => cat.slug === slug) as Category | undefined;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -37,15 +37,16 @@ const CategoryPage = () => {
   const getCategoryListings = (): Listing[] => {
     switch (category.slug) {
       case "autos":
-        return autoListings;
+        // Forçar el tipo category específico em cada listagem
+        return autoListings.map((l) => ({ ...l, category: "autos" } as AutoListing));
       case "empregos":
-        return jobListings;
+        return jobListings.map((l) => ({ ...l, category: "empregos" } as JobListing));
       case "imoveis":
         // Filter using query params for hierarchical filtering, if provided
         const tipo = search.get("tipo");
         const imovel = search.get("imovel");
         const estado = search.get("estado");
-        let filtered = realEstateListings;
+        let filtered = realEstateListings.map((l) => ({ ...l, category: "imoveis" } as RealEstateListing));
         if (tipo)
           filtered = filtered.filter((l) => l.negotiationType === tipo);
         if (imovel)
@@ -54,11 +55,11 @@ const CategoryPage = () => {
           filtered = filtered.filter((l) => l.usageType === estado);
         return filtered;
       case "servicos":
-        return serviceListings;
+        return serviceListings.map((l) => ({ ...l, category: "servicos" } as ServiceListing));
       case "bares-restaurantes":
-        return barRestaurantListings;
+        return barRestaurantListings.map((l) => ({ ...l, category: "bares-restaurantes" } as BarRestaurantListing));
       case "itens":
-        return itemListings;
+        return itemListings.map((l) => ({ ...l, category: "itens" } as ItemListing));
       default:
         return [];
     }
@@ -72,7 +73,7 @@ const CategoryPage = () => {
     category.slug === "bares-restaurantes" &&
     barRestaurantListings.length > 0
   ) {
-    const pins = (barRestaurantListings as BarRestaurantListing[]).map((b) => ({
+    const pins = barRestaurantListings.map((b) => ({
       latitude: b.latitude,
       longitude: b.longitude,
       title: b.title,
