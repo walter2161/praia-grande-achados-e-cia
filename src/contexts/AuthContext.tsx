@@ -9,7 +9,12 @@ type UserRole = "user" | "admin";
 interface User {
   username: string;
   role: UserRole;
+  email?: string; // Add email property
+  id?: string; // Add id property
 }
+
+// Create the context
+const AuthContext = createContext<AuthContextType | null>(null);
 
 interface AuthContextType {
   user: User | null;
@@ -19,13 +24,10 @@ interface AuthContextType {
   isAuthenticated: () => boolean;
 }
 
-// Create the context
-const AuthContext = createContext<AuthContextType | null>(null);
-
 // Define demo users
 const DEMO_USERS = [
-  { username: "user", password: "1234", role: "user" as UserRole },
-  { username: "admin", password: "9764", role: "admin" as UserRole },
+  { username: "user", password: "1234", role: "user" as UserRole, email: "user@example.com", id: "user_001" },
+  { username: "admin", password: "9764", role: "admin" as UserRole, email: "admin@example.com", id: "admin_001" },
 ];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -50,6 +52,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userData = {
         username: foundUser.username,
         role: foundUser.role,
+        email: foundUser.email,
+        id: foundUser.id,
       };
       
       // Save user to state and localStorage
