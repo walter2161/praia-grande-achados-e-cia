@@ -107,19 +107,19 @@ export const bannerImages = [
   "https://images.unsplash.com/photo-1501287167-99f68a7e2aab?auto=format&fit=crop&w=1200&q=80",
 ];
 
-// Optionally cache images to improve performance
-const precachedImages = new Map<string, HTMLImageElement>();
+// Use a more reliable approach for image caching and loading
+let cachedRandomImage: string | null = null;
 
 export function getRandomBannerImage() {
-  const idx = Math.floor(Math.random() * bannerImages.length);
-  const imageUrl = bannerImages[idx];
-  
-  // Pre-cache the image for better performance on navigation
-  if (!precachedImages.has(imageUrl)) {
+  // If we already have a cached image, return it
+  if (!cachedRandomImage) {
+    const idx = Math.floor(Math.random() * bannerImages.length);
+    cachedRandomImage = bannerImages[idx];
+    
+    // Preload the image
     const img = new Image();
-    img.src = imageUrl;
-    precachedImages.set(imageUrl, img);
+    img.src = cachedRandomImage;
   }
   
-  return imageUrl;
+  return cachedRandomImage;
 }

@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,9 +13,13 @@ import { getRandomBannerImage } from "@/lib/heroImages";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [bannerImageUrl, setBannerImageUrl] = useState("");
 
-  // Banner: pegar imagem aleatória só na primeira renderização:
-  const randomBanner = useMemo(() => getRandomBannerImage(), []);
+  // Get banner image on component mount
+  useEffect(() => {
+    const imageUrl = getRandomBannerImage();
+    setBannerImageUrl(imageUrl);
+  }, []);
 
   // Get the 8 most recent listings
   const recentListings = [
@@ -45,16 +49,18 @@ const Index = () => {
         }}
       >
         {/* BG image */}
-        <div
-          className="absolute inset-0 w-full h-full"
-          aria-hidden="true"
-          style={{
-            backgroundImage: `url(${randomBanner})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            zIndex: 0,
-          }}
-        />
+        {bannerImageUrl && (
+          <div
+            className="absolute inset-0 w-full h-full"
+            aria-hidden="true"
+            style={{
+              backgroundImage: `url(${bannerImageUrl})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              zIndex: 0,
+            }}
+          />
+        )}
         {/* Orange gradient overlay with 35% opacity */}
         <div
           className="absolute inset-0 w-full h-full"
