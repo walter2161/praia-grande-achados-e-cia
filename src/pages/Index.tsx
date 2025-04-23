@@ -21,6 +21,7 @@ const Index = () => {
     // Obter imagem aleatória
     const imageUrl = getRandomBannerImage();
     setBannerImageUrl(imageUrl);
+    console.log("Banner image loaded:", imageUrl); // Debug log
   }, []);
 
   // Get the 8 most recent listings
@@ -63,11 +64,11 @@ const Index = () => {
             }}
           />
         )}
-        {/* Orange gradient overlay with 35% opacity */}
+        {/* Orange gradient overlay with reduced opacity (15% instead of 35%) */}
         <div
           className="absolute inset-0 w-full h-full"
           style={{
-            background: "linear-gradient(180deg, rgba(255,102,0,0.35) 0%, rgba(255,102,0,0.35) 80%)",
+            background: "linear-gradient(180deg, rgba(255,102,0,0.15) 0%, rgba(255,102,0,0.15) 80%)",
             zIndex: 1,
           }}
         />
