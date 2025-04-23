@@ -8,7 +8,7 @@ import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
 import { allListings, categories, baresRestaurantesListings, itensListings } from "@/data/mockData";
-import { getRandomBannerImage } from "@/lib/heroImages";
+import { getRandomBannerImage } from "@/lib/bannerImages";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
