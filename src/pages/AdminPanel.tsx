@@ -8,16 +8,65 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, User, Settings, Database, Image, Plus, Trash, Edit } from "lucide-react";
+import { Search, User, Settings, Database, Image, Plus, Trash, Edit, FileText, Layout, LayoutDashboard, Cog } from "lucide-react";
+import { toast } from "sonner";
+import { updateSiteSetting, fetchSiteSettings } from "@/utils/databaseService";
 
 const AdminPanel = () => {
   const { isAdmin, isAuthenticated } = useAuth();
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [siteSettings, setSiteSettings] = useState({
+    siteName: "GuíaPG",
+    description: "Guia de anúncios e serviços da cidade de Praia Grande",
+    contactEmail: "contato@guiapg.com.br",
+    contactPhone: "(13) 99999-9999",
+    facebookUrl: "",
+    instagramUrl: "",
+    twitterUrl: "",
+    youtubeUrl: "",
+    primaryColor: "#3b82f6",
+    secondaryColor: "#10b981"
+  });
+  const [isSaving, setIsSaving] = useState(false);
   
   useEffect(() => {
     // Scroll to top on component mount
     window.scrollTo(0, 0);
+    
+    // Fetch site settings
+    const loadSettings = async () => {
+      try {
+        const settings = await fetchSiteSettings();
+        if (Object.keys(settings).length) {
+          setSiteSettings(prev => ({
+            ...prev,
+            ...settings
+          }));
+        }
+      } catch (error) {
+        console.error("Error loading site settings:", error);
+      }
+    };
+    
+    loadSettings();
   }, []);
+
+  // Handler for saving site settings
+  const handleSaveSettings = async () => {
+    setIsSaving(true);
+    try {
+      // Save each setting individually
+      for (const [key, value] of Object.entries(siteSettings)) {
+        await updateSiteSetting(key, value as string);
+      }
+      toast.success("Configurações salvas com sucesso!");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      toast.error("Erro ao salvar configurações.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // If not authenticated, redirect to login
   if (!isAuthenticated()) {
@@ -39,7 +88,7 @@ const AdminPanel = () => {
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Usuários</TabsTrigger>
             <TabsTrigger value="listings">Anúncios</TabsTrigger>
-            <TabsTrigger value="sheets">Google Sheets</TabsTrigger>
+            <TabsTrigger value="content">Conteúdo</TabsTrigger>
             <TabsTrigger value="settings">Configurações</TabsTrigger>
           </TabsList>
           
@@ -93,12 +142,12 @@ const AdminPanel = () => {
                       Gerenciar Usuários
                     </Button>
                     <Button 
-                      onClick={() => setActiveTab("sheets")}
+                      onClick={() => setActiveTab("content")}
                       variant="outline" 
                       className="w-full justify-start"
                     >
-                      <Database className="mr-2 h-4 w-4" />
-                      Configurações da Planilha
+                      <FileText className="mr-2 h-4 w-4" />
+                      Editar Conteúdo do Site
                     </Button>
                   </div>
                 </CardContent>
@@ -257,63 +306,276 @@ const AdminPanel = () => {
             </Card>
           </TabsContent>
           
-          {/* Google Sheets Integration Tab */}
-          <TabsContent value="sheets">
+          {/* Content Tab (New) */}
+          <TabsContent value="content">
+            <div className="grid grid-cols-1 gap-6">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle>Gerenciamento de Páginas</CardTitle>
+                    <CardDescription>Edite o conteúdo das páginas principais do site</CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    {[
+                      { title: "Página Inicial", icon: <LayoutDashboard className="h-8 w-8" /> },
+                      { title: "Sobre Nós", icon: <FileText className="h-8 w-8" /> },
+                      { title: "Termos de Uso", icon: <FileText className="h-8 w-8" /> },
+                      { title: "Política de Privacidade", icon: <FileText className="h-8 w-8" /> },
+                      { title: "Contato", icon: <FileText className="h-8 w-8" /> },
+                      { title: "Planos", icon: <Layout className="h-8 w-8" /> },
+                    ].map((page, index) => (
+                      <Button 
+                        key={index} 
+                        variant="outline" 
+                        className="h-24 flex flex-col items-center justify-center gap-2"
+                      >
+                        {page.icon}
+                        <span>{page.title}</span>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Categorias</CardTitle>
+                  <CardDescription>Gerencie as categorias de anúncios</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-end mb-4">
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Nova Categoria
+                    </Button>
+                  </div>
+                  
+                  <div className="border rounded-md">
+                    <div className="grid grid-cols-12 gap-2 p-4 font-semibold border-b bg-muted/50">
+                      <div className="col-span-1">#</div>
+                      <div className="col-span-3">Nome</div>
+                      <div className="col-span-4">Descrição</div>
+                      <div className="col-span-2">Ícone</div>
+                      <div className="col-span-2">Ações</div>
+                    </div>
+                    
+                    {["Imóveis", "Autos", "Serviços", "Empregos", "Itens"].map((category, index) => (
+                      <div key={index} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
+                        <div className="col-span-1">{index + 1}</div>
+                        <div className="col-span-3">{category}</div>
+                        <div className="col-span-4">Descrição da categoria {category}</div>
+                        <div className="col-span-2">
+                          <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center">
+                            <span className="text-xs">Ícone</span>
+                          </div>
+                        </div>
+                        <div className="col-span-2 flex gap-2">
+                          <Button size="sm" variant="outline">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-red-500 hover:text-red-700">
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Banners</CardTitle>
+                  <CardDescription>Gerencie os banners do site</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-end mb-4">
+                    <Button>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Novo Banner
+                    </Button>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[1, 2, 3, 4].map((banner) => (
+                      <div key={banner} className="border rounded-md p-4 flex flex-col">
+                        <div className="bg-gray-100 h-32 rounded mb-3 flex items-center justify-center">
+                          <Image className="h-8 w-8 text-gray-400" />
+                        </div>
+                        <div className="mb-2">
+                          <h3 className="font-medium">Banner {banner}</h3>
+                          <p className="text-sm text-muted-foreground">Posição: {banner === 1 ? 'Topo' : banner === 2 ? 'Meio' : 'Rodapé'}</p>
+                        </div>
+                        <div className="mt-auto flex gap-2">
+                          <Button size="sm" variant="outline" className="flex-1">
+                            <Edit className="mr-2 h-4 w-4" />
+                            Editar
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-red-500 hover:text-red-700">
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          
+          {/* Settings Tab */}
+          <TabsContent value="settings">
             <div className="grid grid-cols-1 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Configuração do Google Sheets</CardTitle>
-                  <CardDescription>Configure a integração com o Google Sheets como banco de dados</CardDescription>
+                  <CardTitle>Configurações do Site</CardTitle>
+                  <CardDescription>Personalize as configurações gerais do site</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label className="block font-medium">Google Sheets ID</label>
-                      <Input placeholder="Cole o ID da sua planilha aqui" />
-                      <p className="text-xs text-muted-foreground">
-                        Ex: 1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms
-                      </p>
+                      <label className="block font-medium">Nome do Site</label>
+                      <Input 
+                        value={siteSettings.siteName} 
+                        onChange={(e) => setSiteSettings({...siteSettings, siteName: e.target.value})}
+                      />
                     </div>
                     
                     <div className="space-y-2">
-                      <label className="block font-medium">Chave de API do Google</label>
-                      <Input type="password" placeholder="Cole sua chave de API aqui" />
-                      <p className="text-xs text-muted-foreground">
-                        Necessário para acesso à API do Google Sheets
-                      </p>
+                      <label className="block font-medium">Descrição do Site</label>
+                      <Textarea 
+                        value={siteSettings.description}
+                        onChange={(e) => setSiteSettings({...siteSettings, description: e.target.value})}
+                      />
                     </div>
                     
-                    <div className="p-4 bg-muted/50 rounded-md">
-                      <h3 className="font-medium mb-2">Estrutura da Planilha</h3>
-                      <p className="text-sm mb-4">
-                        Sua planilha deve conter as seguintes abas (planilhas):
+                    <div className="space-y-2">
+                      <label className="block font-medium">Email de Contato</label>
+                      <Input 
+                        value={siteSettings.contactEmail}
+                        onChange={(e) => setSiteSettings({...siteSettings, contactEmail: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="block font-medium">Telefone de Contato</label>
+                      <Input 
+                        value={siteSettings.contactPhone}
+                        onChange={(e) => setSiteSettings({...siteSettings, contactPhone: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="block font-medium">Cores do Site</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-sm text-muted-foreground mb-1">Cor Primária</label>
+                          <div className="flex gap-2 items-center">
+                            <div 
+                              className="w-8 h-8 rounded border" 
+                              style={{ backgroundColor: siteSettings.primaryColor }}
+                            />
+                            <Input 
+                              type="text"
+                              value={siteSettings.primaryColor}
+                              onChange={(e) => setSiteSettings({...siteSettings, primaryColor: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <label className="block text-sm text-muted-foreground mb-1">Cor Secundária</label>
+                          <div className="flex gap-2 items-center">
+                            <div 
+                              className="w-8 h-8 rounded border" 
+                              style={{ backgroundColor: siteSettings.secondaryColor }}
+                            />
+                            <Input 
+                              type="text"
+                              value={siteSettings.secondaryColor}
+                              onChange={(e) => setSiteSettings({...siteSettings, secondaryColor: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="block font-medium">Links de Redes Sociais</label>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Input 
+                          placeholder="Facebook URL" 
+                          value={siteSettings.facebookUrl}
+                          onChange={(e) => setSiteSettings({...siteSettings, facebookUrl: e.target.value})}
+                        />
+                        <Input 
+                          placeholder="Instagram URL" 
+                          value={siteSettings.instagramUrl}
+                          onChange={(e) => setSiteSettings({...siteSettings, instagramUrl: e.target.value})}
+                        />
+                        <Input 
+                          placeholder="Twitter URL" 
+                          value={siteSettings.twitterUrl}
+                          onChange={(e) => setSiteSettings({...siteSettings, twitterUrl: e.target.value})}
+                        />
+                        <Input 
+                          placeholder="YouTube URL" 
+                          value={siteSettings.youtubeUrl}
+                          onChange={(e) => setSiteSettings({...siteSettings, youtubeUrl: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    
+                    <Button onClick={handleSaveSettings} disabled={isSaving}>
+                      {isSaving ? "Salvando..." : "Salvar Configurações"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Configurações do Banco de Dados</CardTitle>
+                  <CardDescription>Configurações de conexão com o banco de dados</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="block font-medium">Host</label>
+                      <Input defaultValue="localhost" />
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block font-medium">Usuário</label>
+                        <Input defaultValue="root" />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="block font-medium">Senha</label>
+                        <Input type="password" defaultValue="******" />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block font-medium">Banco de Dados</label>
+                        <Input defaultValue="guiapg" />
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <label className="block font-medium">Prefixo das Tabelas</label>
+                        <Input defaultValue="wp_" />
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 bg-yellow-50 text-yellow-800 rounded-md text-sm">
+                      <h4 className="font-medium mb-1">Nota:</h4>
+                      <p>
+                        Alterar estas configurações pode causar problemas de conexão com o banco de dados.
+                        Certifique-se de saber o que está fazendo antes de modificá-las.
                       </p>
-                      <ul className="text-sm space-y-2">
-                        <li className="flex items-center gap-2">
-                          <span className="bg-green-100 text-green-800 px-2 py-0.5 rounded text-xs">
-                            usuarios
-                          </span>
-                          <span>Armazena informações dos usuários</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-xs">
-                            anuncios
-                          </span>
-                          <span>Armazena todos os anúncios</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="bg-purple-100 text-purple-800 px-2 py-0.5 rounded text-xs">
-                            imagens
-                          </span>
-                          <span>Armazena as imagens em Base64</span>
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded text-xs">
-                            configuracoes
-                          </span>
-                          <span>Configurações gerais do site</span>
-                        </li>
-                      </ul>
                     </div>
                     
                     <Button>Testar Conexão</Button>
@@ -342,9 +604,9 @@ const AdminPanel = () => {
                     
                     <div className="flex items-center justify-between">
                       <div>
-                        <h3 className="font-medium">Conversão para Base64</h3>
+                        <h3 className="font-medium">Compressão de Imagens</h3>
                         <p className="text-sm text-muted-foreground">
-                          Converter automaticamente para armazenar na planilha
+                          Reduzir tamanho dos arquivos para carregamento mais rápido
                         </p>
                       </div>
                       <div className="flex items-center">
@@ -352,186 +614,21 @@ const AdminPanel = () => {
                       </div>
                     </div>
                     
-                    <div className="p-4 bg-yellow-50 text-yellow-800 rounded-md text-sm">
-                      <h4 className="font-medium mb-1">Nota:</h4>
-                      <p>
-                        O armazenamento de imagens em Base64 no Google Sheets pode ser ineficiente para um grande volume de dados.
-                        Considere limitar o número de imagens ou utilizar uma alternativa para armazenamento de arquivos de maior escala.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle>Instruções de Implementação</CardTitle>
-                  <CardDescription>Scripts necessários para integração completa</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div>
-                      <h3 className="font-medium mb-2">1. Script para Google Apps Script</h3>
-                      <p className="text-sm mb-2">Cole este script no editor de Google Apps Script da sua planilha:</p>
-                      <div className="bg-muted p-3 rounded-md overflow-x-auto">
-                        <pre className="text-xs">
-{`/**
-* API para GuíaPG - Conecta o site ao Google Sheets
-*/
-
-function doGet(e) {
-  const action = e.parameter.action;
-  const sheet = e.parameter.sheet;
-  
-  if (action === 'read') {
-    return handleRead(sheet);
-  } else if (action === 'write') {
-    return handleWrite(sheet, e.parameter);
-  }
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({ 'error': 'Invalid action' }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doPost(e) {
-  const data = JSON.parse(e.postData.contents);
-  const action = data.action;
-  const sheet = data.sheet;
-  
-  if (action === 'create') {
-    return handleCreate(sheet, data);
-  } else if (action === 'update') {
-    return handleUpdate(sheet, data);
-  } else if (action === 'delete') {
-    return handleDelete(sheet, data);
-  } else if (action === 'processImage') {
-    return handleImageProcessing(data);
-  }
-  
-  return ContentService
-    .createTextOutput(JSON.stringify({ 'error': 'Invalid action' }))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function handleRead(sheetName) {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getSheetByName(sheetName);
-  
-  if (!sheet) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ 'error': 'Sheet not found' }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-  
-  const data = sheet.getDataRange().getValues();
-  const headers = data[0];
-  const result = [];
-  
-  for (let i = 1; i < data.length; i++) {
-    const obj = {};
-    for (let j = 0; j < headers.length; j++) {
-      obj[headers[j]] = data[i][j];
-    }
-    result.push(obj);
-  }
-  
-  return ContentService
-    .createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function handleCreate(sheetName, data) {
-  // Implementação para criar novo registro
-}
-
-function handleUpdate(sheetName, data) {
-  // Implementação para atualizar registro existente
-}
-
-function handleDelete(sheetName, data) {
-  // Implementação para excluir registro
-}
-
-function handleImageProcessing(data) {
-  // Implementação para processar e armazenar imagem Base64
-}
-`}
-                        </pre>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-medium">Pasta de Upload</h3>
+                        <p className="text-sm text-muted-foreground">
+                          /public/uploads/images/
+                        </p>
                       </div>
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-medium mb-2">2. Publicar como Aplicativo Web</h3>
-                      <p className="text-sm mb-2">Após colar o script, siga estas etapas:</p>
-                      <ol className="text-sm space-y-1 list-decimal ml-4">
-                        <li>No editor de script, clique em "Implantar" &gt; "Nova implantação"</li>
-                        <li>Selecione "Aplicativo da Web"</li>
-                        <li>Descrição: "API GuiaPG"</li>
-                        <li>Definir "Executar como" para "Eu mesmo"</li>
-                        <li>Definir "Quem tem acesso" para "Qualquer pessoa"</li>
-                        <li>Clique em "Implantar" e copie a URL fornecida</li>
-                      </ol>
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-medium mb-2">3. Configure permissões da API</h3>
-                      <p className="text-sm mb-2">No Console do Google Cloud Platform:</p>
-                      <ol className="text-sm space-y-1 list-decimal ml-4">
-                        <li>Ative a API Google Sheets</li>
-                        <li>Crie credenciais para a API</li>
-                        <li>Restricione os domínios permitidos para sua URL</li>
-                      </ol>
+                      <Button variant="outline" size="sm">
+                        Alterar
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-          
-          {/* Settings Tab */}
-          <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>Configurações do Site</CardTitle>
-                <CardDescription>Personalize as configurações gerais do site</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="block font-medium">Nome do Site</label>
-                    <Input defaultValue="GuíaPG" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block font-medium">Descrição do Site</label>
-                    <Textarea defaultValue="Guia de anúncios e serviços da cidade de Praia Grande" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block font-medium">Email de Contato</label>
-                    <Input defaultValue="contato@guiapg.com.br" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block font-medium">Telefone de Contato</label>
-                    <Input defaultValue="(13) 99999-9999" />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <label className="block font-medium">Links de Redes Sociais</label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input placeholder="Facebook URL" />
-                      <Input placeholder="Instagram URL" />
-                      <Input placeholder="Twitter URL" />
-                      <Input placeholder="YouTube URL" />
-                    </div>
-                  </div>
-                  
-                  <Button>Salvar Configurações</Button>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
         </Tabs>
       </div>
