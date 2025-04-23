@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, Bell, User, Plus, LogOut, Menu } from "lucide-react";
+import { Search, User, Plus, LogOut, Menu } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import WeatherCapsule from "./WeatherCapsule";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -151,6 +152,8 @@ export default function Header() {
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
+          <WeatherCapsule />
+          
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
               <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
@@ -193,9 +196,9 @@ export default function Header() {
             </Button>
           </Link>
 
-          <Button size="icon" variant="ghost">
+          {/* <Button size="icon" variant="ghost">
             <Bell className="h-5 w-5" />
-          </Button>
+          </Button> */}
 
           {isAuthenticated() ? (
             <DropdownMenu>

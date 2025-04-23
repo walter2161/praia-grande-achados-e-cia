@@ -3,6 +3,10 @@ import { Link } from "react-router-dom";
 import { categories } from "@/data/mockData";
 import { Instagram, Youtube } from "lucide-react";
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
 export default function Footer() {
   return (
     <footer className="w-full border-t bg-background py-8">
@@ -40,6 +44,7 @@ export default function Footer() {
                 <Link 
                   to={`/categoria/${category.slug}`}
                   className="text-muted-foreground hover:text-beach-600 transition-colors"
+                  onClick={scrollToTop}
                 >
                   {category.name}
                 </Link>
@@ -52,37 +57,37 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-4">Links Úteis</h3>
           <ul className="space-y-2">
             <li>
-              <Link to="/criar-anuncio" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/criar-anuncio" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Anunciar
               </Link>
             </li>
             <li>
-              <Link to="/planos" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/planos" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Planos
               </Link>
             </li>
             <li>
-              <Link to="/perfil" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/perfil" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Meu Perfil
               </Link>
             </li>
             <li>
-              <Link to="/sobre" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/sobre" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Sobre Nós
               </Link>
             </li>
             <li>
-              <Link to="/contato" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/contato" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Contato
               </Link>
             </li>
             <li>
-              <Link to="/termos" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/termos" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Termos de Uso
               </Link>
             </li>
             <li>
-              <Link to="/privacidade" className="text-muted-foreground hover:text-beach-600 transition-colors">
+              <Link to="/privacidade" onClick={scrollToTop} className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Política de Privacidade
               </Link>
             </li>
