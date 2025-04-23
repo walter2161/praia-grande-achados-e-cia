@@ -136,6 +136,7 @@ const ListingDetail = () => {
           height="300px"
           zoom={15}
           category={categorySlug}
+          address={listing.address}
         />
         <div className="mt-2 text-sm text-muted-foreground">{listing.address}</div>
       </div>
@@ -159,6 +160,7 @@ const ListingDetail = () => {
           height="300px"
           zoom={15}
           category={categorySlug}
+          address={`${listing.title} - ${listing.location}, Praia Grande, SP`}
         />
         <div className="mt-2 text-sm text-muted-foreground">{listing.location}</div>
       </div>

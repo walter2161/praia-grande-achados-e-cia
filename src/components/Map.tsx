@@ -14,6 +14,7 @@ type MapProps = {
   zoom?: number;
   category?: string;
   neighborhood?: string; // New prop for neighborhood name
+  address?: string; // Adding address prop for complete location info
 };
 
 // Generate iframe src for Google Maps based on category
@@ -49,6 +50,7 @@ const Map: React.FC<MapProps> = ({
   zoom = 15,
   category,
   neighborhood = "Centro", // Default to Centro if no neighborhood provided
+  address,
 }) => {
   // Use the first pin as the map center if it's a service or restaurant
   const centerPin =
@@ -65,12 +67,21 @@ const Map: React.FC<MapProps> = ({
     neighborhood,
   });
 
+  // Determine the appropriate title for the map
+  let mapTitle = "Mapa";
+  
+  if (category === 'servicos' || category === 'bares-restaurantes') {
+    // For services and restaurants, use the full address when available
+    mapTitle = address ? address : centerPin.title || "Localização";
+  } else {
+    // For other categories, show the neighborhood
+    mapTitle = `Região: ${neighborhood}`;
+  }
+
   return (
     <div className="relative w-full rounded-lg shadow" style={{ height }}>
       <iframe
-        title={category === 'servicos' || category === 'bares-restaurantes' ? 
-          centerPin.title || "Mapa" : 
-          `Região: ${neighborhood}`}
+        title={mapTitle}
         src={mapSrc}
         width="100%"
         height="100%"
