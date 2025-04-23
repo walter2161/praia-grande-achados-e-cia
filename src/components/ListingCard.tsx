@@ -13,7 +13,6 @@ type ListingCardProps = {
   listing: Listing;
 };
 
-// Function to format price based on type (number or string)
 const formatPrice = (price: number | string) => {
   if (typeof price === "number") {
     return price.toLocaleString("pt-BR", {
@@ -31,13 +30,14 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
     locale: ptBR,
   });
 
-  // Determine which price to display based on listing type
   let displayPrice;
   if ("salary" in listing) {
     displayPrice = formatPrice(listing.salary);
   } else {
     displayPrice = formatPrice(listing.price);
   }
+
+  console.log('Placeholder image path:', "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png");
 
   return (
     <Link to={`/anuncio/${listing.category}/${listing.id}`}>
