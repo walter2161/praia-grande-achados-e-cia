@@ -143,9 +143,6 @@ const ListingDetail = () => {
   } 
   // For service listings - exact location
   else if (categorySlug === "servicos" && "location" in listing) {
-    // Here we would need real coordinates for the service
-    // In a real app, this would come from the database
-    // For now, let's use a placeholder location for services in Praia Grande
     const serviceLat = -24.0078;
     const serviceLng = -46.4121;
     mapSection = (
@@ -169,24 +166,21 @@ const ListingDetail = () => {
   }
   // For all other listings - neighborhood only
   else if (listing.location) {
-    // Use a generalized coordinate for the neighborhood in Praia Grande
-    // This only shows the general area, not the exact address
-    const neighborhoodLat = -24.0078;
-    const neighborhoodLng = -46.4121;
     mapSection = (
       <div className="my-8">
         <h2 className="text-lg font-semibold mb-3 text-beach-700">Localização aproximada:</h2>
         <Map
           pins={[
             {
-              latitude: neighborhoodLat,
-              longitude: neighborhoodLng,
-              title: listing.location, // Just show the neighborhood name
+              latitude: -24.0078,
+              longitude: -46.4121,
+              title: listing.location,
             },
           ]}
           height="300px"
-          zoom={13} // Lower zoom to only show neighborhood
+          zoom={14}
           category={categorySlug}
+          neighborhood={listing.location}
         />
         <div className="mt-2 text-sm text-muted-foreground">
           Região: {listing.location}

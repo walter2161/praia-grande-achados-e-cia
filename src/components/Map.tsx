@@ -13,29 +13,33 @@ type MapProps = {
   initialCenter?: [number, number];
   zoom?: number;
   category?: string;
+  neighborhood?: string; // New prop for neighborhood name
 };
 
-// Generate iframe src for Google Maps focused on the main pin
+// Generate iframe src for Google Maps based on category
 function generateGoogleMapsEmbedSrc({
   latitude,
   longitude,
   zoom = 15,
   title = '',
   category = '',
+  neighborhood = '',
 }: { 
   latitude: number; 
   longitude: number; 
   zoom?: number; 
   title?: string;
   category?: string;
+  neighborhood?: string;
 }) {
-  // For services and bars/restaurants, show exact location
+  // For services and bars/restaurants, show exact location with pin
   if (category === 'servicos' || category === 'bares-restaurantes') {
     return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
   }
   
-  // For other categories, use a lower zoom level to only show neighborhood
-  return `https://www.google.com/maps?q=${latitude},${longitude}&z=13&output=embed`;
+  // For other categories, show the neighborhood area
+  // Using the neighborhood name instead of coordinates
+  return `https://www.google.com/maps?q=${encodeURIComponent(neighborhood + ', Praia Grande, SP')}&z=14&output=embed`;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -44,8 +48,9 @@ const Map: React.FC<MapProps> = ({
   initialCenter,
   zoom = 15,
   category,
+  neighborhood = "Centro", // Default to Centro if no neighborhood provided
 }) => {
-  // Use the first pin as the map center
+  // Use the first pin as the map center if it's a service or restaurant
   const centerPin =
     pins && pins.length > 0
       ? pins[0]
@@ -54,15 +59,18 @@ const Map: React.FC<MapProps> = ({
   const mapSrc = generateGoogleMapsEmbedSrc({
     latitude: centerPin.latitude,
     longitude: centerPin.longitude,
-    zoom: category === 'servicos' || category === 'bares-restaurantes' ? zoom : 13,
+    zoom: category === 'servicos' || category === 'bares-restaurantes' ? zoom : 14,
     title: centerPin.title,
     category,
+    neighborhood,
   });
 
   return (
     <div className="relative w-full rounded-lg shadow" style={{ height }}>
       <iframe
-        title={centerPin.title || "Mapa"}
+        title={category === 'servicos' || category === 'bares-restaurantes' ? 
+          centerPin.title || "Mapa" : 
+          `Região: ${neighborhood}`}
         src={mapSrc}
         width="100%"
         height="100%"
