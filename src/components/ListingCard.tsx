@@ -42,11 +42,12 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
   return (
     <Link to={`/anuncio/${listing.category}/${listing.id}`}>
       <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
-        <div className="relative aspect-video overflow-hidden">
+        <div className="relative aspect-video overflow-hidden bg-gray-100">
           <img
             src={listing.images[0] || "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png"}
             alt={listing.title}
             className="h-full w-full object-cover"
+            loading="lazy"
           />
           {category && (
             <Badge
