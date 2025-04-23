@@ -83,7 +83,7 @@ const ListingDetail = () => {
     locale: ptBR,
   });
   
-  // Determine which contact info to show based on listing type
+  // Determine which contact info to show based on listing type - Update this to use the same format
   let contactName = "";
   let contactInfo = "";
   
@@ -407,7 +407,7 @@ const ListingDetail = () => {
               <p className="font-medium mb-2">Contato:</p>
               <p className="mb-2">{contactName}</p>
 
-              {/* WHATSAPP CONTACTO VISÍVEL PARA TODOS */}
+              {/* WHATSAPP CONTACTO VISÍVEL PARA TODOS INCLUINDO EMPREGOS */}
               <WhatsAppContact rawPhone={contactInfo} listingTitle={listing.title} />
             </div>
             

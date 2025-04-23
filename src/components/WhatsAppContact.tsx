@@ -13,13 +13,20 @@ function maskPhone(phone: string) {
   return phone.replace(/(\(\d{2}\)\s?\d)\d{4}-\d{4}/, "$1 ****-****");
 }
 
+function isValidPhone(contact: string | undefined): boolean {
+  if (!contact) return false;
+  // Check if contact contains numbers and common phone formatting
+  return /\d/.test(contact) && !contact.includes('@');
+}
+
 const WhatsAppContact: React.FC<WhatsAppContactProps> = ({
   rawPhone,
   listingTitle = "",
 }) => {
   const { isAuthenticated } = useAuth();
-
-  if (!rawPhone) return null;
+  
+  // If no contact or if it's an email, don't show WhatsApp component
+  if (!rawPhone || !isValidPhone(rawPhone)) return null;
 
   // Extrair apenas os dígitos do telefone para montar o link do WhatsApp
   const onlyDigits = rawPhone.replace(/\D/g, "");
