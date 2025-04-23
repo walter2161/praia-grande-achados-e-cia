@@ -12,16 +12,16 @@ type MapProps = {
   height?: string;
   initialCenter?: [number, number];
   zoom?: number;
-  category?: string; // Add category prop
+  category?: string;
 };
 
-// Gera um src para o iframe do Google Maps focado no marcador principal
+// Generate iframe src for Google Maps focused on the main pin
 function generateGoogleMapsEmbedSrc({
   latitude,
   longitude,
   zoom = 15,
   title = '',
-  category = '', // Add category parameter
+  category = '',
 }: { 
   latitude: number; 
   longitude: number; 
@@ -45,7 +45,7 @@ const Map: React.FC<MapProps> = ({
   zoom = 15,
   category,
 }) => {
-  // Usa o primeiro pin como central do mapa
+  // Use the first pin as the map center
   const centerPin =
     pins && pins.length > 0
       ? pins[0]
@@ -77,4 +77,3 @@ const Map: React.FC<MapProps> = ({
 };
 
 export default Map;
-

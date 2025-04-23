@@ -111,16 +111,18 @@ const ListingDetail = () => {
 
   // Para evitar erro se não houver imagens
   const validImages = listing.images.filter(Boolean).slice(0, 6);
-
-  // Map section para bares e restaurantes
-  let barMapSection = null;
+  
+  // Map section for any listing type
+  let mapSection = null;
+  
+  // For bars and restaurants with specific coordinates
   if (
     categorySlug === "bares-restaurantes" &&
     "address" in listing &&
     "latitude" in listing &&
     "longitude" in listing
   ) {
-    barMapSection = (
+    mapSection = (
       <div className="my-8">
         <h2 className="text-lg font-semibold mb-3 text-beach-700">Localização no mapa:</h2>
         <Map
@@ -132,10 +134,64 @@ const ListingDetail = () => {
             },
           ]}
           height="300px"
-          initialCenter={[listing.longitude, listing.latitude]}
           zoom={15}
+          category={categorySlug}
         />
         <div className="mt-2 text-sm text-muted-foreground">{listing.address}</div>
+      </div>
+    );
+  } 
+  // For service listings - exact location
+  else if (categorySlug === "servicos" && "location" in listing) {
+    // Here we would need real coordinates for the service
+    // In a real app, this would come from the database
+    // For now, let's use a placeholder location for services in Praia Grande
+    const serviceLat = -24.0078;
+    const serviceLng = -46.4121;
+    mapSection = (
+      <div className="my-8">
+        <h2 className="text-lg font-semibold mb-3 text-beach-700">Localização do serviço:</h2>
+        <Map
+          pins={[
+            {
+              latitude: serviceLat,
+              longitude: serviceLng,
+              title: listing.title,
+            },
+          ]}
+          height="300px"
+          zoom={15}
+          category={categorySlug}
+        />
+        <div className="mt-2 text-sm text-muted-foreground">{listing.location}</div>
+      </div>
+    );
+  }
+  // For all other listings - neighborhood only
+  else if (listing.location) {
+    // Use a generalized coordinate for the neighborhood in Praia Grande
+    // This only shows the general area, not the exact address
+    const neighborhoodLat = -24.0078;
+    const neighborhoodLng = -46.4121;
+    mapSection = (
+      <div className="my-8">
+        <h2 className="text-lg font-semibold mb-3 text-beach-700">Localização aproximada:</h2>
+        <Map
+          pins={[
+            {
+              latitude: neighborhoodLat,
+              longitude: neighborhoodLng,
+              title: listing.location, // Just show the neighborhood name
+            },
+          ]}
+          height="300px"
+          zoom={13} // Lower zoom to only show neighborhood
+          category={categorySlug}
+        />
+        <div className="mt-2 text-sm text-muted-foreground">
+          Região: {listing.location}
+          <span className="ml-2 text-xs text-beach-500">(Localização aproximada por segurança)</span>
+        </div>
       </div>
     );
   }
@@ -220,8 +276,8 @@ const ListingDetail = () => {
               </div>
             </div>
 
-            {/* Mostrar mapa para bares e restaurantes */}
-            {barMapSection}
+            {/* Add the map section here */}
+            {mapSection}
             
             <div>
               <h2 className="text-xl font-semibold mb-4">Descrição</h2>

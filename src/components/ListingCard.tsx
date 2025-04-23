@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "./ui/card";
@@ -7,6 +6,7 @@ import { formatDistanceToNow, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Listing } from "@/types";
 import { categories } from "@/data/mockData";
+import { MapPin } from "lucide-react";
 
 type ListingCardProps = {
   listing: Listing;
@@ -64,7 +64,9 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
           </p>
         </CardContent>
         <CardFooter className="flex justify-between p-4 pt-0 text-xs text-muted-foreground">
-          <span>{listing.location}</span>
+          <span className="flex items-center">
+            <MapPin className="mr-1 h-3 w-3" /> {listing.location}
+          </span>
           <span>{formattedDate}</span>
         </CardFooter>
       </Card>
