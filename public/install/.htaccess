@@ -1,0 +1,13 @@
+
+# Enable rewriting
+RewriteEngine On
+
+# Redirect direct PHP file access to the installer UI
+RewriteCond %{REQUEST_URI} !^/install/index.html$ [NC]
+RewriteCond %{REQUEST_FILENAME} \.php$
+RewriteRule ^(.*)$ index.html [L,R=301]
+
+# Process PHP files
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>

@@ -7,8 +7,10 @@ import { toast } from "sonner";
 type UserRole = "user" | "admin";
 
 interface User {
+  id?: string;
   username: string;
   role: UserRole;
+  email?: string;
 }
 
 interface AuthContextType {
@@ -24,8 +26,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 // Define demo users
 const DEMO_USERS = [
-  { username: "user", password: "1234", role: "user" as UserRole },
-  { username: "admin", password: "9764", role: "admin" as UserRole },
+  { id: "1", username: "user", password: "1234", role: "user" as UserRole, email: "user@example.com" },
+  { id: "2", username: "admin", password: "9764", role: "admin" as UserRole, email: "admin@example.com" },
 ];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -42,14 +44,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Login function
   const login = (username: string, password: string): boolean => {
+    // First, attempt to login with demo users
     const foundUser = DEMO_USERS.find(
       (u) => u.username === username && u.password === password
     );
 
     if (foundUser) {
       const userData = {
+        id: foundUser.id,
         username: foundUser.username,
         role: foundUser.role,
+        email: foundUser.email,
       };
       
       // Save user to state and localStorage
@@ -58,10 +63,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       toast.success("Login realizado com sucesso!");
       return true;
-    } else {
-      toast.error("Usuário ou senha inválidos");
-      return false;
-    }
+    } 
+    
+    // If demo login fails, here you would attempt to login with the database
+    // For now, just simulate a failure
+    toast.error("Usuário ou senha inválidos");
+    return false;
   };
 
   // Logout function

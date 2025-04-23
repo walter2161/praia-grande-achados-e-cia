@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -50,8 +49,10 @@ const CategoryPage = () => {
         // Filter by category
         const filteredData = data.filter(listing => listing.category === category.slug);
         
-        // Extract subcategories
-        const uniqueSubcategories = [...new Set(filteredData.map(item => item.subcategory))];
+        // Extract subcategories - fix the type error here
+        const uniqueSubcategories = [...new Set(filteredData.map(item => 
+          item.subcategory ? String(item.subcategory) : ''
+        ).filter(Boolean))];
         
         setListings(filteredData);
         setSubcategories(uniqueSubcategories);
@@ -68,7 +69,8 @@ const CategoryPage = () => {
         // Use mock data as fallback
         import(`@/data/${category.slug}Listings`).then((module) => {
           setListings(module.default || []);
-          setSubcategories([...new Set((module.default || []).map((item: any) => item.subcategory))]);
+          const subcats = [...new Set((module.default || []).map((item: any) => item.subcategory))];
+          setSubcategories(subcats);
         }).catch((err) => {
           console.error("Error loading fallback data:", err);
         });
@@ -79,6 +81,14 @@ const CategoryPage = () => {
     
     loadListings();
   }, [category, toast]);
+
+  // Filters for real estate listings
+  const finalidadeOptions = [
+    { value: "todas", label: "Todas" },
+    { value: "Locação", label: "Locação" },
+    { value: "Venda", label: "Venda" },
+    { value: "Troca", label: "Troca" }
+  ];
 
   if (!category) {
     return (
@@ -131,14 +141,6 @@ const CategoryPage = () => {
     
     return filtered;
   }, [listings, selectedSubcategory, category.slug, finalidade]);
-
-  // Filters for real estate listings
-  const finalidadeOptions = [
-    { value: "todas", label: "Todas" },
-    { value: "Locação", label: "Locação" },
-    { value: "Venda", label: "Venda" },
-    { value: "Troca", label: "Troca" }
-  ];
 
   return (
     <MainLayout>
