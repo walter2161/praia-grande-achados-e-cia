@@ -55,11 +55,11 @@ const Index = () => {
             zIndex: 0,
           }}
         />
-        {/* Orange gradient overlay */}
+        {/* Orange gradient overlay with 25% opacity */}
         <div
           className="absolute inset-0 w-full h-full"
           style={{
-            background: "linear-gradient(180deg, rgba(255,102,0,0.70) 0%, rgba(255,102,0,0.72) 80%)",
+            background: "linear-gradient(180deg, rgba(255,102,0,0.25) 0%, rgba(255,102,0,0.25) 80%)",
             zIndex: 1,
           }}
         />

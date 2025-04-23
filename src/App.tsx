@@ -18,6 +18,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
 import Planos from "./pages/Planos";
+import Error404 from "./pages/Error404";
 
 // Protected route component
 const ProtectedRoute = ({ element }: { element: JSX.Element }) => {
@@ -49,7 +50,7 @@ const App = () => (
             <Route path="/perfil" element={<Profile />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/planos" element={<Planos />} />
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<Error404 />} />
           </Routes>
           <Toaster />
           <Sonner />
