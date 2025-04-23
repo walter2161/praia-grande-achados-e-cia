@@ -24,8 +24,8 @@ const formatPrice = (price: number | string) => {
   return price;
 };
 
-// Fixed path for the placeholder image - removed "/public" prefix
-const DEFAULT_LISTING_IMAGE = "/lovable-uploads/28dd9cf1-2ee6-484f-bb8c-bfe3b57cc7f7.png";
+// Updated path for the new placeholder image
+const DEFAULT_LISTING_IMAGE = "/lovable-uploads/845a4676-320a-4747-8f03-6ab8347d8498.png";
 
 const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
   const category = categories.find((cat) => cat.slug === listing.category);
