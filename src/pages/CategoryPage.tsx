@@ -49,10 +49,10 @@ const CategoryPage = () => {
         // Filter by category
         const filteredData = data.filter(listing => listing.category === category.slug);
         
-        // Extract subcategories - fix the type error here
+        // Extract subcategories - fixing the type issue here by explicitly casting to string array
         const uniqueSubcategories = [...new Set(filteredData.map(item => 
           item.subcategory ? String(item.subcategory) : ''
-        ).filter(Boolean))];
+        ).filter(Boolean))] as string[];
         
         setListings(filteredData);
         setSubcategories(uniqueSubcategories);
@@ -69,7 +69,7 @@ const CategoryPage = () => {
         // Use mock data as fallback
         import(`@/data/${category.slug}Listings`).then((module) => {
           setListings(module.default || []);
-          const subcats = [...new Set((module.default || []).map((item: any) => item.subcategory))];
+          const subcats = [...new Set((module.default || []).map((item: any) => item.subcategory))] as string[];
           setSubcategories(subcats);
         }).catch((err) => {
           console.error("Error loading fallback data:", err);
