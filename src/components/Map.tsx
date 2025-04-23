@@ -12,6 +12,7 @@ type MapProps = {
   height?: string;
   initialCenter?: [number, number];
   zoom?: number;
+  category?: string; // Add category prop
 };
 
 // Gera um src para o iframe do Google Maps focado no marcador principal
@@ -20,9 +21,21 @@ function generateGoogleMapsEmbedSrc({
   longitude,
   zoom = 15,
   title = '',
-}: { latitude: number; longitude: number; zoom?: number; title?: string }) {
-  // Embed padrão, funciona sem API key para view estática
-  return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
+  category = '', // Add category parameter
+}: { 
+  latitude: number; 
+  longitude: number; 
+  zoom?: number; 
+  title?: string;
+  category?: string;
+}) {
+  // For services and bars/restaurants, show exact location
+  if (category === 'servicos' || category === 'bares-restaurantes') {
+    return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
+  }
+  
+  // For other categories, use a lower zoom level to only show neighborhood
+  return `https://www.google.com/maps?q=${latitude},${longitude}&z=13&output=embed`;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -30,17 +43,20 @@ const Map: React.FC<MapProps> = ({
   height = "300px",
   initialCenter,
   zoom = 15,
+  category,
 }) => {
   // Usa o primeiro pin como central do mapa
   const centerPin =
     pins && pins.length > 0
       ? pins[0]
       : { latitude: -24.01556, longitude: -46.41322, title: "" };
+
   const mapSrc = generateGoogleMapsEmbedSrc({
     latitude: centerPin.latitude,
     longitude: centerPin.longitude,
-    zoom,
+    zoom: category === 'servicos' || category === 'bares-restaurantes' ? zoom : 13,
     title: centerPin.title,
+    category,
   });
 
   return (
@@ -61,3 +77,4 @@ const Map: React.FC<MapProps> = ({
 };
 
 export default Map;
+
