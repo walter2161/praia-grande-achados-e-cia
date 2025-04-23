@@ -152,6 +152,11 @@ export default function Header() {
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
+          {/* NOVO LINK PLANOS */}
+          <Link to="/planos" className="text-foreground hover:text-primary">
+            Planos
+          </Link>
+          
           <WeatherCapsule />
           
           {isAuthenticated() ? (
@@ -170,35 +175,12 @@ export default function Header() {
             </Link>
           )}
 
-          {/* NOVO LINK PLANOS */}
-          <Link to="/planos" className="text-foreground hover:text-primary">
-            Planos
-          </Link>
-
-          {isAuthenticated() ? (
-            <Link to="/criar-anuncio" className="md:hidden">
-              <Button size="icon" variant="ghost">
-                <Plus className="h-5 w-5" />
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/login?redirect=/criar-anuncio" className="md:hidden">
-              <Button size="icon" variant="ghost">
-                <Plus className="h-5 w-5" />
-              </Button>
-            </Link>
-          )}
-
           {/* MOBILE: exibe o botão Planos no menu mobile */}
           <Link to="/planos" className="md:hidden">
             <Button size="icon" variant="ghost">
               <span className="font-bold text-sm">P</span>
             </Button>
           </Link>
-
-          {/* <Button size="icon" variant="ghost">
-            <Bell className="h-5 w-5" />
-          </Button> */}
 
           {isAuthenticated() ? (
             <DropdownMenu>
