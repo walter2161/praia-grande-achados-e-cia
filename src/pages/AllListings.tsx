@@ -7,15 +7,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search } from "lucide-react";
 import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
-import { 
-  allListings, 
-  autoListings, 
-  jobListings, 
-  realEstateListings, 
-  serviceListings,
-  categories 
-} from "@/data/mockData";
+import { categories } from "@/data/mockData";
 import { useSearchParams } from "react-router-dom";
+import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
+import { Listing } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 const AllListings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -24,6 +21,12 @@ const AllListings = () => {
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [sortOption, setSortOption] = useState("recent");
   const [activeTab, setActiveTab] = useState("all");
+  const { toast } = useToast();
+  
+  // State for storing listings from the Google Sheets
+  const [allListings, setAllListings] = useState<Listing[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   
   // Update URL when search query changes
   useEffect(() => {
@@ -35,8 +38,43 @@ const AllListings = () => {
     setSearchParams(searchParams);
   }, [searchQuery, setSearchParams]);
   
+  // Load listings from Google Sheets
+  useEffect(() => {
+    const loadListings = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Fetch from Google Sheets
+        const listings = await fetchSheetData<Listing>(SheetNames.LISTINGS);
+        setAllListings(listings);
+      } catch (error) {
+        console.error("Error loading listings:", error);
+        setError("Não foi possível carregar os anúncios. Por favor, tente novamente mais tarde.");
+        
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar os anúncios. Usando dados de demonstração.",
+          variant: "destructive",
+        });
+        
+        // Fallback to mock data
+        try {
+          const importedData = await import("@/data/mockData");
+          setAllListings(importedData.allListings || []);
+        } catch (err) {
+          console.error("Error loading fallback data:", err);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadListings();
+  }, [toast]);
+  
   // Filter listings based on search query
-  const filterListings = (listings) => {
+  const filterListings = (listings: Listing[]) => {
     if (!searchQuery.trim()) return listings;
     
     const query = searchQuery.toLowerCase().trim();
@@ -55,8 +93,7 @@ const AllListings = () => {
       }
       
       // Search in other relevant fields depending on listing type
-      if (listing.category === "empregos" && 
-          listing.companyName?.toLowerCase().includes(query)) {
+      if (listing.category === "empregos" && listing.companyName?.toLowerCase().includes(query)) {
         return true;
       }
       
@@ -65,7 +102,7 @@ const AllListings = () => {
   };
   
   // Sort listings based on selected option
-  const sortListings = (listings) => {
+  const sortListings = (listings: Listing[]) => {
     const listingsCopy = [...listings];
     
     switch (sortOption) {
@@ -101,13 +138,18 @@ const AllListings = () => {
   };
   
   // Process listings with filter and sort
-  const processListings = (listings) => {
+  const processListings = (listings: Listing[]) => {
     const filtered = filterListings(listings);
     return sortListings(filtered);
   };
   
+  // Get listings by category
+  const getListingsByCategory = (categorySlug: string) => {
+    return allListings.filter(listing => listing.category === categorySlug);
+  };
+  
   // Handle search submission
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     // The search is already applied through the state change
   };
@@ -152,55 +194,54 @@ const AllListings = () => {
             ))}
           </TabsList>
           
-          <TabsContent value="all">
-            {processListings(allListings).length > 0 ? (
-              <ListingGrid listings={processListings(allListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="autos">
-            {processListings(autoListings).length > 0 ? (
-              <ListingGrid listings={processListings(autoListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio de automóveis encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="empregos">
-            {processListings(jobListings).length > 0 ? (
-              <ListingGrid listings={processListings(jobListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio de empregos encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="imoveis">
-            {processListings(realEstateListings).length > 0 ? (
-              <ListingGrid listings={processListings(realEstateListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio de imóveis encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="servicos">
-            {processListings(serviceListings).length > 0 ? (
-              <ListingGrid listings={processListings(serviceListings)} />
-            ) : (
-              <div className="text-center py-8">
-                <p className="text-lg">Nenhum anúncio de serviços encontrado com os termos de busca.</p>
-              </div>
-            )}
-          </TabsContent>
+          {isLoading ? (
+            <div className="py-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="border rounded-md p-4 space-y-3">
+                  <Skeleton className="h-40 w-full" />
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <Skeleton className="h-4 w-2/3" />
+                </div>
+              ))}
+            </div>
+          ) : error ? (
+            <div className="text-center py-8">
+              <p className="text-lg text-destructive">{error}</p>
+              <button 
+                className="mt-4 px-4 py-2 bg-primary text-white rounded-md"
+                onClick={() => window.location.reload()}
+              >
+                Tentar novamente
+              </button>
+            </div>
+          ) : (
+            <>
+              <TabsContent value="all">
+                {processListings(allListings).length > 0 ? (
+                  <ListingGrid listings={processListings(allListings)} />
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-lg">Nenhum anúncio encontrado com os termos de busca.</p>
+                  </div>
+                )}
+              </TabsContent>
+              
+              {categories.map((category) => (
+                <TabsContent key={category.id} value={category.slug}>
+                  {processListings(getListingsByCategory(category.slug)).length > 0 ? (
+                    <ListingGrid listings={processListings(getListingsByCategory(category.slug))} />
+                  ) : (
+                    <div className="text-center py-8">
+                      <p className="text-lg">
+                        Nenhum anúncio de {category.name.toLowerCase()} encontrado com os termos de busca.
+                      </p>
+                    </div>
+                  )}
+                </TabsContent>
+              ))}
+            </>
+          )}
         </Tabs>
       </div>
     </MainLayout>
@@ -208,3 +249,4 @@ const AllListings = () => {
 };
 
 export default AllListings;
+

@@ -4,52 +4,12 @@ import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import Map from "@/components/Map";
-import {
-  categories,
-  autoListings,
-  jobListings,
-  realEstateListings,
-  serviceListings,
-  baresRestaurantesListings,
-  itensListings
-} from "@/data/mockData";
+import { categories } from "@/data/mockData";
 import { Category, Listing, BarRestaurantListing, RealEstateListing } from "@/types";
-import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-const listingsMap: Record<string, { listings: Listing[]; subcategories: string[] }> = {
-  autos: {
-    listings: autoListings,
-    subcategories: [...new Set(autoListings.map(item => item.subcategory))],
-  },
-  empregos: {
-    listings: jobListings,
-    subcategories: [...new Set(jobListings.map(item => item.subcategory))],
-  },
-  imoveis: {
-    listings: realEstateListings,
-    subcategories: [...new Set(realEstateListings.map(item => item.subcategory))],
-  },
-  servicos: {
-    listings: serviceListings,
-    subcategories: [...new Set(serviceListings.map(item => item.subcategory))],
-  },
-  "bares-restaurantes": {
-    listings: baresRestaurantesListings,
-    subcategories: [...new Set(baresRestaurantesListings.map(item => item.subcategory))],
-  },
-  itens: {
-    listings: itensListings,
-    subcategories: [...new Set(itensListings.map(item => item.subcategory))],
-  },
-};
-
-const finalidadeOptions = [
-  { value: "todas", label: "Todas" },
-  { value: "Locação", label: "Locação" },
-  { value: "Venda", label: "Venda" },
-  { value: "Troca", label: "Troca" }
-];
+import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useToast } from "@/hooks/use-toast";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -57,6 +17,13 @@ const CategoryPage = () => {
   const selectedSubcategory = searchParams.get("subcategoria") ?? "todas";
   const finalidadeFromParams = searchParams.get("finalidade") ?? "todas";
   const [finalidade, setFinalidade] = useState<string>(finalidadeFromParams);
+  const { toast } = useToast();
+  
+  // State for holding listings and loading state
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [subcategories, setSubcategories] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const category = categories.find(cat => cat.slug === slug) as Category;
 
@@ -67,6 +34,51 @@ const CategoryPage = () => {
   useEffect(() => {
     setFinalidade(finalidadeFromParams);
   }, [finalidadeFromParams, slug]);
+  
+  // Fetch listings from Google Sheets when category changes
+  useEffect(() => {
+    if (!category) return;
+    
+    const loadListings = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        // Fetch listings from Google Sheets
+        const data = await fetchSheetData<Listing>(SheetNames.LISTINGS);
+        
+        // Filter by category
+        const filteredData = data.filter(listing => listing.category === category.slug);
+        
+        // Extract subcategories
+        const uniqueSubcategories = [...new Set(filteredData.map(item => item.subcategory))];
+        
+        setListings(filteredData);
+        setSubcategories(uniqueSubcategories);
+      } catch (error) {
+        console.error("Error loading listings:", error);
+        setError("Não foi possível carregar os anúncios. Por favor, tente novamente mais tarde.");
+        
+        toast({
+          title: "Erro",
+          description: "Não foi possível carregar os anúncios. Usando dados de demonstração.",
+          variant: "destructive",
+        });
+        
+        // Use mock data as fallback
+        import(`@/data/${category.slug}Listings`).then((module) => {
+          setListings(module.default || []);
+          setSubcategories([...new Set((module.default || []).map((item: any) => item.subcategory))]);
+        }).catch((err) => {
+          console.error("Error loading fallback data:", err);
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadListings();
+  }, [category, toast]);
 
   if (!category) {
     return (
@@ -77,8 +89,6 @@ const CategoryPage = () => {
       </MainLayout>
     );
   }
-
-  const { listings, subcategories } = listingsMap[category.slug] || { listings: [], subcategories: [] };
 
   const handleChangeFiltro = (val: string) => {
     if (val === "todas") {
@@ -103,9 +113,11 @@ const CategoryPage = () => {
 
   const filteredListings = useMemo(() => {
     let filtered = listings;
+    
     if (selectedSubcategory !== "todas") {
       filtered = filtered.filter(listing => listing.subcategory === selectedSubcategory);
     }
+    
     if (category.slug === "imoveis" && finalidade !== "todas") {
       filtered = filtered.filter(listing => {
         const realListing = listing as RealEstateListing;
@@ -116,10 +128,17 @@ const CategoryPage = () => {
         );
       });
     }
+    
     return filtered;
   }, [listings, selectedSubcategory, category.slug, finalidade]);
 
-  // Removido mapSection dos bares/restaurantes.
+  // Filters for real estate listings
+  const finalidadeOptions = [
+    { value: "todas", label: "Todas" },
+    { value: "Locação", label: "Locação" },
+    { value: "Venda", label: "Venda" },
+    { value: "Troca", label: "Troca" }
+  ];
 
   return (
     <MainLayout>
@@ -195,9 +214,28 @@ const CategoryPage = () => {
           </RadioGroup>
         </div>
 
-        {/* Mapa geral REMOVIDO para bares/restaurantes */}
-
-        {filteredListings.length > 0 ? (
+        {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="border rounded-md p-4 space-y-3">
+                <Skeleton className="h-40 w-full" />
+                <Skeleton className="h-6 w-3/4" />
+                <Skeleton className="h-4 w-1/2" />
+                <Skeleton className="h-4 w-2/3" />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <p className="text-lg text-destructive">{error}</p>
+            <button 
+              className="mt-4 px-4 py-2 bg-primary text-white rounded-md"
+              onClick={() => window.location.reload()}
+            >
+              Tentar novamente
+            </button>
+          </div>
+        ) : filteredListings.length > 0 ? (
           <ListingGrid listings={filteredListings} />
         ) : (
           <p className="text-muted-foreground">Nenhum anúncio encontrado nesta subcategoria.</p>
