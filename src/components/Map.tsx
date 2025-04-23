@@ -25,6 +25,7 @@ function generateGoogleMapsEmbedSrc({
   title = '',
   category = '',
   neighborhood = '',
+  address = '',
 }: { 
   latitude: number; 
   longitude: number; 
@@ -32,10 +33,12 @@ function generateGoogleMapsEmbedSrc({
   title?: string;
   category?: string;
   neighborhood?: string;
+  address?: string;
 }) {
-  // For services and bars/restaurants, show exact location with pin
+  // For services and bars/restaurants, show exact location with pin and address
   if (category === 'servicos' || category === 'bares-restaurantes') {
-    return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
+    const locationQuery = address ? encodeURIComponent(address) : `${latitude},${longitude}`;
+    return `https://www.google.com/maps?q=${locationQuery}&z=${zoom}&output=embed`;
   }
   
   // For other categories, show the neighborhood area
@@ -65,6 +68,7 @@ const Map: React.FC<MapProps> = ({
     title: centerPin.title,
     category,
     neighborhood,
+    address,  // Pass the address to the src generator function
   });
 
   // Determine the appropriate title for the map
