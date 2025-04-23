@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "./ui/card";
@@ -24,9 +23,6 @@ const formatPrice = (price: number | string) => {
   return price;
 };
 
-// Updated path for the new placeholder image
-const DEFAULT_LISTING_IMAGE = "/lovable-uploads/845a4676-320a-4747-8f03-6ab8347d8498.png";
-
 const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
   const category = categories.find((cat) => cat.slug === listing.category);
   const formattedDate = formatDistanceToNow(parseISO(listing.date), {
@@ -47,7 +43,7 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
       <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
         <div className="relative aspect-video overflow-hidden">
           <img
-            src={listing.images[0] || DEFAULT_LISTING_IMAGE}
+            src={listing.images[0] || "/lovable-uploads/845a4676-320a-4747-8f03-6ab8347d8498.png"}
             alt={listing.title}
             className="h-full w-full object-cover"
           />
