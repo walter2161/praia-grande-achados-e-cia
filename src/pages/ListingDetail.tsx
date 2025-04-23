@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -111,6 +112,9 @@ const ListingDetail = () => {
 
   // Para evitar erro se não houver imagens
   const validImages = listing.images.filter(Boolean).slice(0, 6);
+  
+  // Definindo o caminho da imagem placeholder
+  const placeholderImage = "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png";
   
   // Map section for any listing type
   let mapSection = null;
@@ -248,6 +252,14 @@ const ListingDetail = () => {
                       className="object-cover w-full h-full"
                       style={{ width: "100%", height: "100%", maxWidth: 130, maxHeight: 130 }}
                       loading="lazy"
+                      onError={(e) => {
+                        // Se a imagem falhar ao carregar, use o placeholder
+                        const target = e.target as HTMLImageElement;
+                        if (target.src !== placeholderImage) {
+                          console.log("Image failed to load, using placeholder instead");
+                          target.src = placeholderImage;
+                        }
+                      }}
                     />
                   </button>
                 ))}
@@ -264,10 +276,18 @@ const ListingDetail = () => {
                 }}
               >
                 <img
-                  src={validImages[mainImage] || "/placeholder.svg"}
+                  src={validImages[mainImage] || placeholderImage}
                   alt={`${listing.title} imagem ${mainImage + 1}`}
                   className="w-full h-full object-cover"
                   style={{ maxWidth: 420, maxHeight: 420, aspectRatio: "1/1" }}
+                  onError={(e) => {
+                    // Se a imagem falhar ao carregar, use o placeholder
+                    const target = e.target as HTMLImageElement;
+                    if (target.src !== placeholderImage) {
+                      console.log("Image failed to load, using placeholder instead");
+                      target.src = placeholderImage;
+                    }
+                  }}
                 />
               </div>
             </div>
