@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,15 +13,9 @@ import { getRandomBannerImage } from "@/lib/heroImages";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const [bannerImageUrl, setBannerImageUrl] = useState("");
 
-  // Carrega uma imagem de banner aleatória quando o componente é montado
-  useEffect(() => {
-    // Obter imagem aleatória
-    const imageUrl = getRandomBannerImage();
-    setBannerImageUrl(imageUrl);
-    console.log("Banner image loaded:", imageUrl); // Debug log
-  }, []);
+  // Banner: pegar imagem aleatória só na primeira renderização:
+  const randomBanner = useMemo(() => getRandomBannerImage(), []);
 
   // Get the 8 most recent listings
   const recentListings = [
@@ -52,23 +45,21 @@ const Index = () => {
         }}
       >
         {/* BG image */}
-        {bannerImageUrl && (
-          <div
-            className="absolute inset-0 w-full h-full"
-            aria-hidden="true"
-            style={{
-              backgroundImage: `url(${bannerImageUrl})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              zIndex: 0,
-            }}
-          />
-        )}
-        {/* Orange gradient overlay with reduced opacity (15% instead of 35%) */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          aria-hidden="true"
+          style={{
+            backgroundImage: `url(${randomBanner})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            zIndex: 0,
+          }}
+        />
+        {/* Orange gradient overlay with 35% opacity */}
         <div
           className="absolute inset-0 w-full h-full"
           style={{
-            background: "linear-gradient(180deg, rgba(255,102,0,0.15) 0%, rgba(255,102,0,0.15) 80%)",
+            background: "linear-gradient(180deg, rgba(255,102,0,0.35) 0%, rgba(255,102,0,0.35) 80%)",
             zIndex: 1,
           }}
         />

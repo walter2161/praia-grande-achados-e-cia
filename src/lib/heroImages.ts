@@ -107,16 +107,8 @@ export const bannerImages = [
   "https://images.unsplash.com/photo-1501287167-99f68a7e2aab?auto=format&fit=crop&w=1200&q=80",
 ];
 
-// Função para obter uma imagem de banner aleatória com pré-carregamento
 export function getRandomBannerImage() {
-  // Gerar um índice aleatório a cada chamada
   const idx = Math.floor(Math.random() * bannerImages.length);
-  const imageUrl = bannerImages[idx];
-  
-  // Iniciar pré-carregamento da imagem em segundo plano
-  const img = new Image();
-  img.src = imageUrl;
-  
-  // Retornar a URL imediatamente
-  return imageUrl;
+  return bannerImages[idx];
 }
+
