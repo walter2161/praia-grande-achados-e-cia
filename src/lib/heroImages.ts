@@ -107,19 +107,12 @@ export const bannerImages = [
   "https://images.unsplash.com/photo-1501287167-99f68a7e2aab?auto=format&fit=crop&w=1200&q=80",
 ];
 
-// Use a more reliable approach for image caching and loading
-let cachedRandomImage: string | null = null;
-
+// Função melhorada para obter uma imagem de banner aleatória
 export function getRandomBannerImage() {
-  // If we already have a cached image, return it
-  if (!cachedRandomImage) {
-    const idx = Math.floor(Math.random() * bannerImages.length);
-    cachedRandomImage = bannerImages[idx];
-    
-    // Preload the image
-    const img = new Image();
-    img.src = cachedRandomImage;
-  }
+  // Gerar um índice aleatório a cada chamada
+  const idx = Math.floor(Math.random() * bannerImages.length);
+  const imageUrl = bannerImages[idx];
   
-  return cachedRandomImage;
+  // Retornar a URL imediatamente
+  return imageUrl;
 }

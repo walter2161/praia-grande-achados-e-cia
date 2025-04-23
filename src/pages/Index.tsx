@@ -1,4 +1,5 @@
-import { useState, useMemo, useEffect } from "react";
+
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,8 +16,9 @@ const Index = () => {
   const navigate = useNavigate();
   const [bannerImageUrl, setBannerImageUrl] = useState("");
 
-  // Get banner image on component mount
+  // Carrega uma imagem de banner aleatória quando o componente é montado
   useEffect(() => {
+    // Obter imagem aleatória
     const imageUrl = getRandomBannerImage();
     setBannerImageUrl(imageUrl);
   }, []);
