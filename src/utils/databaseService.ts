@@ -58,7 +58,7 @@ export const fetchListingsFromDatabase = async (categorySlug: string): Promise<{
     
     return {
       listings: data.listings,
-      subcategories: data.subcategories
+      subcategories: data.subcategories as string[]  // Explicitly cast to string[] to fix the type error
     };
   } catch (error) {
     console.error("Error fetching from database:", error);
@@ -73,8 +73,8 @@ export const fetchListingsFromDatabase = async (categorySlug: string): Promise<{
     try {
       const { default: mockData } = await import(`@/data/${categorySlug}Listings`);
       
-      // Extract unique subcategories
-      const subcategories = [...new Set(mockData.map((item: any) => item.subcategory))].filter(Boolean);
+      // Extract unique subcategories and explicitly type as string[]
+      const subcategories = [...new Set(mockData.map((item: any) => item.subcategory))].filter(Boolean) as string[];
       
       return {
         listings: mockData,
