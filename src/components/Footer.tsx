@@ -33,6 +33,21 @@ export default function Footer() {
           <h3 className="text-lg font-semibold mb-4">Links Úteis</h3>
           <ul className="space-y-2">
             <li>
+              <Link to="/criar-anuncio" className="text-muted-foreground hover:text-beach-600 transition-colors">
+                Anunciar
+              </Link>
+            </li>
+            <li>
+              <Link to="/planos" className="text-muted-foreground hover:text-beach-600 transition-colors">
+                Planos
+              </Link>
+            </li>
+            <li>
+              <Link to="/perfil" className="text-muted-foreground hover:text-beach-600 transition-colors">
+                Meu Perfil
+              </Link>
+            </li>
+            <li>
               <Link to="/sobre" className="text-muted-foreground hover:text-beach-600 transition-colors">
                 Sobre Nós
               </Link>
