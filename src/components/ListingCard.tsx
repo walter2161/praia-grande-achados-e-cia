@@ -37,17 +37,27 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
     displayPrice = formatPrice(listing.price);
   }
 
-  console.log('Placeholder image path:', "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png");
+  // Use the approved image placeholder path
+  const placeholderImage = "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png";
+  console.log('Using placeholder image path:', placeholderImage);
 
   return (
     <Link to={`/anuncio/${listing.category}/${listing.id}`}>
       <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
         <div className="relative aspect-video overflow-hidden bg-gray-100">
           <img
-            src={listing.images[0] || "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png"}
+            src={listing.images && listing.images.length > 0 ? listing.images[0] : placeholderImage}
             alt={listing.title}
             className="h-full w-full object-cover"
             loading="lazy"
+            onError={(e) => {
+              // If the image fails to load, use the placeholder
+              const target = e.target as HTMLImageElement;
+              if (target.src !== placeholderImage) {
+                console.log("Image failed to load, using placeholder instead");
+                target.src = placeholderImage;
+              }
+            }}
           />
           {category && (
             <Badge
