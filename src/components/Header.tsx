@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
@@ -152,13 +153,6 @@ export default function Header() {
 
         {/* Right: actions */}
         <div className="flex items-center gap-2">
-          {/* NOVO LINK PLANOS */}
-          <Link to="/planos" className="text-foreground hover:text-primary">
-            Planos
-          </Link>
-          
-          <WeatherCapsule />
-          
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
               <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
@@ -175,6 +169,13 @@ export default function Header() {
             </Link>
           )}
 
+          {/* NOVO LINK PLANOS */}
+          <Link to="/planos" className="text-foreground hover:text-primary">
+            Planos
+          </Link>
+          
+          <WeatherCapsule />
+          
           {/* MOBILE: exibe o botão Planos no menu mobile */}
           <Link to="/planos" className="md:hidden">
             <Button size="icon" variant="ghost">
