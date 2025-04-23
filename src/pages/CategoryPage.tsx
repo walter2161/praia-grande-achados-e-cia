@@ -6,7 +6,7 @@ import Map from "@/components/Map";
 import { categories } from "@/data/mockData";
 import { Category, Listing, BarRestaurantListing, RealEstateListing } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { fetchListingsFromDatabase } from "@/utils/databaseService";
+import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 
@@ -34,7 +34,7 @@ const CategoryPage = () => {
     setFinalidade(finalidadeFromParams);
   }, [finalidadeFromParams, slug]);
   
-  // Fetch listings from SQL database when category changes
+  // Fetch listings from Google Sheets when category changes
   useEffect(() => {
     if (!category) return;
     
@@ -43,14 +43,16 @@ const CategoryPage = () => {
         setIsLoading(true);
         setError(null);
         
-        // Fetch listings from SQL database
-        const result = await fetchListingsFromDatabase(category.slug);
+        // Fetch listings from Google Sheets
+        const data = await fetchSheetData<Listing>(SheetNames.LISTINGS);
         
-        // Filter by category (SQL query already filters, but we'll keep this as a safeguard)
-        const filteredData = result.listings;
+        // Filter by category
+        const filteredData = data.filter(listing => listing.category === category.slug);
         
-        // Extract subcategories - now coming from the result
-        const uniqueSubcategories = result.subcategories as string[];
+        // Extract subcategories - fixing the type issue here by explicitly casting to string array
+        const uniqueSubcategories = [...new Set(filteredData.map(item => 
+          item.subcategory ? String(item.subcategory) : ''
+        ).filter(Boolean))] as string[];
         
         setListings(filteredData);
         setSubcategories(uniqueSubcategories);
@@ -118,7 +120,7 @@ const CategoryPage = () => {
       setSearchParams(searchParams);
     }
   };
-  
+
   const filteredListings = useMemo(() => {
     let filtered = listings;
     

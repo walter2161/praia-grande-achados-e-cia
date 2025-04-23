@@ -4,8 +4,6 @@ RewriteEngine On
 
 # Redirect direct PHP file access to the installer UI
 RewriteCond %{REQUEST_URI} !^/install/index.html$ [NC]
-RewriteCond %{REQUEST_URI} !^/install/install.php$ [NC]
-RewriteCond %{REQUEST_URI} !^/install/server-check.php$ [NC]
 RewriteCond %{REQUEST_FILENAME} \.php$
 RewriteRule ^(.*)$ index.html [L,R=301]
 
@@ -13,15 +11,3 @@ RewriteRule ^(.*)$ index.html [L,R=301]
 <FilesMatch "\.php$">
     SetHandler application/x-httpd-php
 </FilesMatch>
-
-# Set security headers
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
-    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;"
-</IfModule>
-
-# Disable directory browsing
-Options -Indexes

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +9,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import { categories } from "@/data/mockData";
 import { useSearchParams } from "react-router-dom";
-import { fetchListingsFromDatabase } from "@/utils/databaseService";
+import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
 import { Listing } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
@@ -22,7 +23,7 @@ const AllListings = () => {
   const [activeTab, setActiveTab] = useState("all");
   const { toast } = useToast();
   
-  // State for storing listings from the database
+  // State for storing listings from the Google Sheets
   const [allListings, setAllListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,16 +38,16 @@ const AllListings = () => {
     setSearchParams(searchParams);
   }, [searchQuery, setSearchParams]);
   
-  // Load listings from database
+  // Load listings from Google Sheets
   useEffect(() => {
     const loadListings = async () => {
       try {
         setIsLoading(true);
         setError(null);
         
-        // Fetch from database - using "all" as category to get all listings
-        const result = await fetchListingsFromDatabase("all");
-        setAllListings(result.listings);
+        // Fetch from Google Sheets
+        const listings = await fetchSheetData<Listing>(SheetNames.LISTINGS);
+        setAllListings(listings);
       } catch (error) {
         console.error("Error loading listings:", error);
         setError("Não foi possível carregar os anúncios. Por favor, tente novamente mais tarde.");
@@ -248,3 +249,4 @@ const AllListings = () => {
 };
 
 export default AllListings;
+
