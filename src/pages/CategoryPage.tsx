@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -67,15 +68,66 @@ const CategoryPage = () => {
         });
         
         // Use mock data as fallback
-        import(`@/data/${category.slug}Listings`).then((module) => {
-          setListings(module.default || []);
-          const subcats = [...new Set((module.default || []).map((item: any) => item.subcategory))] as string[];
-          setSubcategories(subcats);
-        }).catch((err) => {
-          console.error("Error loading fallback data:", err);
-        });
+        loadMockData();
       } finally {
         setIsLoading(false);
+      }
+    };
+    
+    // Function to load mock data when API fails
+    const loadMockData = () => {
+      try {
+        let mockDataImport;
+        
+        // Use the correct mock data import based on category slug
+        switch(category.slug) {
+          case "autos":
+            import("@/data/autoListings").then(module => {
+              setListings(module.autoListings || []);
+              const subcats = [...new Set((module.autoListings || []).map((item: any) => item.subcategory))] as string[];
+              setSubcategories(subcats.filter(Boolean));
+            });
+            break;
+          case "empregos":
+            import("@/data/jobListings").then(module => {
+              setListings(module.jobListings || []);
+              const subcats = [...new Set((module.jobListings || []).map((item: any) => item.subcategory))] as string[];
+              setSubcategories(subcats.filter(Boolean));
+            });
+            break;
+          case "imoveis":
+            import("@/data/realEstateListings").then(module => {
+              setListings(module.realEstateListings || []);
+              const subcats = [...new Set((module.realEstateListings || []).map((item: any) => item.subcategory))] as string[];
+              setSubcategories(subcats.filter(Boolean));
+            });
+            break;
+          case "servicos":
+            import("@/data/serviceListings").then(module => {
+              setListings(module.serviceListings || []);
+              const subcats = [...new Set((module.serviceListings || []).map((item: any) => item.subcategory))] as string[];
+              setSubcategories(subcats.filter(Boolean));
+            });
+            break;
+          case "bares-restaurantes":
+            import("@/data/baresRestaurantesListings").then(module => {
+              setListings(module.baresRestaurantesListings || []);
+              const subcats = [...new Set((module.baresRestaurantesListings || []).map((item: any) => item.subcategory))] as string[];
+              setSubcategories(subcats.filter(Boolean));
+            });
+            break;
+          case "itens":
+            import("@/data/itensListings").then(module => {
+              setListings(module.itensListings || []);
+              const subcats = [...new Set((module.itensListings || []).map((item: any) => item.subcategory))] as string[];
+              setSubcategories(subcats.filter(Boolean));
+            });
+            break;
+          default:
+            console.error("Unknown category slug:", category.slug);
+        }
+      } catch (err) {
+        console.error("Error loading fallback data:", err);
       }
     };
     
