@@ -35,7 +35,7 @@ const CategoryPage = () => {
     setFinalidade(finalidadeFromParams);
   }, [finalidadeFromParams, slug]);
   
-  // Fetch listings from Google Sheets when category changes
+  // Fetch listings from mock data when category changes
   useEffect(() => {
     if (!category) return;
     
@@ -44,41 +44,19 @@ const CategoryPage = () => {
         setIsLoading(true);
         setError(null);
         
-        // Fetch listings from Google Sheets
-        const data = await fetchSheetData<Listing>(SheetNames.LISTINGS);
-        
-        // Filter by category
-        const filteredData = data.filter(listing => listing.category === category.slug);
-        
-        // Extract subcategories - fixing the type issue here by explicitly casting to string array
-        const uniqueSubcategories = [...new Set(filteredData.map(item => 
-          item.subcategory ? String(item.subcategory) : ''
-        ).filter(Boolean))] as string[];
-        
-        setListings(filteredData);
-        setSubcategories(uniqueSubcategories);
+        // Skip Google Sheets fetch and go directly to mock data
+        loadMockData();
       } catch (error) {
         console.error("Error loading listings:", error);
         setError("Não foi possível carregar os anúncios. Por favor, tente novamente mais tarde.");
-        
-        toast({
-          title: "Erro",
-          description: "Não foi possível carregar os anúncios. Usando dados de demonstração.",
-          variant: "destructive",
-        });
-        
-        // Use mock data as fallback
-        loadMockData();
       } finally {
         setIsLoading(false);
       }
     };
     
-    // Function to load mock data when API fails
+    // Function to load mock data
     const loadMockData = () => {
       try {
-        let mockDataImport;
-        
         // Use the correct mock data import based on category slug
         switch(category.slug) {
           case "autos":
@@ -125,14 +103,16 @@ const CategoryPage = () => {
             break;
           default:
             console.error("Unknown category slug:", category.slug);
+            setError("Categoria não encontrada.");
         }
       } catch (err) {
         console.error("Error loading fallback data:", err);
+        setError("Erro ao carregar dados de demonstração.");
       }
     };
     
     loadListings();
-  }, [category, toast]);
+  }, [category, slug]);
 
   // Filters for real estate listings
   const finalidadeOptions = [
