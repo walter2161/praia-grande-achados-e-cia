@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter } from "./ui/card";
@@ -43,7 +44,7 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
       <Card className="h-full overflow-hidden transition-all hover:shadow-md hover:-translate-y-1">
         <div className="relative aspect-video overflow-hidden">
           <img
-            src={listing.images[0] || "/lovable-uploads/845a4676-320a-4747-8f03-6ab8347d8498.png"}
+            src={listing.images[0] || "/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png"}
             alt={listing.title}
             className="h-full w-full object-cover"
           />
