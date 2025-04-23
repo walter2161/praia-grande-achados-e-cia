@@ -50,12 +50,8 @@ const CategoryPage = () => {
         // Filter by category
         const filteredData = data.filter(listing => listing.category === category.slug);
         
-        // Extract subcategories - fix the type issue
-        const subcategoryValues = filteredData.map(item => item.subcategory);
-        // Filter out undefined/null values and ensure all values are strings
-        const uniqueSubcategories = [...new Set(subcategoryValues.filter((s): s is string => 
-          typeof s === 'string' && s !== undefined && s !== null
-        ))];
+        // Extract subcategories
+        const uniqueSubcategories = [...new Set(filteredData.map(item => item.subcategory))];
         
         setListings(filteredData);
         setSubcategories(uniqueSubcategories);
@@ -72,14 +68,7 @@ const CategoryPage = () => {
         // Use mock data as fallback
         import(`@/data/${category.slug}Listings`).then((module) => {
           setListings(module.default || []);
-          
-          // Extract subcategories from mock data with proper type checking
-          const mockSubcategoryValues = (module.default || []).map((item: any) => item.subcategory);
-          const uniqueMockSubcategories = [...new Set(mockSubcategoryValues.filter((s: any): s is string => 
-            typeof s === 'string' && s !== undefined && s !== null
-          ))];
-          
-          setSubcategories(uniqueMockSubcategories);
+          setSubcategories([...new Set((module.default || []).map((item: any) => item.subcategory))]);
         }).catch((err) => {
           console.error("Error loading fallback data:", err);
         });
