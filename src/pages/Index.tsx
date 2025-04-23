@@ -8,14 +8,14 @@ import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
 import { allListings, categories, baresRestaurantesListings, itensListings } from "@/data/mockData";
-import { getRandomBannerImage } from "@/lib/heroImages";
+import { getRandomBannerVideo } from "@/lib/heroBannerVideos";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   
-  // Get a new random banner image on every render
-  const randomBanner = getRandomBannerImage();
+  // Get a random banner video
+  const randomBanner = getRandomBannerVideo();
 
   // Get the 8 most recent listings
   const recentListings = [
@@ -44,17 +44,23 @@ const Index = () => {
           minHeight: "420px",
         }}
       >
-        {/* BG image */}
+        {/* BG Video */}
         <div
           className="absolute inset-0 w-full h-full"
           aria-hidden="true"
-          style={{
-            backgroundImage: `url(${randomBanner})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            zIndex: 0,
-          }}
-        />
+        >
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={randomBanner.poster}
+            className="object-cover w-full h-full"
+            style={{ zIndex: 0 }}
+          >
+            <source src={randomBanner.url} type="video/mp4" />
+          </video>
+        </div>
         {/* Orange gradient overlay with 15% opacity */}
         <div
           className="absolute inset-0 w-full h-full"
