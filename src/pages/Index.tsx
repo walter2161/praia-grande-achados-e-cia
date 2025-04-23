@@ -13,9 +13,9 @@ import { getRandomBannerImage } from "@/lib/heroImages";
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-
-  // Banner: pegar imagem aleatória só na primeira renderização:
-  const randomBanner = useMemo(() => getRandomBannerImage(), []);
+  
+  // Get a new random banner image on every render
+  const randomBanner = getRandomBannerImage();
 
   // Get the 8 most recent listings
   const recentListings = [
@@ -55,11 +55,11 @@ const Index = () => {
             zIndex: 0,
           }}
         />
-        {/* Orange gradient overlay with 35% opacity */}
+        {/* Orange gradient overlay with 15% opacity */}
         <div
           className="absolute inset-0 w-full h-full"
           style={{
-            background: "linear-gradient(180deg, rgba(255,102,0,0.35) 0%, rgba(255,102,0,0.35) 80%)",
+            background: "linear-gradient(180deg, rgba(255,102,0,0.15) 0%, rgba(255,102,0,0.15) 80%)",
             zIndex: 1,
           }}
         />
