@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Profile = () => {
-  const { user, logout, isAuthenticated } = useAuth();
+  const { profile, logout, isAuthenticated } = useAuth();
   
   useEffect(() => {
     // Scroll to top on component mount
@@ -35,11 +35,11 @@ const Profile = () => {
                 <div className="space-y-4">
                   <div>
                     <p className="text-sm text-muted-foreground">Usuário</p>
-                    <p className="font-medium">{user?.username}</p>
+                    <p className="font-medium">{profile?.username}</p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Tipo de Conta</p>
-                    <p className="font-medium capitalize">{user?.role}</p>
+                    <p className="font-medium capitalize">{profile?.role}</p>
                   </div>
                 </div>
               </CardContent>

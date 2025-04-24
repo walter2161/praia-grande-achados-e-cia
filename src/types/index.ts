@@ -1,120 +1,72 @@
+
 import { LucideIcon } from "lucide-react";
+
+export type Profile = {
+  id: string;
+  username: string | null;
+  document_type: 'cpf' | 'cnpj' | null;
+  document_number: string | null;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zip_code: string | null;
+  role: 'user' | 'admin';
+  created_at: string;
+};
 
 export type Category = {
   id: string;
   name: string;
-  icon: LucideIcon;
   slug: string;
-  subcategories?: string[];
+  icon: string;
+  created_at?: string;
 };
 
-export type AutoListing = {
+export type Listing = {
   id: string;
+  user_id: string;
   title: string;
-  price: number;
-  description: string;
+  description: string | null;
+  price: number | null;
+  price_description: string | null;
   images: string[];
-  location: string;
+  location: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
   date: string;
-  sellerName: string;
-  sellerContact: string;
-  category: "autos";
-  brand: string;
-  model: string;
-  year: number;
-  mileage: number;
-  fuel: string;
-  transmission: string;
-  color: string;
-  subcategory?: string;
-};
-
-export type JobListing = {
-  id: string;
-  title: string;
-  salary: number | string;
-  description: string;
-  images: string[];
-  location: string;
-  date: string;
-  companyName: string;
-  companyContact: string;
-  category: "empregos";
-  jobType: string;
-  education: string;
-  experience: string;
-  benefits: string[];
-  subcategory?: string;
-};
-
-export type RealEstateListing = {
-  id: string;
-  title: string;
-  price: number;
-  description: string;
-  images: string[];
-  location: string;
-  date: string;
-  sellerName: string;
-  sellerContact: string;
-  category: "imoveis";
-  propertyType: string;
-  size: number;
-  bedrooms: number;
-  bathrooms: number;
-  hasGarage: boolean;
-  amenities: string[];
-  subcategory?: string;
-  finalidade?: string; // Adding the finalidade property
-};
-
-export type ServiceListing = {
-  id: string;
-  title: string;
-  price: number | string;
-  description: string;
-  images: string[];
-  location: string;
-  date: string;
-  providerName: string;
-  providerContact: string;
-  category: "servicos";
-  serviceType: string;
-  availability: string;
-  experience: string;
+  category: string;
+  subcategory: string | null;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+  brand?: string;
+  model?: string;
+  year?: number;
+  mileage?: number;
+  fuel?: string;
+  transmission?: string;
+  color?: string;
+  salary?: number;
+  company_name?: string;
+  company_contact?: string;
+  job_type?: string;
+  education?: string;
+  experience?: string;
+  benefits?: string[];
+  property_type?: string;
+  size?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  has_garage?: boolean;
+  amenities?: string[];
+  finalidade?: string;
+  service_type?: string;
+  provider_name?: string;
+  provider_contact?: string;
+  availability?: string;
   rating?: number;
-  subcategory?: string;
+  created_at: string;
+  updated_at: string;
 };
-
-export type BarRestaurantListing = {
-  id: string;
-  title: string;
-  price: string | number;
-  description: string;
-  images: string[];
-  location: string;
-  address: string; // NOVO: campo de endereço
-  latitude: number; // NOVO: coordenada para o mapa
-  longitude: number; // NOVO: coordenada para o mapa
-  date: string;
-  sellerName: string;
-  sellerContact: string;
-  category: "bares-restaurantes";
-  subcategory: string;
-};
-
-export type ItemListing = {
-  id: string;
-  title: string;
-  price: number | string;
-  description: string;
-  images: string[];
-  location: string;
-  date: string;
-  sellerName: string;
-  sellerContact: string;
-  category: "itens";
-  subcategory: string;
-};
-
-export type Listing = AutoListing | JobListing | RealEstateListing | ServiceListing | BarRestaurantListing | ItemListing;

@@ -12,12 +12,12 @@ import MainLayout from "@/components/layout/MainLayout";
 import { categories } from "@/data/mockData";
 import ImageUploader from "@/components/ImageUploader";
 import { useAuth } from "@/contexts/AuthContext";
-import { createSheetRecord, SheetNames } from "@/utils/sheetsService";
+import { supabase } from "@/integrations/supabase/client";
 
 const CreateListing = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { isAuthenticated, user } = useAuth();
+  const { profile } = useAuth();
   const [category, setCategory] = useState("autos");
   const [subcategory, setSubcategory] = useState("");
   const [subcategoriesOptions, setSubcategoriesOptions] = useState<string[]>([]);
@@ -44,12 +44,13 @@ const CreateListing = () => {
     setSubcategory("");
   }, [category]);
 
-  // Initialize contact with user's info
   useEffect(() => {
-    if (user && user.email) {
-      setContact(user.email);
+    if (profile?.phone) {
+      setContact(profile.phone);
+    } else if (profile?.email) {
+      setContact(profile.email);
     }
-  }, [user]);
+  }, [profile]);
   
   const handleImageSaved = (imageId: string) => {
     setImageIds((prev) => [...prev, imageId]);
@@ -83,25 +84,25 @@ const CreateListing = () => {
     setIsSubmitting(true);
     
     try {
-      // Prepare data for submission
       const listingData = {
-        id: `listing_${Date.now()}`,
         title,
         price: category === "empregos" ? Number(price) : Number(price),
         description,
         images: imageIds,
         location,
-        date: new Date().toISOString().split('T')[0],
-        sellerName: user?.username || "Usuário Anônimo",
-        sellerContact: contact,
         category,
         subcategory,
-        userId: user?.id || "anonymous",
+        user_id: profile?.id,
         status: "pending", // All listings start as pending for admin approval
       };
       
-      // Submit to Google Sheets via the API
-      await createSheetRecord(SheetNames.LISTINGS, listingData);
+      const { data, error } = await supabase
+        .from('listings')
+        .insert(listingData)
+        .select()
+        .single();
+
+      if (error) throw error;
       
       toast({
         title: "Anúncio criado com sucesso!",
