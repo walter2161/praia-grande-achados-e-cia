@@ -9,10 +9,11 @@ import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import { categories } from "@/data/mockData";
 import { useSearchParams } from "react-router-dom";
-import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
+import { getListings, getListingsByCategory } from "@/lib/supabase";
 import { Listing } from "@/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import { allListings } from "@/data/mockData";
 
 const AllListings = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -23,8 +24,8 @@ const AllListings = () => {
   const [activeTab, setActiveTab] = useState("all");
   const { toast } = useToast();
   
-  // State for storing listings from the Google Sheets
-  const [allListings, setAllListings] = useState<Listing[]>([]);
+  // State for storing listings
+  const [listings, setListings] = useState<Listing[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -38,16 +39,16 @@ const AllListings = () => {
     setSearchParams(searchParams);
   }, [searchQuery, setSearchParams]);
   
-  // Load listings from Google Sheets
+  // Load listings from Supabase
   useEffect(() => {
     const loadListings = async () => {
       try {
         setIsLoading(true);
         setError(null);
         
-        // Fetch from Google Sheets
-        const listings = await fetchSheetData<Listing>(SheetNames.LISTINGS);
-        setAllListings(listings);
+        // Fetch from Supabase
+        const listingsData = await getListings();
+        setListings(listingsData);
       } catch (error) {
         console.error("Error loading listings:", error);
         setError("Não foi possível carregar os anúncios. Por favor, tente novamente mais tarde.");
@@ -59,13 +60,7 @@ const AllListings = () => {
         });
         
         // Fallback to mock data
-        try {
-          const importedData = await import("@/data/mockData");
-          // Type assertion to ensure compatibility with Listing[]
-          setAllListings(importedData.allListings as Listing[]);
-        } catch (err) {
-          console.error("Error loading fallback data:", err);
-        }
+        setListings(allListings as Listing[]);
       } finally {
         setIsLoading(false);
       }
@@ -145,8 +140,8 @@ const AllListings = () => {
   };
   
   // Get listings by category
-  const getListingsByCategory = (categorySlug: string) => {
-    return allListings.filter(listing => listing.category === categorySlug);
+  const getListingsByCategoryLocal = (categorySlug: string) => {
+    return listings.filter(listing => listing.category === categorySlug);
   };
   
   // Handle search submission
@@ -219,8 +214,8 @@ const AllListings = () => {
           ) : (
             <>
               <TabsContent value="all">
-                {processListings(allListings).length > 0 ? (
-                  <ListingGrid listings={processListings(allListings)} />
+                {processListings(listings).length > 0 ? (
+                  <ListingGrid listings={processListings(listings)} />
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-lg">Nenhum anúncio encontrado com os termos de busca.</p>
@@ -230,8 +225,8 @@ const AllListings = () => {
               
               {categories.map((category) => (
                 <TabsContent key={category.id} value={category.slug}>
-                  {processListings(getListingsByCategory(category.slug)).length > 0 ? (
-                    <ListingGrid listings={processListings(getListingsByCategory(category.slug))} />
+                  {processListings(getListingsByCategoryLocal(category.slug)).length > 0 ? (
+                    <ListingGrid listings={processListings(getListingsByCategoryLocal(category.slug))} />
                   ) : (
                     <div className="text-center py-8">
                       <p className="text-lg">

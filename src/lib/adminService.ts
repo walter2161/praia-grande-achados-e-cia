@@ -77,21 +77,34 @@ export async function deleteListing(listingId: string) {
 }
 
 export async function updateListing(listingId: string, listingData: Partial<Listing>) {
-  // Convert string price to number if it's a string but represents a valid number
-  if (typeof listingData.price === 'string' && !isNaN(Number(listingData.price))) {
-    listingData = {
-      ...listingData,
-      price: Number(listingData.price)
-    };
-  } else if (typeof listingData.price === 'string') {
-    // If price is a string that can't be converted to a number, remove it to avoid type errors
-    const { price, ...restData } = listingData;
-    listingData = restData;
+  // Create a clean object for Supabase that handles the price field
+  const cleanData: Record<string, any> = {};
+  
+  // Copy all fields except price
+  Object.keys(listingData).forEach(key => {
+    if (key !== 'price') {
+      cleanData[key] = listingData[key as keyof Partial<Listing>];
+    }
+  });
+  
+  // Handle price separately with type conversion
+  if (listingData.price !== undefined) {
+    if (typeof listingData.price === 'string') {
+      // Try to convert string to number
+      const numPrice = Number(listingData.price);
+      if (!isNaN(numPrice)) {
+        cleanData.price = numPrice;
+      }
+      // If it can't be converted, don't include it
+    } else {
+      // It's already a number
+      cleanData.price = listingData.price;
+    }
   }
   
   const { error } = await supabase
     .from('listings')
-    .update(listingData)
+    .update(cleanData)
     .eq('id', listingId);
 
   if (error) {
