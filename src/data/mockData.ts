@@ -8,42 +8,48 @@ import { serviceListings } from "./serviceListings";
 import { baresRestaurantesListings } from "./baresRestaurantesListings";
 import { itensListings } from "./itensListings";
 
-export const categories: (Category & { subcategories?: string[] })[] = [
+export const categories: Category[] = [
   {
     id: "1",
     name: "AUTOS",
     icon: Car,
-    slug: "autos"
+    slug: "autos",
+    subcategories: ["Carros", "Motos", "Caminhões", "Barcos"]
   },
   {
     id: "2",
     name: "EMPREGOS",
     icon: Briefcase,
-    slug: "empregos"
+    slug: "empregos",
+    subcategories: ["CLT", "PJ", "Temporário", "Estágio"]
   },
   {
     id: "3",
     name: "IMÓVEIS",
     icon: House,
-    slug: "imoveis"
+    slug: "imoveis",
+    subcategories: ["Apartamentos", "Casas", "Comercial", "Terrenos"]
   },
   {
     id: "4",
     name: "SERVIÇOS",
     icon: Settings,
-    slug: "servicos"
+    slug: "servicos",
+    subcategories: ["Reformas", "Limpeza", "Educação", "Saúde"]
   },
   {
     id: "5",
     name: "BARES & RESTAURANTES",
     icon: Utensils,
-    slug: "bares-restaurantes"
+    slug: "bares-restaurantes",
+    subcategories: ["Bares", "Restaurantes", "Lanchonetes", "Delivery"]
   },
   {
     id: "6",
     name: "ITENS",
     icon: Package,
-    slug: "itens"
+    slug: "itens",
+    subcategories: ["Móveis", "Eletrônicos", "Roupas", "Outros"]
   }
 ];
 

@@ -36,7 +36,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             .eq('id', session.user.id)
             .single();
           
-          setProfile(profile);
+          if (profile) {
+            setProfile(profile as Profile);
+          }
         } else {
           setProfile(null);
         }
@@ -55,7 +57,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           .eq('id', session.user.id)
           .single()
           .then(({ data: profile }) => {
-            setProfile(profile);
+            if (profile) {
+              setProfile(profile as Profile);
+            }
           });
       }
     });

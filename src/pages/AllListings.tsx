@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -93,7 +92,7 @@ const AllListings = () => {
       }
       
       // Search in other relevant fields depending on listing type
-      if (listing.category === "empregos" && listing.companyName?.toLowerCase().includes(query)) {
+      if (listing.category === "empregos" && listing.company_name?.toLowerCase().includes(query)) {
         return true;
       }
       
@@ -108,7 +107,7 @@ const AllListings = () => {
     switch (sortOption) {
       case "recent":
         return listingsCopy.sort(
-          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+          (a, b) => new Date(b.date || '').getTime() - new Date(a.date || '').getTime()
         );
       case "priceAsc":
         return listingsCopy.sort((a, b) => {
@@ -119,7 +118,7 @@ const AllListings = () => {
           if (typeof priceA === "string") return 1;
           if (typeof priceB === "string") return -1;
           
-          return priceA - priceB;
+          return (priceA || 0) - (priceB || 0);
         });
       case "priceDesc":
         return listingsCopy.sort((a, b) => {
@@ -130,7 +129,7 @@ const AllListings = () => {
           if (typeof priceA === "string") return 1;
           if (typeof priceB === "string") return -1;
           
-          return priceB - priceA;
+          return (priceB || 0) - (priceA || 0);
         });
       default:
         return listingsCopy;
@@ -249,4 +248,3 @@ const AllListings = () => {
 };
 
 export default AllListings;
-
