@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -17,6 +16,7 @@ const CategoryPage = () => {
   const finalidadeFromParams = searchParams.get("finalidade") ?? "todas";
   const [finalidade, setFinalidade] = useState<string>(finalidadeFromParams);
   const { toast } = useToast();
+  const [showAllSubcategories, setShowAllSubcategories] = useState(false);
   
   // State for holding listings and loading state
   const [listings, setListings] = useState<Listing[]>([]);
@@ -173,6 +173,11 @@ const CategoryPage = () => {
     return filtered;
   }, [listings, selectedSubcategory, category.slug, finalidade]);
 
+  const visibleSubcategories = useMemo(() => {
+    if (showAllSubcategories) return subcategories;
+    return subcategories.slice(0, 6);
+  }, [subcategories, showAllSubcategories]);
+
   return (
     <MainLayout>
       <div className="container py-12">
@@ -231,7 +236,7 @@ const CategoryPage = () => {
                 Todas
               </label>
             </div>
-            {subcategories.map((sub) => (
+            {visibleSubcategories.map((sub) => (
               <div key={sub}>
                 <RadioGroupItem
                   value={sub}
@@ -247,6 +252,14 @@ const CategoryPage = () => {
                 </label>
               </div>
             ))}
+            {subcategories.length > 6 && !showAllSubcategories && (
+              <button
+                onClick={() => setShowAllSubcategories(true)}
+                className="px-4 py-1.5 rounded border border-muted-foreground hover:bg-muted transition"
+              >
+                Ver mais categorias
+              </button>
+            )}
           </RadioGroup>
         </div>
 

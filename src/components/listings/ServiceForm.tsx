@@ -2,25 +2,25 @@
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { categories } from "@/data/mockData";
 
 const ServiceForm = () => {
+  const serviceCategories = categories.find(cat => cat.slug === "servicos")?.subcategories || [];
+  
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="serviceType">Tipo de Serviço</Label>
-        <Select defaultValue="residenciais">
+        <Select defaultValue="">
           <SelectTrigger id="serviceType">
             <SelectValue placeholder="Selecione o tipo de serviço" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="residenciais">Serviços Residenciais</SelectItem>
-            <SelectItem value="educacao">Educação</SelectItem>
-            <SelectItem value="beleza">Beleza</SelectItem>
-            <SelectItem value="saude">Saúde</SelectItem>
-            <SelectItem value="informatica">Informática</SelectItem>
-            <SelectItem value="eventos">Eventos</SelectItem>
-            <SelectItem value="automotivos">Automotivos</SelectItem>
-            <SelectItem value="outros">Outros</SelectItem>
+            {serviceCategories.map((subcat) => (
+              <SelectItem key={subcat} value={subcat}>
+                {subcat}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
