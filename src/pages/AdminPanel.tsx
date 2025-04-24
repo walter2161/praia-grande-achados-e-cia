@@ -1,6 +1,5 @@
-
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import MainLayout from "@/components/layout/MainLayout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -8,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, User, Settings, Database, Image, Plus, Trash, Edit } from "lucide-react";
+import { Search, User, Settings, Database, Image, Plus, Trash, Edit, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser } from "@/lib/adminService";
 import type { Profile, Listing } from '@/types';
@@ -185,6 +184,15 @@ const AdminPanel = () => {
                       <Edit className="mr-2 h-4 w-4" />
                       Moderar Anúncios Pendentes
                     </Button>
+                    <Link to="/admin/system-report">
+                      <Button 
+                        variant="outline" 
+                        className="w-full justify-start"
+                      >
+                        <Activity className="mr-2 h-4 w-4" />
+                        Relatório do Sistema
+                      </Button>
+                    </Link>
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"

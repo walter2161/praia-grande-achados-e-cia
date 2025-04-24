@@ -18,6 +18,7 @@ import Privacidade from "./pages/Privacidade";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import AdminPanel from "./pages/AdminPanel";
+import AdminSystemReport from "./pages/AdminSystemReport";
 import Planos from "./pages/Planos";
 import Error404 from "./pages/Error404";
 
@@ -45,6 +46,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/perfil" element={<Profile />} />
       <Route path="/admin" element={<AdminPanel />} />
+      <Route path="/admin/system-report" element={<AdminSystemReport />} />
       <Route path="/planos" element={<Planos />} />
       <Route path="*" element={<Error404 />} />
     </Routes>
