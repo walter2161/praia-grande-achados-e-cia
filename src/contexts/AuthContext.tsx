@@ -2,101 +2,128 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import type { User, Session } from '@supabase/supabase-js';
+import type { Database } from '@/types/database';
 
-// Define user types
-type UserRole = "user" | "admin";
-
-interface User {
-  id?: string;
-  username: string;
-  role: UserRole;
-  email?: string;
-}
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
+  profile: Profile | null;
+  session: Session | null;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
   isAdmin: () => boolean;
   isAuthenticated: () => boolean;
 }
 
-// Create the context
 const AuthContext = createContext<AuthContextType | null>(null);
-
-// Define demo users
-const DEMO_USERS = [
-  { id: "1", username: "user", password: "1234", role: "user" as UserRole, email: "user@example.com" },
-  { id: "2", username: "admin", password: "9764", role: "admin" as UserRole, email: "admin@example.com" },
-];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const navigate = useNavigate();
 
-  // Check for existing session on component mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("guiapg_user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  // Login function
-  const login = (username: string, password: string): boolean => {
-    // First, attempt to login with demo users
-    const foundUser = DEMO_USERS.find(
-      (u) => u.username === username && u.password === password
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', session.user.id)
+            .single();
+          
+          setProfile(profile);
+        } else {
+          setProfile(null);
+        }
+      }
     );
 
-    if (foundUser) {
-      const userData = {
-        id: foundUser.id,
-        username: foundUser.username,
-        role: foundUser.role,
-        email: foundUser.email,
-      };
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
       
-      // Save user to state and localStorage
-      setUser(userData);
-      localStorage.setItem("guiapg_user", JSON.stringify(userData));
-      
+      if (session?.user) {
+        supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single()
+          .then(({ data: profile }) => {
+            setProfile(profile);
+          });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        throw error;
+      }
+
       toast.success("Login realizado com sucesso!");
-      return true;
-    } 
-    
-    // If demo login fails, here you would attempt to login with the database
-    // For now, just simulate a failure
-    toast.error("Usuário ou senha inválidos");
-    return false;
+    } catch (error: any) {
+      console.error("Error during login:", error);
+      toast.error(error.message || "Erro ao fazer login");
+      throw error;
+    }
   };
 
-  // Logout function
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("guiapg_user");
-    toast.info("Você saiu da sua conta");
-    navigate("/");
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      toast.info("Você saiu da sua conta");
+      navigate("/");
+    } catch (error: any) {
+      console.error("Error during logout:", error);
+      toast.error(error.message || "Erro ao sair da conta");
+    }
   };
 
-  // Check if user is admin
   const isAdmin = (): boolean => {
-    return user?.role === "admin";
+    return profile?.role === 'admin';
   };
 
-  // Check if user is authenticated
   const isAuthenticated = (): boolean => {
-    return user !== null;
+    return !!session;
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isAdmin, isAuthenticated }}>
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        profile,
+        session,
+        login, 
+        logout, 
+        isAdmin, 
+        isAuthenticated 
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
