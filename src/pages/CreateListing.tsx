@@ -17,7 +17,7 @@ import type { FormErrors } from "@/types";
 
 const CreateListing = () => {
   const navigate = useNavigate();
-  const { profile } = useAuth();
+  const { profile, isAdmin } = useAuth();
   const [category, setCategory] = useState("autos");
   const [subcategory, setSubcategory] = useState("");
   const [subcategoriesOptions, setSubcategoriesOptions] = useState<string[]>([]);
@@ -29,6 +29,7 @@ const CreateListing = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageIds, setImageIds] = useState<string[]>([]);
   const [errors, setErrors] = useState<FormErrors>({});
+  const [specificFormData, setSpecificFormData] = useState<any>({});
 
   useEffect(() => {
     const found = categories.find((cat) => cat.slug === category);
@@ -46,6 +47,10 @@ const CreateListing = () => {
   
   const handleImageSaved = (imageId: string) => {
     setImageIds((prev) => [...prev, imageId]);
+  };
+
+  const handleSpecificFormDataChange = (data: any) => {
+    setSpecificFormData(data);
   };
 
   const validateForm = () => {
@@ -74,17 +79,47 @@ const CreateListing = () => {
     setIsSubmitting(true);
     
     try {
+      // Handle specific data for different categories
+      let additionalData = {};
+      
+      if (category === "servicos" && specificFormData) {
+        additionalData = {
+          service_type: specificFormData.serviceType || null,
+          availability: specificFormData.availability || null,
+          experience: specificFormData.experience || null,
+          provider_name: specificFormData.providerName || null
+        };
+      } else if (category === "autos" && specificFormData) {
+        additionalData = {
+          brand: specificFormData.brand || null,
+          model: specificFormData.model || null,
+          year: specificFormData.year ? Number(specificFormData.year) : null,
+          mileage: specificFormData.mileage ? Number(specificFormData.mileage) : null,
+          fuel: specificFormData.fuel || null,
+          transmission: specificFormData.transmission || null,
+          color: specificFormData.color || null
+        };
+      }
+      // Add similar handling for other category types as needed
+      
+      const userId = profile?.id || 'admin-user';
+      
       const listingData = {
         title,
-        price: category === "empregos" ? Number(price) : Number(price),
+        price: isNaN(Number(price)) ? null : Number(price),
         description,
         images: imageIds,
         location,
+        contact,
         category,
         subcategory,
-        user_id: profile?.id,
-        status: "pending",
+        user_id: userId,
+        status: isAdmin() ? "active" : "pending",
+        date: new Date().toISOString(),
+        ...additionalData
       };
+      
+      console.log("Submitting listing data:", listingData);
       
       const { data, error } = await supabase
         .from('listings')
@@ -92,10 +127,15 @@ const CreateListing = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error:", error);
+        throw error;
+      }
       
       toast("Anúncio criado com sucesso!", {
-        description: "Seu anúncio será revisado pelo administrador antes de ser publicado."
+        description: isAdmin() 
+          ? "Seu anúncio foi publicado com sucesso!" 
+          : "Seu anúncio será revisado pelo administrador antes de ser publicado."
       });
       
       navigate("/perfil");
@@ -112,13 +152,13 @@ const CreateListing = () => {
   const renderFormByCategory = () => {
     switch (category) {
       case "autos":
-        return <AutoForm />;
+        return <AutoForm onFormDataChange={handleSpecificFormDataChange} />;
       case "empregos":
-        return <JobForm />;
+        return <JobForm onFormDataChange={handleSpecificFormDataChange} />;
       case "imoveis":
-        return <RealEstateForm />;
+        return <RealEstateForm onFormDataChange={handleSpecificFormDataChange} />;
       case "servicos":
-        return <ServiceForm />;
+        return <ServiceForm onFormDataChange={handleSpecificFormDataChange} />;
       default:
         return null;
     }

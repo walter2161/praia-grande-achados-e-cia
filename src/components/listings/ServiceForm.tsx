@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -9,7 +9,7 @@ interface ServiceFormProps {
   onFormDataChange?: (data: any) => void;
 }
 
-const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
+const ServiceForm = ({ onFormDataChange }: ServiceFormProps) => {
   const serviceCategories = categories.find(cat => cat.slug === "servicos")?.subcategories || [];
   const [serviceType, setServiceType] = useState("");
   const [availability, setAvailability] = useState("");
@@ -17,7 +17,7 @@ const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
   const [providerName, setProviderName] = useState("");
   
   // Update parent form data when any field changes
-  const updateFormData = () => {
+  useEffect(() => {
     if (onFormDataChange) {
       onFormDataChange({
         serviceType,
@@ -26,7 +26,7 @@ const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
         providerName
       });
     }
-  };
+  }, [serviceType, availability, experience, providerName, onFormDataChange]);
   
   return (
     <div className="space-y-4">
@@ -34,7 +34,6 @@ const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
         <Label htmlFor="serviceType">Tipo de Serviço</Label>
         <Select value={serviceType} onValueChange={(value) => {
           setServiceType(value);
-          updateFormData();
         }}>
           <SelectTrigger id="serviceType">
             <SelectValue placeholder="Selecione o tipo de serviço" />
@@ -57,7 +56,6 @@ const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
           value={availability}
           onChange={(e) => {
             setAvailability(e.target.value);
-            updateFormData();
           }}
         />
       </div>
@@ -70,7 +68,6 @@ const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
           value={experience}
           onChange={(e) => {
             setExperience(e.target.value);
-            updateFormData();
           }}
         />
       </div>
@@ -83,7 +80,6 @@ const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
           value={providerName}
           onChange={(e) => {
             setProviderName(e.target.value);
-            updateFormData();
           }}
         />
       </div>
