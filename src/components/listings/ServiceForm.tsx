@@ -1,17 +1,41 @@
 
+import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { categories } from "@/data/mockData";
 
-const ServiceForm = () => {
+interface ServiceFormProps {
+  onFormDataChange?: (data: any) => void;
+}
+
+const ServiceForm = ({ onFormDataChange }: ServiceFormProps = {}) => {
   const serviceCategories = categories.find(cat => cat.slug === "servicos")?.subcategories || [];
+  const [serviceType, setServiceType] = useState("");
+  const [availability, setAvailability] = useState("");
+  const [experience, setExperience] = useState("");
+  const [providerName, setProviderName] = useState("");
+  
+  // Update parent form data when any field changes
+  const updateFormData = () => {
+    if (onFormDataChange) {
+      onFormDataChange({
+        serviceType,
+        availability,
+        experience,
+        providerName
+      });
+    }
+  };
   
   return (
     <div className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="serviceType">Tipo de Serviço</Label>
-        <Select defaultValue="">
+        <Select value={serviceType} onValueChange={(value) => {
+          setServiceType(value);
+          updateFormData();
+        }}>
           <SelectTrigger id="serviceType">
             <SelectValue placeholder="Selecione o tipo de serviço" />
           </SelectTrigger>
@@ -27,17 +51,41 @@ const ServiceForm = () => {
       
       <div className="space-y-2">
         <Label htmlFor="availability">Disponibilidade</Label>
-        <Input id="availability" placeholder="Ex: Segunda a Sexta, 8h às 18h" />
+        <Input 
+          id="availability" 
+          placeholder="Ex: Segunda a Sexta, 8h às 18h" 
+          value={availability}
+          onChange={(e) => {
+            setAvailability(e.target.value);
+            updateFormData();
+          }}
+        />
       </div>
       
       <div className="space-y-2">
         <Label htmlFor="experience">Experiência</Label>
-        <Input id="experience" placeholder="Ex: 5 anos na área" />
+        <Input 
+          id="experience" 
+          placeholder="Ex: 5 anos na área" 
+          value={experience}
+          onChange={(e) => {
+            setExperience(e.target.value);
+            updateFormData();
+          }}
+        />
       </div>
       
       <div className="space-y-2">
         <Label htmlFor="providerName">Nome do Profissional</Label>
-        <Input id="providerName" placeholder="Ex: João Silva" />
+        <Input 
+          id="providerName" 
+          placeholder="Ex: João Silva" 
+          value={providerName}
+          onChange={(e) => {
+            setProviderName(e.target.value);
+            updateFormData();
+          }}
+        />
       </div>
     </div>
   );

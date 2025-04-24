@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 
 const Profile = () => {
   const { profile, logout, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   
   useEffect(() => {
     // Scroll to top on component mount
@@ -67,7 +68,10 @@ const Profile = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button className="w-full bg-[#FF6600] hover:bg-[#FF6600]/90">
+                <Button 
+                  className="w-full bg-[#FF6600] hover:bg-[#FF6600]/90"
+                  onClick={() => navigate("/criar-anuncio")}
+                >
                   Criar Novo Anúncio
                 </Button>
               </CardFooter>
