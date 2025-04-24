@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import MainLayout from "@/components/layout/MainLayout";
 import { categories } from "@/data/mockData";
 import ImageUploader from "@/components/ImageUploader";
@@ -16,7 +17,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 const CreateListing = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const { profile } = useAuth();
   const [category, setCategory] = useState("autos");
   const [subcategory, setSubcategory] = useState("");
@@ -73,8 +73,7 @@ const CreateListing = () => {
     e.preventDefault();
     
     if (!validateForm()) {
-      toast({
-        title: "Erro de validação",
+      toast("Erro de validação", {
         description: "Por favor, preencha todos os campos obrigatórios.",
         variant: "destructive",
       });
@@ -104,16 +103,14 @@ const CreateListing = () => {
 
       if (error) throw error;
       
-      toast({
-        title: "Anúncio criado com sucesso!",
+      toast("Anúncio criado com sucesso!", {
         description: "Seu anúncio será revisado pelo administrador antes de ser publicado.",
       });
       
       navigate("/perfil");
     } catch (error) {
       console.error("Erro ao criar anúncio:", error);
-      toast({
-        title: "Erro ao criar anúncio",
+      toast("Erro ao criar anúncio", {
         description: error instanceof Error ? error.message : "Ocorreu um erro ao processar sua solicitação.",
         variant: "destructive",
       });
