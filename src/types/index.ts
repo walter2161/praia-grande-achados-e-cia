@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 
 export type Profile = {
@@ -166,3 +165,11 @@ export interface ItemListing extends MockListing {
   sellerName: string;
   sellerContact: string;
 }
+
+export type FormErrors = {
+  title?: string;
+  price?: string;
+  description?: string;
+  location?: string;
+  contact?: string;
+};
