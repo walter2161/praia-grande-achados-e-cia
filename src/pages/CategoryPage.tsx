@@ -5,9 +5,8 @@ import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import Map from "@/components/Map";
 import { categories } from "@/data/mockData";
-import { Category, Listing } from "@/types";
+import { Category, Listing, BarRestaurantListing } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 
@@ -177,7 +176,10 @@ const CategoryPage = () => {
     <MainLayout>
       <div className="container py-12">
         <div className="flex items-center gap-4 mb-8">
-          <category.icon className="h-10 w-10 text-beach-600" />
+          {typeof category.icon === 'string' 
+            ? <span className="h-10 w-10 text-beach-600">Icon</span>
+            : <category.icon className="h-10 w-10 text-beach-600" />
+          }
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
 

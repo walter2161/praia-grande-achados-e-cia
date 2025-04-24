@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -30,14 +29,14 @@ const Index = () => {
   });
 
   // Function to convert string icon names to Lucide components
-  const mapIconStringToComponent = (iconName: string) => {
+  const mapIconStringToComponent = (iconName: string): LucideIcons.LucideIcon => {
     return (LucideIcons as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Package;
   };
 
   // Map categories data to include proper icon components
   const categories: Category[] = categoriesData.map((category: any) => ({
     ...category,
-    icon: mapIconStringToComponent(category.icon || 'Package')
+    icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : LucideIcons.Package
   }));
 
   // Get the 8 most recent listings

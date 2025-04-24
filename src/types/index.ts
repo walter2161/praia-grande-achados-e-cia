@@ -28,20 +28,20 @@ export type Category = {
 
 export type Listing = {
   id: string;
-  user_id: string | null;
+  user_id?: string | null;
   title: string;
   description: string | null;
-  price: number | null;
-  price_description: string | null;
+  price?: number | null;
+  price_description?: string | null;
   images: string[];
   location: string | null;
-  address: string | null;
-  latitude: number | null;
-  longitude: number | null;
-  date: string | null;
+  address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  date: string;
   category: string;
-  subcategory: string | null;
-  status: 'active' | 'inactive' | 'pending' | 'rejected' | string;
+  subcategory?: string | null;
+  status?: 'active' | 'inactive' | 'pending' | 'rejected' | string;
   brand?: string | null;
   model?: string | null;
   year?: number | null;
@@ -68,8 +68,8 @@ export type Listing = {
   provider_contact?: string | null;
   availability?: string | null;
   rating?: number | null;
-  created_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
   // Compatibility with mock data
   sellerName?: string;
   sellerContact?: string;
@@ -77,10 +77,27 @@ export type Listing = {
   providerName?: string;
   companyName?: string;
   companyContact?: string;
+  jobType?: string;
+  propertyType?: string;
+  hasGarage?: boolean;
 };
 
+// Define interfaces for mock data compatibility
+export interface MockListing extends Partial<Listing> {
+  id: string;
+  title: string;
+  images: string[];
+  date: string;
+  category: string;
+}
+
 // Specialized listing types for mock data
-export type AutoListing = Listing & {
+export interface AutoListing extends MockListing {
+  price: number;
+  description: string;
+  location: string;
+  sellerName: string;
+  sellerContact: string;
   brand: string;
   model: string;
   year: number;
@@ -88,50 +105,62 @@ export type AutoListing = Listing & {
   fuel: string;
   transmission: string;
   color: string;
-  sellerName: string;
-  sellerContact: string;
-};
+}
 
-export type JobListing = Listing & {
+export interface JobListing extends MockListing {
   salary: number;
+  description: string;
+  location: string;
   companyName: string;
   companyContact: string;
   jobType: string;
   education: string;
   experience: string;
   benefits: string[];
-};
+}
 
-export type RealEstateListing = Listing & {
+export interface RealEstateListing extends MockListing {
+  price: number;
+  description: string;
+  location: string;
+  sellerName: string;
+  sellerContact: string;
   propertyType: string;
   size: number;
   bedrooms: number;
   bathrooms: number;
   hasGarage: boolean;
   amenities: string[];
-  sellerName: string;
-  sellerContact: string;
   finalidade: string;
-};
+}
 
-export type ServiceListing = Listing & {
-  serviceType: string;
+export interface ServiceListing extends MockListing {
+  price: string | number;
+  description: string;
+  location: string;
   providerName: string;
   providerContact: string;
+  serviceType: string;
   availability: string;
   experience: string;
   rating?: number;
-};
+}
 
-export type BarRestaurantListing = Listing & {
-  sellerName: string;
-  sellerContact: string;
+export interface BarRestaurantListing extends MockListing {
+  price: string | number;
+  description: string;
+  location: string;
   address: string;
   latitude: number;
   longitude: number;
-};
-
-export type ItemListing = Listing & {
   sellerName: string;
   sellerContact: string;
-};
+}
+
+export interface ItemListing extends MockListing {
+  price: number;
+  description: string;
+  location: string;
+  sellerName: string;
+  sellerContact: string;
+}
