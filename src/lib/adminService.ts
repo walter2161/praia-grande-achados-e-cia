@@ -5,6 +5,7 @@ import type { Profile, Listing } from '@/types';
 
 // Users management
 export async function getUsers() {
+  // Usuário admin tem acesso a todos os perfis devido às políticas RLS
   const { data: profiles, error } = await supabase
     .from('profiles')
     .select('*')
@@ -12,6 +13,7 @@ export async function getUsers() {
 
   if (error) {
     console.error('Error fetching users:', error);
+    toast.error('Erro ao buscar usuários: ' + error.message);
     throw error;
   }
 
@@ -27,6 +29,7 @@ export async function getPendingUsers() {
 
   if (error) {
     console.error('Error fetching pending users:', error);
+    toast.error('Erro ao buscar usuários pendentes: ' + error.message);
     throw error;
   }
 
@@ -41,6 +44,7 @@ export async function approveUser(userId: string) {
 
   if (error) {
     console.error('Error approving user:', error);
+    toast.error('Erro ao aprovar usuário: ' + error.message);
     throw error;
   }
 }
@@ -53,6 +57,7 @@ export async function rejectUser(userId: string) {
 
   if (error) {
     console.error('Error rejecting user:', error);
+    toast.error('Erro ao rejeitar usuário: ' + error.message);
     throw error;
   }
 }
@@ -65,6 +70,7 @@ export async function deleteUser(userId: string) {
 
   if (error) {
     console.error('Error deleting user:', error);
+    toast.error('Erro ao excluir usuário: ' + error.message);
     throw error;
   }
 }
@@ -83,12 +89,14 @@ export async function updateUser(userId: string, userData: Partial<Profile>) {
 
   if (error) {
     console.error('Error updating user:', error);
+    toast.error('Erro ao atualizar usuário: ' + error.message);
     throw error;
   }
 }
 
 // Listings management
 export async function getListings() {
+  // Usuário admin tem acesso a todos os anúncios devido às políticas RLS
   const { data: listings, error } = await supabase
     .from('listings')
     .select('*')
@@ -96,6 +104,7 @@ export async function getListings() {
 
   if (error) {
     console.error('Error fetching listings:', error);
+    toast.error('Erro ao buscar anúncios: ' + error.message);
     throw error;
   }
 
@@ -111,6 +120,7 @@ export async function getPendingListings() {
 
   if (error) {
     console.error('Error fetching pending listings:', error);
+    toast.error('Erro ao buscar anúncios pendentes: ' + error.message);
     throw error;
   }
 
@@ -125,6 +135,7 @@ export async function approveListing(listingId: string) {
 
   if (error) {
     console.error('Error approving listing:', error);
+    toast.error('Erro ao aprovar anúncio: ' + error.message);
     throw error;
   }
 }
@@ -137,6 +148,7 @@ export async function rejectListing(listingId: string) {
 
   if (error) {
     console.error('Error rejecting listing:', error);
+    toast.error('Erro ao rejeitar anúncio: ' + error.message);
     throw error;
   }
 }
@@ -149,6 +161,7 @@ export async function deleteListing(listingId: string) {
 
   if (error) {
     console.error('Error deleting listing:', error);
+    toast.error('Erro ao excluir anúncio: ' + error.message);
     throw error;
   }
 }
@@ -182,6 +195,7 @@ export async function updateListing(listingId: string, listingData: Partial<List
 
   if (error) {
     console.error('Error updating listing:', error);
+    toast.error('Erro ao atualizar anúncio: ' + error.message);
     throw error;
   }
 }
