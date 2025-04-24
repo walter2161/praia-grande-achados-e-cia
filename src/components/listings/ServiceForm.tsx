@@ -10,7 +10,8 @@ interface ServiceFormProps {
 }
 
 const ServiceForm = ({ onFormDataChange }: ServiceFormProps) => {
-  const serviceCategories = categories.find(cat => cat.slug === "servicos")?.subcategories || [];
+  const servicesCategory = categories.find(cat => cat.slug === "servicos");
+  const serviceCategories = servicesCategory?.subcategories || [];
   const [serviceType, setServiceType] = useState("");
   const [availability, setAvailability] = useState("");
   const [experience, setExperience] = useState("");

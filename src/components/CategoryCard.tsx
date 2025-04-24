@@ -22,7 +22,11 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
       <Link to={`/categoria/${slug}`}>
         <Card className="transition-all hover:shadow-md hover:-translate-y-1">
           <CardContent className="flex flex-col items-center justify-center p-6">
-            <Icon className="h-12 w-12 mb-4 text-beach-600" />
+            {typeof Icon === 'string' ? (
+              <span className="h-12 w-12 mb-4 text-beach-600">{Icon}</span>
+            ) : (
+              <Icon className="h-12 w-12 mb-4 text-beach-600" />
+            )}
             <h3 className="text-xl font-semibold text-center">{name}</h3>
             {showSubcategoriesButton &&
               subcategories &&
@@ -72,4 +76,3 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 };
 
 export default CategoryCard;
-

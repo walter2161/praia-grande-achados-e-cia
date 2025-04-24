@@ -8,6 +8,7 @@ import { Category, Listing } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
+import React from "react";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -183,9 +184,8 @@ const CategoryPage = () => {
       <div className="container py-12">
         <div className="flex items-center gap-4 mb-8">
           {typeof category.icon === 'string' 
-            ? <span className="h-10 w-10 text-beach-600">Icon</span>
-            : <category.icon className="h-10 w-10 text-beach-600" />
-          }
+            ? <span className="h-10 w-10 text-beach-600">{category.icon}</span>
+            : React.createElement(category.icon, { className: "h-10 w-10 text-beach-600" })}
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
 

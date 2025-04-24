@@ -1,3 +1,4 @@
+
 export type Profile = {
   id: string;
   username: string | null;
@@ -61,11 +62,70 @@ export type Listing = {
   updated_at: string;
 };
 
+export type AutoListing = Listing & {
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  fuel: string;
+  transmission: string;
+  color: string;
+  subcategory: string;
+};
+
+export type JobListing = Listing & {
+  company_name: string;
+  company_contact: string;
+  salary: number;
+  job_type: string;
+  education: string;
+  experience: string;
+  benefits: string[];
+  subcategory: string;
+};
+
+export type RealEstateListing = Listing & {
+  property_type: string;
+  size: number;
+  bedrooms: number;
+  bathrooms: number;
+  has_garage: boolean;
+  amenities: string[];
+  finalidade: string;
+  subcategory: string;
+};
+
+export type ServiceListing = Listing & {
+  service_type: string;
+  provider_name: string;
+  provider_contact: string;
+  availability: string;
+  experience: string;
+  rating?: number;
+  subcategory: string;
+};
+
+export type BarRestaurantListing = Listing & {
+  address: string;
+  latitude: number;
+  longitude: number;
+  sellerName: string;
+  sellerContact: string;
+  subcategory: string;
+};
+
+export type ItemListing = Listing & {
+  sellerName: string;
+  sellerContact: string;
+  subcategory: string;
+};
+
 export type Category = {
   id: string;
   name: string;
   slug: string;
-  icon: string | null;
+  icon: any;
+  subcategories: string[];
   created_at: string;
 };
 
@@ -111,4 +171,8 @@ export type SystemStatus = {
     status: 'online' | 'offline' | 'degraded';
     latency: number;
   }>;
+};
+
+export type FormErrors = {
+  [key: string]: string;
 };
