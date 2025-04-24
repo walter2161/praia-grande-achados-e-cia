@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -10,13 +11,15 @@ import MainLayout from "@/components/layout/MainLayout";
 import { getRandomBannerImage } from "@/lib/bannerImages";
 import { getCategories, getListings } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
+import { Category, Listing } from "@/types";
+import * as LucideIcons from "lucide-react";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const randomBanner = getRandomBannerImage();
 
-  const { data: categories = [] } = useQuery({
+  const { data: categoriesData = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories
   });
@@ -25,6 +28,17 @@ const Index = () => {
     queryKey: ['recentListings'],
     queryFn: getListings
   });
+
+  // Function to convert string icon names to Lucide components
+  const mapIconStringToComponent = (iconName: string) => {
+    return (LucideIcons as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Package;
+  };
+
+  // Map categories data to include proper icon components
+  const categories: Category[] = categoriesData.map((category: any) => ({
+    ...category,
+    icon: mapIconStringToComponent(category.icon || 'Package')
+  }));
 
   // Get the 8 most recent listings
   const recentListings = listings.slice(0, 8);
@@ -109,12 +123,7 @@ const Index = () => {
             {categories.map((category) => (
               <CategoryCard 
                 key={category.id} 
-                category={{
-                  id: category.id,
-                  name: category.name,
-                  slug: category.slug,
-                  icon: category.icon || 'Package'
-                }}
+                category={category}
                 showSubcategoriesButton={false}
               />
             ))}

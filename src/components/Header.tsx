@@ -18,7 +18,7 @@ import { categories } from "@/data/mockData";
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const { user, logout, isAdmin, isAuthenticated } = useAuth();
+  const { user, profile, logout, isAdmin, isAuthenticated } = useAuth();
 
   // Alinha o menu hambúrguer com a barra de busca
   const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
@@ -192,7 +192,7 @@ export default function Header() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <div className="px-2 py-1.5 text-sm font-medium">
-                  {user?.username}
+                  {profile?.username || user?.email}
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

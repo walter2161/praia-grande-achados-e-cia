@@ -21,7 +21,7 @@ export type Category = {
   id: string;
   name: string;
   slug: string;
-  icon: LucideIcon;
+  icon: LucideIcon | string;
   subcategories?: string[];
   created_at?: string;
 };
@@ -41,7 +41,7 @@ export type Listing = {
   date: string | null;
   category: string;
   subcategory: string | null;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
+  status: 'active' | 'inactive' | 'pending' | 'rejected' | string;
   brand?: string | null;
   model?: string | null;
   year?: number | null;
@@ -70,4 +70,68 @@ export type Listing = {
   rating?: number | null;
   created_at: string;
   updated_at: string;
+  // Compatibility with mock data
+  sellerName?: string;
+  sellerContact?: string;
+  providerContact?: string;
+  providerName?: string;
+  companyName?: string;
+  companyContact?: string;
+};
+
+// Specialized listing types for mock data
+export type AutoListing = Listing & {
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  fuel: string;
+  transmission: string;
+  color: string;
+  sellerName: string;
+  sellerContact: string;
+};
+
+export type JobListing = Listing & {
+  salary: number;
+  companyName: string;
+  companyContact: string;
+  jobType: string;
+  education: string;
+  experience: string;
+  benefits: string[];
+};
+
+export type RealEstateListing = Listing & {
+  propertyType: string;
+  size: number;
+  bedrooms: number;
+  bathrooms: number;
+  hasGarage: boolean;
+  amenities: string[];
+  sellerName: string;
+  sellerContact: string;
+  finalidade: string;
+};
+
+export type ServiceListing = Listing & {
+  serviceType: string;
+  providerName: string;
+  providerContact: string;
+  availability: string;
+  experience: string;
+  rating?: number;
+};
+
+export type BarRestaurantListing = Listing & {
+  sellerName: string;
+  sellerContact: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+};
+
+export type ItemListing = Listing & {
+  sellerName: string;
+  sellerContact: string;
 };

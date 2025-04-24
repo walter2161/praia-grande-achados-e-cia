@@ -5,7 +5,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import Map from "@/components/Map";
 import { categories } from "@/data/mockData";
-import { Category, Listing, BarRestaurantListing, RealEstateListing } from "@/types";
+import { Category, Listing } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { fetchSheetData, SheetNames } from "@/utils/sheetsService";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -162,9 +162,8 @@ const CategoryPage = () => {
     
     if (category.slug === "imoveis" && finalidade !== "todas") {
       filtered = filtered.filter(listing => {
-        const realListing = listing as RealEstateListing;
         return (
-          String(realListing.finalidade ?? "")
+          String(listing.finalidade || "")
             .toLowerCase()
             .includes(finalidade.toLowerCase())
         );
