@@ -93,7 +93,7 @@ const CreateListing = () => {
         category,
         subcategory,
         user_id: profile?.id,
-        status: "pending", // All listings start as pending for admin approval
+        status: "pending", // Todos os anúncios começam como pendentes para aprovação do admin
       };
       
       const { data, error } = await supabase

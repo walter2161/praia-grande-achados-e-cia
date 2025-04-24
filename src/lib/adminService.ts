@@ -18,6 +18,45 @@ export async function getUsers() {
   return profiles;
 }
 
+export async function getPendingUsers() {
+  const { data: profiles, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('approval_status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching pending users:', error);
+    throw error;
+  }
+
+  return profiles;
+}
+
+export async function approveUser(userId: string) {
+  const { error } = await supabase
+    .from('profiles')
+    .update({ approval_status: 'approved' })
+    .eq('id', userId);
+
+  if (error) {
+    console.error('Error approving user:', error);
+    throw error;
+  }
+}
+
+export async function rejectUser(userId: string) {
+  const { error } = await supabase
+    .from('profiles')
+    .update({ approval_status: 'rejected' })
+    .eq('id', userId);
+
+  if (error) {
+    console.error('Error rejecting user:', error);
+    throw error;
+  }
+}
+
 export async function deleteUser(userId: string) {
   const { error } = await supabase
     .from('profiles')
@@ -31,7 +70,6 @@ export async function deleteUser(userId: string) {
 }
 
 export async function updateUser(userId: string, userData: Partial<Profile>) {
-  // Ensure the document_type is a valid enum value if present
   if (userData.document_type && 
       userData.document_type !== 'cpf' && 
       userData.document_type !== 'cnpj') {
@@ -64,6 +102,45 @@ export async function getListings() {
   return listings;
 }
 
+export async function getPendingListings() {
+  const { data: listings, error } = await supabase
+    .from('listings')
+    .select('*, profiles(username, email)')
+    .eq('status', 'pending')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching pending listings:', error);
+    throw error;
+  }
+
+  return listings;
+}
+
+export async function approveListing(listingId: string) {
+  const { error } = await supabase
+    .from('listings')
+    .update({ status: 'active' })
+    .eq('id', listingId);
+
+  if (error) {
+    console.error('Error approving listing:', error);
+    throw error;
+  }
+}
+
+export async function rejectListing(listingId: string) {
+  const { error } = await supabase
+    .from('listings')
+    .update({ status: 'rejected' })
+    .eq('id', listingId);
+
+  if (error) {
+    console.error('Error rejecting listing:', error);
+    throw error;
+  }
+}
+
 export async function deleteListing(listingId: string) {
   const { error } = await supabase
     .from('listings')
@@ -77,7 +154,6 @@ export async function deleteListing(listingId: string) {
 }
 
 export async function updateListing(listingId: string, listingData: Partial<Listing>) {
-  // Create a clean object for Supabase that handles the price field
   const cleanData: Record<string, any> = {};
   
   // Copy all fields except price
@@ -90,14 +166,11 @@ export async function updateListing(listingId: string, listingData: Partial<List
   // Handle price separately with type conversion
   if (listingData.price !== undefined) {
     if (typeof listingData.price === 'string') {
-      // Try to convert string to number
       const numPrice = Number(listingData.price);
       if (!isNaN(numPrice)) {
         cleanData.price = numPrice;
       }
-      // If it can't be converted, don't include it
     } else {
-      // It's already a number
       cleanData.price = listingData.price;
     }
   }

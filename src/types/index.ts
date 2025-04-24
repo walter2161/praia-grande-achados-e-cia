@@ -1,4 +1,3 @@
-
 import { LucideIcon } from "lucide-react";
 
 export type Profile = {
@@ -15,6 +14,7 @@ export type Profile = {
   zip_code: string | null;
   role: 'user' | 'admin';
   created_at: string;
+  approval_status: 'pending' | 'approved' | 'rejected';
 };
 
 export type Category = {

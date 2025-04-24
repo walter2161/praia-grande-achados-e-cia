@@ -182,6 +182,7 @@ export type Database = {
       profiles: {
         Row: {
           address: string | null
+          approval_status: string
           city: string | null
           created_at: string | null
           document_number: string | null
@@ -197,6 +198,7 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          approval_status?: string
           city?: string | null
           created_at?: string | null
           document_number?: string | null
@@ -212,6 +214,7 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          approval_status?: string
           city?: string | null
           created_at?: string | null
           document_number?: string | null
