@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,17 +6,63 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Search, User, Settings, Database, Image, Plus, Trash, Edit } from "lucide-react";
+import { toast } from "sonner";
+import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing } from "@/lib/adminService";
+import type { Profile, Listing } from '@/types';
 
 const AdminPanel = () => {
   const { isAdmin, isAuthenticated } = useAuth();
-  const [activeTab, setActiveTab] = useState("dashboard");
-  
+  const [users, setUsers] = useState<Profile[]>([]);
+  const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
-    // Scroll to top on component mount
-    window.scrollTo(0, 0);
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [usersData, listingsData] = await Promise.all([
+        getUsers(),
+        getListings()
+      ]);
+      setUsers(usersData);
+      setListings(listingsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      toast.error('Erro ao carregar dados');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string) => {
+    if (!window.confirm('Tem certeza que deseja excluir este usuário?')) return;
+    
+    try {
+      await deleteUser(userId);
+      setUsers(users.filter(user => user.id !== userId));
+      toast.success('Usuário excluído com sucesso');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error('Erro ao excluir usuário');
+    }
+  };
+
+  const handleDeleteListing = async (listingId: string) => {
+    if (!window.confirm('Tem certeza que deseja excluir este anúncio?')) return;
+    
+    try {
+      await deleteListing(listingId);
+      setListings(listings.filter(listing => listing.id !== listingId));
+      toast.success('Anúncio excluído com sucesso');
+    } catch (error) {
+      console.error('Error deleting listing:', error);
+      toast.error('Erro ao excluir anúncio');
+    }
+  };
 
   // If not authenticated, redirect to login
   if (!isAuthenticated()) {
@@ -34,7 +79,7 @@ const AdminPanel = () => {
       <div className="container py-8">
         <h1 className="text-3xl font-bold mb-8">Painel Administrativo</h1>
         
-        <Tabs defaultValue="dashboard" className="space-y-6" onValueChange={setActiveTab}>
+        <Tabs defaultValue="dashboard" className="space-y-6">
           <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Usuários</TabsTrigger>
@@ -55,11 +100,11 @@ const AdminPanel = () => {
                   <div className="space-y-4">
                     <div className="flex justify-between">
                       <span>Total de Anúncios:</span>
-                      <span className="font-medium">120</span>
+                      <span className="font-medium">{listings.length}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Usuários Cadastrados:</span>
-                      <span className="font-medium">45</span>
+                      <span className="font-medium">{users.length}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Visualizações Hoje:</span>
@@ -77,7 +122,6 @@ const AdminPanel = () => {
                 <CardContent>
                   <div className="space-y-4">
                     <Button 
-                      onClick={() => setActiveTab("listings")}
                       variant="outline" 
                       className="w-full justify-start"
                     >
@@ -85,7 +129,6 @@ const AdminPanel = () => {
                       Moderar Anúncios Pendentes
                     </Button>
                     <Button 
-                      onClick={() => setActiveTab("users")}
                       variant="outline" 
                       className="w-full justify-start"
                     >
@@ -93,7 +136,6 @@ const AdminPanel = () => {
                       Gerenciar Usuários
                     </Button>
                     <Button 
-                      onClick={() => setActiveTab("sheets")}
                       variant="outline" 
                       className="w-full justify-start"
                     >
@@ -137,10 +179,6 @@ const AdminPanel = () => {
                   <CardTitle>Gerenciamento de Usuários</CardTitle>
                   <CardDescription>Gerencie os usuários do sistema</CardDescription>
                 </div>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Novo Usuário
-                </Button>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center mb-4 gap-2">
@@ -161,28 +199,25 @@ const AdminPanel = () => {
                     <div className="col-span-3">Nome</div>
                     <div className="col-span-3">Email</div>
                     <div className="col-span-2">Tipo</div>
-                    <div className="col-span-1">Status</div>
-                    <div className="col-span-2">Ações</div>
+                    <div className="col-span-3">Ações</div>
                   </div>
                   
-                  {[1, 2, 3, 4, 5].map((user) => (
-                    <div key={user} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
-                      <div className="col-span-1">{user}</div>
-                      <div className="col-span-3">Usuário Exemplo {user}</div>
-                      <div className="col-span-3">usuario{user}@exemplo.com</div>
-                      <div className="col-span-2">
-                        {user === 1 ? "Admin" : "Usuário"}
-                      </div>
-                      <div className="col-span-1">
-                        <span className={`px-2 py-1 rounded-full text-xs ${user % 3 === 0 ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}>
-                          {user % 3 === 0 ? "Pendente" : "Ativo"}
-                        </span>
-                      </div>
-                      <div className="col-span-2 flex gap-2">
+                  {users.map((user, index) => (
+                    <div key={user.id} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
+                      <div className="col-span-1">{index + 1}</div>
+                      <div className="col-span-3">{user.username || 'N/A'}</div>
+                      <div className="col-span-3">{user.email || 'N/A'}</div>
+                      <div className="col-span-2">{user.role}</div>
+                      <div className="col-span-3 flex gap-2">
                         <Button size="sm" variant="outline">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="outline" className="text-red-500 hover:text-red-700">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDeleteUser(user.id)}
+                        >
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
@@ -201,10 +236,6 @@ const AdminPanel = () => {
                   <CardTitle>Gerenciamento de Anúncios</CardTitle>
                   <CardDescription>Gerencie todos os anúncios do sistema</CardDescription>
                 </div>
-                <Button>
-                  <Plus className="mr-2 h-4 w-4" />
-                  Novo Anúncio
-                </Button>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center mb-4 gap-2">
@@ -224,29 +255,26 @@ const AdminPanel = () => {
                     <div className="col-span-1">#</div>
                     <div className="col-span-4">Título</div>
                     <div className="col-span-2">Categoria</div>
-                    <div className="col-span-1">Preço</div>
-                    <div className="col-span-2">Data</div>
-                    <div className="col-span-2">Ações</div>
+                    <div className="col-span-2">Status</div>
+                    <div className="col-span-3">Ações</div>
                   </div>
                   
-                  {[1, 2, 3, 4, 5].map((listing) => (
-                    <div key={listing} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
-                      <div className="col-span-1">{listing}</div>
-                      <div className="col-span-4">Título do Anúncio {listing}</div>
-                      <div className="col-span-2">
-                        {["Imóveis", "Autos", "Serviços", "Empregos", "Itens"][listing - 1]}
-                      </div>
-                      <div className="col-span-1">
-                        R$ {(listing * 1000).toLocaleString('pt-BR')}
-                      </div>
-                      <div className="col-span-2">
-                        {new Date().toLocaleDateString('pt-BR')}
-                      </div>
-                      <div className="col-span-2 flex gap-2">
+                  {listings.map((listing, index) => (
+                    <div key={listing.id} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
+                      <div className="col-span-1">{index + 1}</div>
+                      <div className="col-span-4">{listing.title}</div>
+                      <div className="col-span-2">{listing.category}</div>
+                      <div className="col-span-2">{listing.status}</div>
+                      <div className="col-span-3 flex gap-2">
                         <Button size="sm" variant="outline">
                           <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="sm" variant="outline" className="text-red-500 hover:text-red-700">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDeleteListing(listing.id)}
+                        >
                           <Trash className="h-4 w-4" />
                         </Button>
                       </div>
