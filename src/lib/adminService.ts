@@ -31,6 +31,13 @@ export async function deleteUser(userId: string) {
 }
 
 export async function updateUser(userId: string, userData: Partial<Profile>) {
+  // Ensure the document_type is a valid enum value if present
+  if (userData.document_type && 
+      userData.document_type !== 'cpf' && 
+      userData.document_type !== 'cnpj') {
+    userData.document_type = null;
+  }
+
   const { error } = await supabase
     .from('profiles')
     .update(userData)
@@ -70,6 +77,18 @@ export async function deleteListing(listingId: string) {
 }
 
 export async function updateListing(listingId: string, listingData: Partial<Listing>) {
+  // Convert string price to number if it's a string but represents a valid number
+  if (typeof listingData.price === 'string' && !isNaN(Number(listingData.price))) {
+    listingData = {
+      ...listingData,
+      price: Number(listingData.price)
+    };
+  } else if (typeof listingData.price === 'string') {
+    // If price is a string that can't be converted to a number, remove it to avoid type errors
+    const { price, ...restData } = listingData;
+    listingData = restData;
+  }
+  
   const { error } = await supabase
     .from('listings')
     .update(listingData)

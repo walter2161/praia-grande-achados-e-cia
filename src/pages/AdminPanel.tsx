@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Search, User, Settings, Database, Image, Plus, Trash, Edit } from "lucide-react";
 import { toast } from "sonner";
 import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing } from "@/lib/adminService";
@@ -28,7 +30,11 @@ const AdminPanel = () => {
         getUsers(),
         getListings()
       ]);
-      setUsers(usersData);
+      // Fix type mismatch by casting profiles data
+      setUsers(usersData.map(user => ({
+        ...user,
+        document_type: (user.document_type as 'cpf' | 'cnpj' | null),
+      })) as Profile[]);
       setListings(listingsData);
     } catch (error) {
       console.error('Error fetching data:', error);
