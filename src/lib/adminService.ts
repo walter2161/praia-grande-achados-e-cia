@@ -9,6 +9,7 @@ export async function getUsers() {
   const { data: profiles, error } = await supabase
     .from('profiles')
     .select('*')
+    .eq('approval_status', 'approved') // Only get approved users
     .order('created_at', { ascending: false });
 
   if (error) {

@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -9,14 +10,17 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Search, User, Settings, Database, Image, Plus, Trash, Edit } from "lucide-react";
 import { toast } from "sonner";
-import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing } from "@/lib/adminService";
+import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser } from "@/lib/adminService";
 import type { Profile, Listing } from '@/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 const AdminPanel = () => {
   const { isAdmin, isAuthenticated } = useAuth();
   const [users, setUsers] = useState<Profile[]>([]);
+  const [pendingUsers, setPendingUsers] = useState<Profile[]>([]);
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetchData();
@@ -25,15 +29,23 @@ const AdminPanel = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [usersData, listingsData] = await Promise.all([
+      const [usersData, pendingUsersData, listingsData] = await Promise.all([
         getUsers(),
+        getPendingUsers(),
         getListings()
       ]);
+      
       // Fix type mismatch by casting profiles data
       setUsers(usersData.map(user => ({
         ...user,
         document_type: (user.document_type as 'cpf' | 'cnpj' | null),
       })) as Profile[]);
+      
+      setPendingUsers(pendingUsersData.map(user => ({
+        ...user,
+        document_type: (user.document_type as 'cpf' | 'cnpj' | null),
+      })) as Profile[]);
+      
       setListings(listingsData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -56,6 +68,33 @@ const AdminPanel = () => {
     }
   };
 
+  const handleApproveUser = async (userId: string) => {
+    try {
+      await approveUser(userId);
+      // Move user from pending to approved list
+      const approvedUser = pendingUsers.find(user => user.id === userId);
+      if (approvedUser) {
+        setPendingUsers(pendingUsers.filter(user => user.id !== userId));
+        setUsers([...users, {...approvedUser, approval_status: 'approved'}]);
+      }
+      toast.success('Usuário aprovado com sucesso');
+    } catch (error) {
+      console.error('Error approving user:', error);
+      toast.error('Erro ao aprovar usuário');
+    }
+  };
+
+  const handleRejectUser = async (userId: string) => {
+    try {
+      await rejectUser(userId);
+      setPendingUsers(pendingUsers.filter(user => user.id !== userId));
+      toast.success('Usuário rejeitado com sucesso');
+    } catch (error) {
+      console.error('Error rejecting user:', error);
+      toast.error('Erro ao rejeitar usuário');
+    }
+  };
+
   const handleDeleteListing = async (listingId: string) => {
     if (!window.confirm('Tem certeza que deseja excluir este anúncio?')) return;
     
@@ -68,6 +107,12 @@ const AdminPanel = () => {
       toast.error('Erro ao excluir anúncio');
     }
   };
+
+  const filteredUsers = users.filter(user => 
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (user.full_name && user.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   // If not authenticated, redirect to login
   if (!isAuthenticated()) {
@@ -111,8 +156,8 @@ const AdminPanel = () => {
                       <span className="font-medium">{users.length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Visualizações Hoje:</span>
-                      <span className="font-medium">312</span>
+                      <span>Usuários Pendentes:</span>
+                      <span className="font-medium">{pendingUsers.length}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -128,16 +173,17 @@ const AdminPanel = () => {
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
+                      onClick={() => document.getElementById('pendingUsersSection')?.scrollIntoView({ behavior: 'smooth' })}
                     >
-                      <Edit className="mr-2 h-4 w-4" />
-                      Moderar Anúncios Pendentes
+                      <User className="mr-2 h-4 w-4" />
+                      Aprovar Usuários Pendentes
                     </Button>
                     <Button 
                       variant="outline" 
                       className="w-full justify-start"
                     >
-                      <User className="mr-2 h-4 w-4" />
-                      Gerenciar Usuários
+                      <Edit className="mr-2 h-4 w-4" />
+                      Moderar Anúncios Pendentes
                     </Button>
                     <Button 
                       variant="outline" 
@@ -151,6 +197,50 @@ const AdminPanel = () => {
               </Card>
             </div>
             
+            <Card className="mb-8" id="pendingUsersSection">
+              <CardHeader>
+                <CardTitle>Usuários Pendentes</CardTitle>
+                <CardDescription>Usuários aguardando aprovação</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {pendingUsers.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Documento</TableHead>
+                        <TableHead>Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {pendingUsers.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell>{user.username || 'N/A'}</TableCell>
+                          <TableCell>{user.email || 'N/A'}</TableCell>
+                          <TableCell>
+                            {user.document_type && user.document_number
+                              ? `${user.document_type.toUpperCase()}: ${user.document_number}`
+                              : 'N/A'}
+                          </TableCell>
+                          <TableCell className="flex gap-2">
+                            <Button size="sm" variant="outline" onClick={() => handleApproveUser(user.id)}>
+                              Aprovar
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-red-500" onClick={() => handleRejectUser(user.id)}>
+                              Rejeitar
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <p className="text-muted-foreground">Não há usuários pendentes</p>
+                )}
+              </CardContent>
+            </Card>
+            
             <Card className="mb-8">
               <CardHeader>
                 <CardTitle>Anúncios Recentes</CardTitle>
@@ -158,18 +248,27 @@ const AdminPanel = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[1, 2, 3].map((item) => (
-                    <div key={item} className="flex justify-between border-b pb-3">
+                  {listings.slice(0, 3).map((listing) => (
+                    <div key={listing.id} className="flex justify-between border-b pb-3">
                       <div>
-                        <p className="font-medium">Título do Anúncio {item}</p>
-                        <p className="text-sm text-muted-foreground">Categoria: Imóveis</p>
+                        <p className="font-medium">{listing.title}</p>
+                        <p className="text-sm text-muted-foreground">Categoria: {listing.category}</p>
                       </div>
                       <div className="flex gap-2">
                         <button className="text-sm text-blue-600 hover:underline">Editar</button>
-                        <button className="text-sm text-red-600 hover:underline">Remover</button>
+                        <button 
+                          className="text-sm text-red-600 hover:underline"
+                          onClick={() => handleDeleteListing(listing.id)}
+                        >
+                          Remover
+                        </button>
                       </div>
                     </div>
                   ))}
+                  
+                  {listings.length === 0 && (
+                    <p className="text-muted-foreground">Não há anúncios recentes</p>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -192,9 +291,11 @@ const AdminPanel = () => {
                       type="search"
                       placeholder="Buscar usuários..."
                       className="pl-8"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                     />
                   </div>
-                  <Button variant="outline">Filtrar</Button>
+                  <Button variant="outline" onClick={() => setSearchTerm("")}>Limpar</Button>
                 </div>
                 
                 <div className="border rounded-md">
@@ -206,10 +307,10 @@ const AdminPanel = () => {
                     <div className="col-span-3">Ações</div>
                   </div>
                   
-                  {users.map((user, index) => (
+                  {filteredUsers.map((user, index) => (
                     <div key={user.id} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
                       <div className="col-span-1">{index + 1}</div>
-                      <div className="col-span-3">{user.username || 'N/A'}</div>
+                      <div className="col-span-3">{user.username || user.full_name || 'N/A'}</div>
                       <div className="col-span-3">{user.email || 'N/A'}</div>
                       <div className="col-span-2">{user.role}</div>
                       <div className="col-span-3 flex gap-2">
@@ -227,6 +328,12 @@ const AdminPanel = () => {
                       </div>
                     </div>
                   ))}
+                  
+                  {filteredUsers.length === 0 && (
+                    <div className="p-4 text-center text-muted-foreground">
+                      Nenhum usuário encontrado
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
