@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -29,8 +30,10 @@ const Index = () => {
   });
 
   // Function to convert string icon names to Lucide components
-  const mapIconStringToComponent = (iconName: string): LucideIcons.LucideIcon => {
-    return (LucideIcons as Record<string, LucideIcons.LucideIcon>)[iconName] || LucideIcons.Package;
+  const mapIconStringToComponent = (iconName: string) => {
+    // Safe type assertion with a check
+    const icons = LucideIcons as Record<string, unknown>;
+    return (icons[iconName] as LucideIcons.LucideIcon) || LucideIcons.Package;
   };
 
   // Map categories data to include proper icon components

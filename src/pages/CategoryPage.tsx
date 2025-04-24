@@ -5,7 +5,7 @@ import MainLayout from "@/components/layout/MainLayout";
 import ListingGrid from "@/components/ListingGrid";
 import Map from "@/components/Map";
 import { categories } from "@/data/mockData";
-import { Category, Listing, BarRestaurantListing } from "@/types";
+import { Category, Listing } from "@/types";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
@@ -60,42 +60,43 @@ const CategoryPage = () => {
         switch(category.slug) {
           case "autos":
             import("@/data/autoListings").then(module => {
-              setListings(module.autoListings || []);
+              // Type assertion to ensure compatibility
+              setListings(module.autoListings as Listing[]);
               const subcats = [...new Set((module.autoListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;
           case "empregos":
             import("@/data/jobListings").then(module => {
-              setListings(module.jobListings || []);
+              setListings(module.jobListings as Listing[]);
               const subcats = [...new Set((module.jobListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;
           case "imoveis":
             import("@/data/realEstateListings").then(module => {
-              setListings(module.realEstateListings || []);
+              setListings(module.realEstateListings as Listing[]);
               const subcats = [...new Set((module.realEstateListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;
           case "servicos":
             import("@/data/serviceListings").then(module => {
-              setListings(module.serviceListings || []);
+              setListings(module.serviceListings as Listing[]);
               const subcats = [...new Set((module.serviceListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;
           case "bares-restaurantes":
             import("@/data/baresRestaurantesListings").then(module => {
-              setListings(module.baresRestaurantesListings || []);
+              setListings(module.baresRestaurantesListings as Listing[]);
               const subcats = [...new Set((module.baresRestaurantesListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;
           case "itens":
             import("@/data/itensListings").then(module => {
-              setListings(module.itensListings || []);
+              setListings(module.itensListings as Listing[]);
               const subcats = [...new Set((module.itensListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });

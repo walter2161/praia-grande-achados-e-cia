@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +61,8 @@ const AllListings = () => {
         // Fallback to mock data
         try {
           const importedData = await import("@/data/mockData");
-          setAllListings(importedData.allListings || []);
+          // Type assertion to ensure compatibility with Listing[]
+          setAllListings(importedData.allListings as Listing[]);
         } catch (err) {
           console.error("Error loading fallback data:", err);
         }
@@ -82,17 +84,17 @@ const AllListings = () => {
       if (listing.title.toLowerCase().includes(query)) return true;
       
       // Search in description
-      if (listing.description.toLowerCase().includes(query)) return true;
+      if (listing.description && listing.description.toLowerCase().includes(query)) return true;
       
       // Search in brand and model for auto listings
       if (listing.category === "autos" && 
-         (listing.brand?.toLowerCase().includes(query) || 
-          listing.model?.toLowerCase().includes(query))) {
+         ((listing.brand && listing.brand.toLowerCase().includes(query)) || 
+          (listing.model && listing.model.toLowerCase().includes(query)))) {
         return true;
       }
       
       // Search in other relevant fields depending on listing type
-      if (listing.category === "empregos" && listing.company_name?.toLowerCase().includes(query)) {
+      if (listing.category === "empregos" && listing.company_name && listing.company_name.toLowerCase().includes(query)) {
         return true;
       }
       

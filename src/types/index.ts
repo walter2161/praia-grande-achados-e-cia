@@ -31,7 +31,7 @@ export type Listing = {
   user_id?: string | null;
   title: string;
   description: string | null;
-  price?: number | null;
+  price?: number | string | null; // Changed to support both number and string
   price_description?: string | null;
   images: string[];
   location: string | null;
@@ -89,6 +89,7 @@ export interface MockListing extends Partial<Listing> {
   images: string[];
   date: string;
   category: string;
+  price?: number | string; // Changed to support both number and string
 }
 
 // Specialized listing types for mock data
@@ -135,7 +136,7 @@ export interface RealEstateListing extends MockListing {
 }
 
 export interface ServiceListing extends MockListing {
-  price: string | number;
+  price: string | number; // Allow both string and number
   description: string;
   location: string;
   providerName: string;
@@ -147,7 +148,7 @@ export interface ServiceListing extends MockListing {
 }
 
 export interface BarRestaurantListing extends MockListing {
-  price: string | number;
+  price: string | number; // Allow both string and number
   description: string;
   location: string;
   address: string;
