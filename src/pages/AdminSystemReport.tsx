@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,12 +40,12 @@ const AdminSystemReport: React.FC = () => {
     fetchData();
   }, []);
 
-  const getVariantForSeverity = (severity: string): "default" | "destructive" | "warning" => {
+  const getVariantForSeverity = (severity: string): "default" | "destructive" | "secondary" | "outline" => {
     switch (severity) {
       case 'high':
         return 'destructive';
       case 'medium':
-        return 'warning' as any; // Type assertion to fix the error
+        return 'secondary'; // Using secondary instead of warning
       default:
         return 'default';
     }

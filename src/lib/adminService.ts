@@ -1,3 +1,4 @@
+
 import { type SystemStatus } from '@/types';
 
 // Simulate delay for API calls
@@ -198,13 +199,34 @@ export const getSystemStatus = async (): Promise<SystemStatus> => {
   }
 };
 
+// Specific request functions for AdminSystemReport.tsx
+export const getDatabaseStatus = async (): Promise<SystemStatus['database']> => {
+  const status = await getSystemStatus();
+  return status.database;
+};
+
+export const getApiStatus = async (): Promise<SystemStatus['api']> => {
+  const status = await getSystemStatus();
+  return status.api;
+};
+
+export const getPerformanceMetrics = async (): Promise<SystemStatus['performance']> => {
+  const status = await getSystemStatus();
+  return status.performance;
+};
+
+export const getErrorLogs = async (): Promise<SystemStatus['errors']> => {
+  const status = await getSystemStatus();
+  return status.errors;
+};
+
 // Update the getIntegrations function to properly handle the readonly array
 export const getIntegrations = async (): Promise<SystemStatus['integrations']> => {
   try {
     // Simulate API call delay
     await simulateDelay(600);
 
-    // Return a non-readonly array to fix the type error
+    // Return as non-readonly array
     return [
       {
         name: "Supabase",
@@ -230,9 +252,55 @@ export const getIntegrations = async (): Promise<SystemStatus['integrations']> =
         status: "online",
         latency: 120
       }
-    ] as SystemStatus['integrations']; 
+    ];
   } catch (error) {
     console.error("Error fetching integrations data:", error);
     return [];
   }
+};
+
+// Functions for AdminPanel.tsx
+export const getUsers = async () => {
+  await simulateDelay(500);
+  return [];
+};
+
+export const deleteUser = async (id: string) => {
+  await simulateDelay(300);
+  return true;
+};
+
+export const updateUser = async (id: string, data: any) => {
+  await simulateDelay(300);
+  return { id, ...data };
+};
+
+export const getListings = async () => {
+  await simulateDelay(500);
+  return [];
+};
+
+export const deleteListing = async (id: string) => {
+  await simulateDelay(300);
+  return true;
+};
+
+export const updateListing = async (id: string, data: any) => {
+  await simulateDelay(300);
+  return { id, ...data };
+};
+
+export const getPendingUsers = async () => {
+  await simulateDelay(500);
+  return [];
+};
+
+export const approveUser = async (id: string) => {
+  await simulateDelay(300);
+  return { id, approval_status: 'approved' };
+};
+
+export const rejectUser = async (id: string) => {
+  await simulateDelay(300);
+  return { id, approval_status: 'rejected' };
 };

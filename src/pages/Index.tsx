@@ -42,8 +42,8 @@ const Index = () => {
     icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : LucideIcons.Package
   }));
 
-  // Get the 8 most recent listings
-  const recentListings = listings.slice(0, 8);
+  // Get the 8 most recent listings with proper type casting
+  const recentListings = (listings as unknown as Listing[]).slice(0, 8);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();

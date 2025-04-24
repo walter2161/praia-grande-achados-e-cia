@@ -1,3 +1,4 @@
+
 import { ServiceListing } from "@/types";
 
 export const serviceListings: ServiceListing[] = [
@@ -14,8 +15,6 @@ export const serviceListings: ServiceListing[] = [
     latitude: null,
     longitude: null,
     date: "2023-04-21",
-    providerName: "Roberto Eletricista",
-    providerContact: "(13) 99999-8888",
     category: "servicos",
     service_type: "Serviços Residenciais",
     availability: "Segunda a Sábado, 8h às 18h",
@@ -62,8 +61,6 @@ export const serviceListings: ServiceListing[] = [
     latitude: null,
     longitude: null,
     date: "2023-04-20",
-    providerName: "ClimaTop",
-    providerContact: "(13) 90008-1212",
     category: "servicos",
     service_type: "Ar Condicionado",
     availability: "Todos os dias",
@@ -110,8 +107,6 @@ export const serviceListings: ServiceListing[] = [
     latitude: null,
     longitude: null,
     date: "2023-04-19",
-    providerName: "Montador PG",
-    providerContact: "(13) 99192-2311",
     category: "servicos",
     service_type: "Montagem",
     availability: "A combinar",
@@ -157,8 +152,6 @@ export const serviceListings: ServiceListing[] = [
     latitude: null,
     longitude: null,
     date: "2023-04-18",
-    providerName: "Verdejar",
-    providerContact: "(13) 94561-0012",
     category: "servicos",
     service_type: "Jardinagem",
     availability: "Segunda a Sexta",
@@ -204,8 +197,6 @@ export const serviceListings: ServiceListing[] = [
     latitude: null,
     longitude: null,
     date: "2023-04-22",
-    providerName: "Prof. Carol",
-    providerContact: "(13) 90907-4564",
     category: "servicos",
     service_type: "Aulas Particulares",
     availability: "Tarde/noite",
@@ -251,8 +242,6 @@ export const serviceListings: ServiceListing[] = [
     latitude: null,
     longitude: null,
     date: "2023-04-23",
-    providerName: "Francisco Pinturas",
-    providerContact: "(13) 98987-1212",
     category: "servicos",
     service_type: "Pintura",
     availability: "Segunda a sábado",

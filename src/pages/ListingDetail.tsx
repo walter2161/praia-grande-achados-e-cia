@@ -84,30 +84,32 @@ const ListingDetail = () => {
     locale: ptBR,
   });
   
-  // Determine which contact info to show based on listing type - Update this to use the same format
+  // Determine which contact info to show based on listing type
   let contactName = "";
   let contactInfo = "";
   
-  if ("sellerName" in listing) {
-    contactName = listing.sellerName;
-    contactInfo = listing.sellerContact;
-  } else if ("companyName" in listing) {
-    contactName = listing.companyName;
-    contactInfo = listing.companyContact;
-  } else if ("providerName" in listing) {
-    contactName = listing.providerName;
-    contactInfo = listing.providerContact;
+  if ("sellerName" in listing && listing.sellerName) {
+    contactName = listing.sellerName as string;
+    contactInfo = (listing.sellerContact || "") as string;
+  } else if ("company_name" in listing && listing.company_name) {
+    contactName = listing.company_name;
+    contactInfo = listing.company_contact || "";
+  } else if ("provider_name" in listing && listing.provider_name) {
+    contactName = listing.provider_name;
+    contactInfo = listing.provider_contact || "";
   }
   
   // Determine which price to display based on listing type
   let displayPrice;
   let priceLabel = "Preço:";
   
-  if ("salary" in listing) {
+  if ("salary" in listing && listing.salary !== null) {
     displayPrice = formatPrice(listing.salary);
     priceLabel = "Salário:";
-  } else {
-    displayPrice = formatPrice(listing.price);
+  } else if (listing.price_description) {
+    displayPrice = listing.price_description;
+  } else if (listing.price !== null) {
+    displayPrice = formatPrice(listing.price as number);
   }
 
   // Para evitar erro se não houver imagens
@@ -195,6 +197,15 @@ const ListingDetail = () => {
       </div>
     );
   }
+
+  // Extract experience for service listings
+  const experienceValue = "experience" in listing ? listing.experience : null;
+
+  // Extract benefits for job listings
+  const benefitsValue = "benefits" in listing ? listing.benefits : null;
+
+  // Extract amenities for real estate listings
+  const amenitiesValue = "amenities" in listing ? listing.amenities : null;
 
   return (
     <MainLayout>
@@ -305,7 +316,7 @@ const ListingDetail = () => {
               <h2 className="text-xl font-semibold mb-4">Detalhes</h2>
               
               {/* Auto listing details */}
-              {"brand" in listing && (
+              {"brand" in listing && listing.brand && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Marca:</p>
@@ -321,7 +332,7 @@ const ListingDetail = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Quilometragem:</p>
-                    <p className="font-medium">{listing.mileage.toLocaleString()} km</p>
+                    <p className="font-medium">{listing.mileage?.toLocaleString()} km</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Combustível:</p>
@@ -339,11 +350,11 @@ const ListingDetail = () => {
               )}
               
               {/* Job listing details */}
-              {"jobType" in listing && (
+              {"job_type" in listing && listing.job_type && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Tipo de contrato:</p>
-                    <p className="font-medium">{listing.jobType}</p>
+                    <p className="font-medium">{listing.job_type}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Escolaridade:</p>
@@ -351,21 +362,23 @@ const ListingDetail = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Experiência:</p>
-                    <p className="font-medium">{listing.experience}</p>
+                    <p className="font-medium">{experienceValue}</p>
                   </div>
-                  <div className="space-y-1 col-span-2">
-                    <p className="text-sm text-muted-foreground">Benefícios:</p>
-                    <p className="font-medium">{listing.benefits.join(", ")}</p>
-                  </div>
+                  {benefitsValue && (
+                    <div className="space-y-1 col-span-2">
+                      <p className="text-sm text-muted-foreground">Benefícios:</p>
+                      <p className="font-medium">{benefitsValue.join(", ")}</p>
+                    </div>
+                  )}
                 </div>
               )}
               
               {/* Real estate listing details */}
-              {"propertyType" in listing && (
+              {"property_type" in listing && listing.property_type && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Tipo de imóvel:</p>
-                    <p className="font-medium">{listing.propertyType}</p>
+                    <p className="font-medium">{listing.property_type}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Área:</p>
@@ -381,21 +394,23 @@ const ListingDetail = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Garagem:</p>
-                    <p className="font-medium">{listing.hasGarage ? "Sim" : "Não"}</p>
+                    <p className="font-medium">{listing.has_garage ? "Sim" : "Não"}</p>
                   </div>
-                  <div className="space-y-1 col-span-2">
-                    <p className="text-sm text-muted-foreground">Comodidades:</p>
-                    <p className="font-medium">{listing.amenities.join(", ")}</p>
-                  </div>
+                  {amenitiesValue && (
+                    <div className="space-y-1 col-span-2">
+                      <p className="text-sm text-muted-foreground">Comodidades:</p>
+                      <p className="font-medium">{amenitiesValue.join(", ")}</p>
+                    </div>
+                  )}
                 </div>
               )}
               
               {/* Service listing details */}
-              {"serviceType" in listing && (
+              {"service_type" in listing && listing.service_type && (
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Tipo de serviço:</p>
-                    <p className="font-medium">{listing.serviceType}</p>
+                    <p className="font-medium">{listing.service_type}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Disponibilidade:</p>
@@ -403,7 +418,7 @@ const ListingDetail = () => {
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Experiência:</p>
-                    <p className="font-medium">{listing.experience}</p>
+                    <p className="font-medium">{experienceValue}</p>
                   </div>
                   {listing.rating && (
                     <div className="space-y-1">

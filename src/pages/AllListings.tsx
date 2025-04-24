@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,8 +59,8 @@ const AllListings = () => {
           variant: "destructive",
         });
         
-        // Fallback to mock data
-        setListings(allListings as Listing[]);
+        // Cast to ensure type compatibility
+        setListings(allListings as unknown as Listing[]);
       } finally {
         setIsLoading(false);
       }
@@ -107,25 +108,19 @@ const AllListings = () => {
         );
       case "priceAsc":
         return listingsCopy.sort((a, b) => {
-          const priceA = "salary" in a ? a.salary : a.price;
-          const priceB = "salary" in b ? b.salary : b.price;
+          // Use optional chaining and non-null assertions for safety
+          const priceA = typeof a.price === 'number' ? a.price : 0;
+          const priceB = typeof b.price === 'number' ? b.price : 0;
           
-          // Handle string prices (like "A combinar")
-          if (typeof priceA === "string") return 1;
-          if (typeof priceB === "string") return -1;
-          
-          return (priceA || 0) - (priceB || 0);
+          return priceA - priceB;
         });
       case "priceDesc":
         return listingsCopy.sort((a, b) => {
-          const priceA = "salary" in a ? a.salary : a.price;
-          const priceB = "salary" in b ? b.salary : b.price;
+          // Use optional chaining and non-null assertions for safety
+          const priceA = typeof a.price === 'number' ? a.price : 0;
+          const priceB = typeof b.price === 'number' ? b.price : 0;
           
-          // Handle string prices (like "A combinar")
-          if (typeof priceA === "string") return 1;
-          if (typeof priceB === "string") return -1;
-          
-          return (priceB || 0) - (priceA || 0);
+          return priceB - priceA;
         });
       default:
         return listingsCopy;
