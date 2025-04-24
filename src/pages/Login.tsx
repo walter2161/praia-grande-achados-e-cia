@@ -6,6 +6,7 @@ import { Eye, EyeOff, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
@@ -18,11 +19,12 @@ import MainLayout from "@/components/layout/MainLayout";
 import RegistrationForm from "@/components/auth/RegistrationForm";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");  // Changed from username to email
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [registering, setRegistering] = useState(false);
+  const [error, setError] = useState("");
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,9 +41,11 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
     
+    // Special case for demo users in localStorage
     const demoUsers = JSON.parse(localStorage.getItem("demo_users") || "[]");
-    const foundUser = demoUsers.find((u: any) => u.username === username && u.password === password);
+    const foundUser = demoUsers.find((u: any) => u.username === email && u.password === password);
     
     if (foundUser) {
       localStorage.setItem("guiapg_user", JSON.stringify({ 
@@ -53,10 +57,13 @@ const Login = () => {
     }
 
     try {
-      const success = login(username, password);
-      if (success) {
-        navigate(getRedirectUrl());
-      }
+      await login(email, password);
+      navigate(getRedirectUrl());
+    } catch (error: any) {
+      console.error("Error during login:", error);
+      setError(error.message || "Erro ao fazer login");
+      // Added toast error for better visibility
+      toast.error(error.message || "Credenciais inválidas. Por favor, verifique seu email e senha.");
     } finally {
       setIsLoading(false);
     }
@@ -72,21 +79,27 @@ const Login = () => {
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-bold">Entrar</CardTitle>
               <CardDescription>
-                Entre com seu usuário e senha para acessar sua conta
+                Entre com seu email e senha para acessar sua conta
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleSubmit}>
               <CardContent className="space-y-4">
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-md text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="space-y-2">
-                  <Label htmlFor="username">Usuário</Label>
+                  <Label htmlFor="email">Email</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
-                      id="username"
+                      id="email"
                       className="pl-9"
-                      placeholder="Digite seu usuário"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
+                      placeholder="Digite seu email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                     />
                   </div>

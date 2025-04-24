@@ -72,7 +72,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -81,7 +81,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
 
-      toast.success("Login realizado com sucesso!");
+      if (data && data.user) {
+        toast.success("Login realizado com sucesso!");
+      }
     } catch (error: any) {
       console.error("Error during login:", error);
       toast.error(error.message || "Erro ao fazer login");
