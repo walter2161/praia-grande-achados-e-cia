@@ -185,7 +185,7 @@ const CategoryPage = () => {
         <div className="flex items-center gap-4 mb-8">
           {typeof category.icon === 'string' 
             ? <span className="h-10 w-10 text-beach-600">{category.icon}</span>
-            : React.createElement(category.icon, { className: "h-10 w-10 text-beach-600" })}
+            : <category.icon className="h-10 w-10 text-beach-600" />}
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
 

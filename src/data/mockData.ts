@@ -1,3 +1,4 @@
+
 import { Category } from "@/types";
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 import { autoListings } from "./autoListings";
@@ -13,21 +14,24 @@ export const categories: Category[] = [
     name: "AUTOS",
     icon: Car,
     slug: "autos",
-    subcategories: ["Carros", "Motos", "Caminhões", "Barcos"]
+    subcategories: ["Carros", "Motos", "Caminhões", "Barcos"],
+    created_at: new Date().toISOString()
   },
   {
     id: "2",
     name: "EMPREGOS",
     icon: Briefcase,
     slug: "empregos",
-    subcategories: ["CLT", "PJ", "Temporário", "Estágio"]
+    subcategories: ["CLT", "PJ", "Temporário", "Estágio"],
+    created_at: new Date().toISOString()
   },
   {
     id: "3",
     name: "IMÓVEIS",
     icon: House,
     slug: "imoveis",
-    subcategories: ["Apartamentos", "Casas", "Comercial", "Terrenos"]
+    subcategories: ["Apartamentos", "Casas", "Comercial", "Terrenos"],
+    created_at: new Date().toISOString()
   },
   {
     id: "4",
@@ -85,21 +89,24 @@ export const categories: Category[] = [
       "Ópticos",
       "Organização de Eventos",
       "Paisagismo"
-    ]
+    ],
+    created_at: new Date().toISOString()
   },
   {
     id: "5",
     name: "BARES & RESTAURANTES",
     icon: Utensils,
     slug: "bares-restaurantes",
-    subcategories: ["Bares", "Restaurantes", "Lanchonetes", "Delivery"]
+    subcategories: ["Bares", "Restaurantes", "Lanchonetes", "Delivery"],
+    created_at: new Date().toISOString()
   },
   {
     id: "6",
     name: "ITENS",
     icon: Package,
     slug: "itens",
-    subcategories: ["Móveis", "Eletrônicos", "Roupas", "Outros"]
+    subcategories: ["Móveis", "Eletrônicos", "Roupas", "Outros"],
+    created_at: new Date().toISOString()
   }
 ];
 

@@ -13,7 +13,7 @@ type ListingCardProps = {
   listing: Listing;
 };
 
-const formatPrice = (price: number | string) => {
+const formatPrice = (price: number | string | null) => {
   if (typeof price === "number") {
     return price.toLocaleString("pt-BR", {
       style: "currency",
@@ -31,8 +31,10 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
   });
 
   let displayPrice;
-  if ("salary" in listing) {
+  if ("salary" in listing && listing.salary !== null) {
     displayPrice = formatPrice(listing.salary);
+  } else if (listing.price_description) {
+    displayPrice = listing.price_description;
   } else {
     displayPrice = formatPrice(listing.price);
   }

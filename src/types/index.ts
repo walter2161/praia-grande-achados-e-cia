@@ -60,6 +60,9 @@ export type Listing = {
   rating: number | null;
   created_at: string;
   updated_at: string;
+  // Add these fields to make mock data compatible with the type
+  sellerName?: string;
+  sellerContact?: string;
 };
 
 export type AutoListing = Listing & {
@@ -71,6 +74,8 @@ export type AutoListing = Listing & {
   transmission: string;
   color: string;
   subcategory: string;
+  sellerName?: string;
+  sellerContact?: string;
 };
 
 export type JobListing = Listing & {
@@ -82,6 +87,8 @@ export type JobListing = Listing & {
   experience: string;
   benefits: string[];
   subcategory: string;
+  companyName?: string;
+  companyContact?: string;
 };
 
 export type RealEstateListing = Listing & {
@@ -93,6 +100,8 @@ export type RealEstateListing = Listing & {
   amenities: string[];
   finalidade: string;
   subcategory: string;
+  sellerName?: string;
+  sellerContact?: string;
 };
 
 export type ServiceListing = Listing & {
@@ -103,6 +112,7 @@ export type ServiceListing = Listing & {
   experience: string;
   rating?: number;
   subcategory: string;
+  price: number | string;
 };
 
 export type BarRestaurantListing = Listing & {
@@ -112,6 +122,7 @@ export type BarRestaurantListing = Listing & {
   sellerName: string;
   sellerContact: string;
   subcategory: string;
+  price: number | string;
 };
 
 export type ItemListing = Listing & {

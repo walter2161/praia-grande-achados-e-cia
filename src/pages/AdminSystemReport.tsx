@@ -1,190 +1,177 @@
 import React, { useState, useEffect } from 'react';
-import { getSystemStatus } from '@/lib/adminService';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { getDatabaseStatus, getApiStatus, getPerformanceMetrics, getErrorLogs, getIntegrations } from "@/lib/adminService";
 import { SystemStatus } from '@/types';
-import MainLayout from '@/components/layout/MainLayout';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CircleDollarSign, Database, Server, Activity, PackageCheck, Bug, ClipboardList, Link2 } from 'lucide-react';
-import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const AdminSystemReport = () => {
-  const [systemStatus, setSystemStatus] = useState<SystemStatus | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const { toast } = useToast();
+const AdminSystemReport: React.FC = () => {
+  const [databaseStatus, setDatabaseStatus] = useState<SystemStatus['database'] | null>(null);
+  const [apiStatus, setApiStatus] = useState<SystemStatus['api'] | null>(null);
+  const [performanceMetrics, setPerformanceMetrics] = useState<SystemStatus['performance'] | null>(null);
+  const [errorLogs, setErrorLogs] = useState<SystemStatus['errors']>([])
+  const [integrations, setIntegrations] = useState<SystemStatus['integrations']>([])
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchSystemStatus = async () => {
-      setIsLoading(true);
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const status = await getSystemStatus();
-        setSystemStatus(status);
+        const dbStatus = await getDatabaseStatus();
+        const api = await getApiStatus();
+        const performance = await getPerformanceMetrics();
+        const errors = await getErrorLogs();
+        const integrationsData = await getIntegrations();
+
+        setDatabaseStatus(dbStatus);
+        setApiStatus(api);
+        setPerformanceMetrics(performance);
+        setErrorLogs(errors);
+        setIntegrations(integrationsData);
       } catch (error) {
-        console.error('Failed to fetch system status:', error);
-        toast({
-          title: "Erro",
-          description: "Falha ao carregar o relatório do sistema.",
-          variant: "destructive",
-        });
+        console.error("Failed to fetch system report data", error);
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     };
 
-    fetchSystemStatus();
-  }, [toast]);
+    fetchData();
+  }, []);
 
-  if (isLoading) {
-    return (
-      <MainLayout>
-        <div className="container py-8">
-          <h1 className="text-3xl font-bold mb-4">Relatório do Sistema</h1>
-          <p>Carregando...</p>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  if (!systemStatus) {
-    return (
-      <MainLayout>
-        <div className="container py-8">
-          <h1 className="text-3xl font-bold mb-4">Relatório do Sistema</h1>
-          <p>Não foi possível carregar o relatório do sistema.</p>
-        </div>
-      </MainLayout>
-    );
-  }
-
-  const severityMap: Record<string, string> = {
-    low: 'muted',
-    medium: 'warning',
-    high: 'destructive',
+  const getVariantForSeverity = (severity: string): "default" | "destructive" | "warning" => {
+    switch (severity) {
+      case 'high':
+        return 'destructive';
+      case 'medium':
+        return 'warning' as any; // Type assertion to fix the error
+      default:
+        return 'default';
+    }
   };
 
   return (
-    <MainLayout>
-      <div className="container py-8">
-        <h1 className="text-3xl font-bold mb-8">Relatório do Sistema</h1>
+    <div className="container py-12">
+      <h1 className="text-3xl font-bold mb-8">System Report</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* Database Status */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Database className="mr-2 h-4 w-4" /> Banco de Dados</CardTitle>
+              <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-1">
-                <p><strong>Conexão:</strong> {systemStatus.database.connection ? <Badge variant="outline">Online</Badge> : <Badge variant="destructive">Offline</Badge>}</p>
-                <p><strong>Tabelas:</strong> {systemStatus.database.tables_count}</p>
-                <p><strong>Usuários:</strong> {systemStatus.database.users_count}</p>
-                <p><strong>Anúncios:</strong> {systemStatus.database.listings_count}</p>
-                <p><strong>Tempo de resposta:</strong> {systemStatus.database.query_time}ms</p>
-              </div>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
             </CardContent>
           </Card>
-
-          {/* API Status */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Server className="mr-2 h-4 w-4" /> API</CardTitle>
+              <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-1">
-                <p><strong>Status:</strong> {systemStatus.api.status === 'online' ? <Badge variant="outline">Online</Badge> : <Badge variant="destructive">Offline</Badge>}</p>
-                <p><strong>Tempo de resposta:</strong> {systemStatus.api.response_time}ms</p>
-                <p><strong>Funções:</strong> {systemStatus.api.functions_count}</p>
-                <p><strong>Latência média:</strong> {systemStatus.api.avg_latency}ms</p>
-                <p><strong>Taxa de sucesso:</strong> {systemStatus.api.success_rate}%</p>
-              </div>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
             </CardContent>
           </Card>
-
-          {/* Performance Metrics */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2"><Activity className="mr-2 h-4 w-4" /> Performance</CardTitle>
+              <CardTitle><Skeleton className="h-6 w-32" /></CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-1">
-                <p><strong>Uso de memória:</strong> {systemStatus.performance.memory_usage}%</p>
-                <p><strong>Uso de CPU:</strong> {systemStatus.performance.cpu_usage}%</p>
-                <p><strong>Carga do DB:</strong> {systemStatus.performance.db_load}%</p>
-                <p><strong>Tempo médio de resposta:</strong> {systemStatus.performance.avg_response_time}ms</p>
-                <p><strong>Conexões ativas:</strong> {systemStatus.performance.active_connections}</p>
-                <p><strong>Requisições/min:</strong> {systemStatus.performance.requests_per_minute}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Integrations Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2"><PackageCheck className="mr-2 h-4 w-4" /> Integrações</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                {systemStatus.integrations.map((integration, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <div>
-                      <p><strong>{integration.name}</strong></p>
-                      <p className="text-sm text-muted-foreground">{integration.description}</p>
-                    </div>
-                    <Badge variant={integration.status === 'online' ? 'outline' : integration.status === 'degraded' ? 'warning' : 'destructive'}>
-                      {integration.status} ({integration.latency}ms)
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/2" />
             </CardContent>
           </Card>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Database Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Connection: {databaseStatus?.connection ? 'Online' : 'Offline'}</p>
+              <p>Tables Count: {databaseStatus?.tables_count}</p>
+              <p>Users Count: {databaseStatus?.users_count}</p>
+              <p>Listings Count: {databaseStatus?.listings_count}</p>
+              <p>Query Time: {databaseStatus?.query_time}ms</p>
+            </CardContent>
+          </Card>
 
-        {/* Errors and Logs */}
-        <div className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2"><Bug className="mr-2 h-5 w-5" /> Erros Recentes</h2>
-          {systemStatus.errors.length > 0 ? (
-            <div className="space-y-4">
-              {systemStatus.errors.map((error, index) => {
-                const classes = `p-4 rounded-md shadow-sm border ${
-                  severityMap[error.severity] === 'destructive'
-                    ? 'border-destructive text-destructive'
-                    : severityMap[error.severity] === 'warning'
-                      ? 'border-warning text-warning'
-                      : 'border-muted text-muted-foreground'
-                }`;
-                return (
-                  <div className={classes} key={index}>
-                    <AlertTitle>{error.title}</AlertTitle>
-                    <AlertDescription>{error.message}</AlertDescription>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <p className="text-muted-foreground">Nenhum erro recente.</p>
-          )}
+          <Card>
+            <CardHeader>
+              <CardTitle>API Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Status: {apiStatus?.status}</p>
+              <p>Response Time: {apiStatus?.response_time}ms</p>
+              <p>Functions Count: {apiStatus?.functions_count}</p>
+              <p>Average Latency: {apiStatus?.avg_latency}ms</p>
+              <p>Success Rate: {apiStatus?.success_rate}%</p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Metrics</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Memory Usage: {performanceMetrics?.memory_usage} MB</p>
+              <p>CPU Usage: {performanceMetrics?.cpu_usage}%</p>
+              <p>DB Load: {performanceMetrics?.db_load}%</p>
+              <p>Average Response Time: {performanceMetrics?.avg_response_time}ms</p>
+              <p>Active Connections: {performanceMetrics?.active_connections}</p>
+              <p>Requests per Minute: {performanceMetrics?.requests_per_minute}</p>
+            </CardContent>
+          </Card>
         </div>
+      )}
 
-        <div>
-          <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2"><ClipboardList className="mr-2 h-5 w-5" /> Logs Recentes</h2>
-          {systemStatus.logs.length > 0 ? (
-            <div className="space-y-2">
-              {systemStatus.logs.map((log, index) => (
-                <div key={index} className="p-3 rounded-md shadow-sm border border-muted">
-                  <p><strong>Nível:</strong> {log.level}</p>
-                  <p><strong>Mensagem:</strong> {log.message}</p>
-                  <p><strong>Fonte:</strong> {log.source}</p>
-                  <p><strong>Timestamp:</strong> {log.timestamp}</p>
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold mb-4">Error Logs</h2>
+        <ScrollArea className="rounded-md border h-[300px] w-full">
+          <div className="p-4">
+            {errorLogs.length > 0 ? (
+              errorLogs.map((log, index) => (
+                <div key={index} className="mb-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">{log.title}</h3>
+                    <Badge variant={getVariantForSeverity(log.severity)}>{log.severity}</Badge>
+                  </div>
+                  <p className="text-muted-foreground">{log.message}</p>
+                  <p className="text-sm text-muted-foreground">Location: {log.location}</p>
+                  <p className="text-sm text-muted-foreground">Timestamp: {log.timestamp}</p>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-muted-foreground">Nenhum log recente.</p>
-          )}
+              ))
+            ) : (
+              <p className="text-muted-foreground">No errors reported.</p>
+            )}
+          </div>
+        </ScrollArea>
+      </div>
+
+      <div className="mt-12">
+        <h2 className="text-2xl font-semibold mb-4">Integrations</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {integrations.map((integration, index) => (
+            <Card key={index}>
+              <CardHeader>
+                <CardTitle>{integration.name}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p>{integration.description}</p>
+                <p>Status: {integration.status}</p>
+                <p>Latency: {integration.latency}ms</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
-    </MainLayout>
+    </div>
   );
 };
 

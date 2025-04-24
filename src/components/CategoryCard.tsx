@@ -7,7 +7,7 @@ import { Category } from "@/types";
 
 type CategoryCardProps = {
   category: Category;
-  showSubcategoriesButton?: boolean; // novo: permite controlar se mostra subcategoria
+  showSubcategoriesButton?: boolean;
 };
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
@@ -32,7 +32,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
               subcategories &&
               subcategories.length > 0 && (
                 <button
-                  onClick={e => {
+                  onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     setShowSubcategories(!showSubcategories);
@@ -56,7 +56,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
         subcategories.length > 0 && (
           <div className="mt-2 p-2 bg-background border rounded-md shadow-sm">
             <ul className="space-y-1">
-              {subcategories.map(subcategory => (
+              {subcategories.map((subcategory) => (
                 <li key={subcategory}>
                   <Link
                     to={`/categoria/${slug}?subcategory=${encodeURIComponent(
