@@ -8,6 +8,7 @@ type Pin = {
   title: string;
   category?: string;
   icon?: LucideIcon;
+  render?: () => React.ReactNode;
 };
 
 type MapProps = {
@@ -20,7 +21,6 @@ type MapProps = {
   address?: string;
 };
 
-// Generate iframe src for Google Maps based on parameters
 function generateGoogleMapsEmbedSrc({
   latitude,
   longitude,
@@ -38,18 +38,11 @@ function generateGoogleMapsEmbedSrc({
   neighborhood?: string;
   address?: string;
 }) {
-  // If address is provided, use it directly for a more accurate location
-  if (address) {
-    return `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=${zoom}&output=embed`;
-  }
-  
-  // If it's a category view, use neighborhood name if available
-  if (category && neighborhood) {
-    return `https://www.google.com/maps?q=${encodeURIComponent(neighborhood + ', SP, Brasil')}&z=${zoom}&output=embed`;
-  }
-  
-  // Default to coordinates
-  return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
+  const markers = address 
+    ? `&q=${encodeURIComponent(address)}`
+    : `&q=${latitude},${longitude}`;
+    
+  return `https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY${markers}&zoom=${zoom}`;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -61,30 +54,21 @@ const Map: React.FC<MapProps> = ({
   neighborhood = "Praia Grande",
   address,
 }) => {
-  // Use the provided address or coordinates to center the map
-  const mapSrc = address 
-    ? generateGoogleMapsEmbedSrc({
-        latitude: initialCenter[0],
-        longitude: initialCenter[1],
-        zoom,
-        category,
-        neighborhood,
-        address,
-      })
-    : generateGoogleMapsEmbedSrc({
-        latitude: initialCenter[0],
-        longitude: initialCenter[1],
-        zoom,
-        category,
-        neighborhood,
-      });
+  // Use the first pin's location or provided center
+  const centerPin = pins[0] || { latitude: initialCenter[0], longitude: initialCenter[1] };
+  
+  const mapSrc = generateGoogleMapsEmbedSrc({
+    latitude: centerPin.latitude,
+    longitude: centerPin.longitude,
+    zoom,
+    category,
+    neighborhood,
+    address,
+  });
 
-  // Update the map title based on the category
   let mapTitle = neighborhood ? `Mapa de ${neighborhood}` : "Mapa";
-  if (category === 'empresas') {
-    mapTitle = `Empresas em ${neighborhood || 'Praia Grande'}`;
-  } else if (category === 'bares-restaurantes' || (category === 'empresas' && pins.some(pin => pin.category === 'Bares e Restaurantes'))) {
-    mapTitle = `Estabelecimentos em ${neighborhood || 'Praia Grande'}`;
+  if (category) {
+    mapTitle = `${category} em ${neighborhood}`;
   }
 
   return (
@@ -100,6 +84,23 @@ const Map: React.FC<MapProps> = ({
         referrerPolicy="no-referrer-when-downgrade"
         style={{ minHeight: height, border: 0 }}
       />
+      {pins.map((pin, index) => (
+        pin.render?.() || (
+          <div
+            key={`pin-${index}`}
+            className="absolute"
+            style={{
+              left: `${((pin.longitude - (initialCenter[1] - zoom/2)) / zoom) * 100}%`,
+              top: `${((pin.latitude - (initialCenter[0] - zoom/2)) / zoom) * 100}%`,
+              transform: 'translate(-50%, -50%)'
+            }}
+          >
+            <div className="w-6 h-6 bg-beach-600 rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-beach-700 transition-colors">
+              {pin.title.charAt(0)}
+            </div>
+          </div>
+        )
+      ))}
     </div>
   );
 };

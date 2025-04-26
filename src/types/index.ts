@@ -104,4 +104,26 @@ export interface BusinessListing extends Listing {
   business_type?: string;
   sellerName?: string;
   sellerContact?: string;
+  neighborhood?: string;
+  cep?: string;
+  email?: string;
+  website?: string;
+  phone?: string;
+  whatsapp?: string;
+  instagram?: string;
+  facebook?: string;
+  opening_hours?: string;
+  payment_methods?: string[];
+  features?: string[];
+  capacity?: number;
+  cuisine_type?: string;
+  price_range?: string;
+  delivery?: boolean;
+  takeout?: boolean;
+  menu_url?: string | null;
+  rating?: number;
+  review_count?: number;
+  last_review_date?: string;
+  featured?: boolean;
+  views?: number;
 }
