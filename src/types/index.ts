@@ -1,3 +1,4 @@
+
 import type { Database } from './database';
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 
@@ -73,21 +74,45 @@ export interface FormErrors {
 export interface AutoListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  mileage?: number;
+  fuel?: string;
+  transmission?: string;
+  color?: string;
 }
 
 export interface JobListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
+  company_name?: string;
+  company_contact?: string;
+  job_type?: string;
+  education?: string;
+  experience?: string;
+  benefits?: string[];
+  salary?: number;
 }
 
 export interface RealEstateListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
+  property_type?: string;
+  size?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  has_garage?: boolean;
+  amenities?: string[];
 }
 
 export interface ServiceListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
+  service_type?: string;
+  provider_name?: string;
+  provider_contact?: string;
+  availability?: string;
 }
 
 export interface BarRestaurantListing extends Listing {
@@ -101,6 +126,7 @@ export interface ItemListing extends Listing {
 }
 
 export interface BusinessListing extends Listing {
+  // Business listing specific fields
   business_type?: string;
   sellerName?: string;
   sellerContact?: string;
@@ -126,4 +152,37 @@ export interface BusinessListing extends Listing {
   last_review_date?: string;
   featured?: boolean;
   views?: number;
+  
+  // Fields from other listing types that might be needed for TypeScript
+  // Auto fields
+  brand?: string;
+  model?: string;
+  year?: number;
+  mileage?: number;
+  fuel?: string;
+  transmission?: string;
+  color?: string;
+  
+  // Real estate fields
+  property_type?: string;
+  size?: number;
+  bedrooms?: number;
+  bathrooms?: number;
+  has_garage?: boolean;
+  amenities?: string[];
+  
+  // Job fields
+  company_name?: string;
+  company_contact?: string;
+  job_type?: string;
+  education?: string;
+  experience?: string;
+  benefits?: string[];
+  salary?: number;
+  
+  // Service fields
+  service_type?: string;
+  provider_name?: string;
+  provider_contact?: string;
+  availability?: string;
 }
