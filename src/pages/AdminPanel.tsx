@@ -9,12 +9,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Search, User, Settings, Database, Image as ImageIcon, Plus, Trash, Edit, Activity, Eye, EyeOff, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
-import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser } from "@/lib/adminService";
+import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser, getPageAds, addPageAd, updatePageAd, deletePageAd, togglePageAdStatus } from "@/lib/adminService";
 import { addBannerImage, removeBannerImage, toggleBannerImageStatus, getBannerImages } from "@/lib/supabase";
-import type { Profile, Listing } from '@/types';
+import type { Profile, Listing, Ad } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { categories } from "@/data/mockData";
 
 const AdminPanel = () => {
   const { isAdmin, isAuthenticated } = useAuth();
@@ -28,10 +30,20 @@ const AdminPanel = () => {
   const [bannerUrl, setBannerUrl] = useState("");
   const [bannerTitle, setBannerTitle] = useState("");
   const [addingBanner, setAddingBanner] = useState(false);
+  const [pageAds, setPageAds] = useState<Ad[]>([]);
+  const [newAdForm, setNewAdForm] = useState({
+    page_name: '',
+    ad_type: 'banner_image',
+    content: '',
+    link: '',
+    category_id: ''
+  });
+  const [editingAd, setEditingAd] = useState<Ad | null>(null);
 
   useEffect(() => {
     fetchData();
     fetchBannerImages();
+    fetchPageAds();
   }, []);
 
   const fetchData = async () => {
@@ -74,6 +86,16 @@ const AdminPanel = () => {
     } catch (error) {
       console.error('Erro ao buscar imagens de banner:', error);
       toast.error('Erro ao carregar banners');
+    }
+  };
+
+  const fetchPageAds = async () => {
+    try {
+      const data = await getPageAds();
+      setPageAds(data as Ad[]);
+    } catch (error) {
+      console.error('Error fetching page ads:', error);
+      toast.error('Erro ao carregar publicidades');
     }
   };
 
@@ -185,6 +207,99 @@ const AdminPanel = () => {
       console.error('Erro ao alterar status do banner:', error);
       toast.error('Erro ao alterar status do banner');
     }
+  };
+
+  const handleAddAd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!newAdForm.page_name || !newAdForm.content) {
+      toast.error('Por favor, preencha todos os campos obrigatórios');
+      return;
+    }
+
+    try {
+      const adData = {
+        page_name: newAdForm.page_name,
+        ad_type: newAdForm.ad_type as 'banner_image' | 'google_adsense',
+        content: newAdForm.content,
+        link: newAdForm.link || null,
+        category_id: newAdForm.category_id || null,
+        is_active: true
+      };
+      
+      await addPageAd(adData);
+      toast.success('Anúncio adicionado com sucesso');
+      
+      setNewAdForm({
+        page_name: '',
+        ad_type: 'banner_image',
+        content: '',
+        link: '',
+        category_id: ''
+      });
+      
+      fetchPageAds();
+    } catch (error) {
+      console.error('Error adding ad:', error);
+      toast.error('Erro ao adicionar anúncio');
+    }
+  };
+
+  const handleUpdateAd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!editingAd) return;
+
+    try {
+      await updatePageAd(editingAd.id, {
+        content: editingAd.content,
+        link: editingAd.link || null,
+        ad_type: editingAd.ad_type
+      });
+      
+      toast.success('Anúncio atualizado com sucesso');
+      setEditingAd(null);
+      fetchPageAds();
+    } catch (error) {
+      console.error('Error updating ad:', error);
+      toast.error('Erro ao atualizar anúncio');
+    }
+  };
+
+  const handleDeleteAd = async (id: string) => {
+    if (!window.confirm('Tem certeza que deseja excluir este anúncio?')) return;
+    
+    try {
+      await deletePageAd(id);
+      toast.success('Anúncio excluído com sucesso');
+      fetchPageAds();
+    } catch (error) {
+      console.error('Error deleting ad:', error);
+      toast.error('Erro ao excluir anúncio');
+    }
+  };
+
+  const handleToggleAdStatus = async (id: string, currentActive: boolean) => {
+    try {
+      await togglePageAdStatus(id, !currentActive);
+      toast.success(`Anúncio ${!currentActive ? 'ativado' : 'desativado'} com sucesso`);
+      fetchPageAds();
+    } catch (error) {
+      console.error('Error toggling ad status:', error);
+      toast.error('Erro ao alterar status do anúncio');
+    }
+  };
+
+  const getCategoryOptions = () => {
+    const catOptions = categories.map(cat => ({
+      value: cat.id,
+      label: cat.name
+    }));
+    
+    return [
+      { value: '', label: 'Selecione uma categoria (opcional)' },
+      ...catOptions
+    ];
   };
 
   const filteredUsers = users.filter(user => 
@@ -677,45 +792,53 @@ const AdminPanel = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <form className="space-y-4">
+                  <form className="space-y-4" onSubmit={handleAddAd}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <label className="block font-medium">Página</label>
-                        <Input placeholder="Ex: home, categoria/autos" />
+                        <label className="block font-medium">Página *</label>
+                        <div className="flex gap-2">
+                          <Select 
+                            value={newAdForm.page_name} 
+                            onValueChange={(value) => setNewAdForm({...newAdForm, page_name: value})}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione uma página" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="home">Home</SelectItem>
+                              <SelectItem value="categoria/autos">Autos</SelectItem>
+                              <SelectItem value="categoria/imoveis">Imóveis</SelectItem>
+                              <SelectItem value="categoria/empregos">Empregos</SelectItem>
+                              <SelectItem value="categoria/servicos">Serviços</SelectItem>
+                              <SelectItem value="categoria/itens">Itens</SelectItem>
+                              <SelectItem value="categoria/empresas">Empresas</SelectItem>
+                              <SelectItem value="custom">Personalizada</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          {newAdForm.page_name === 'custom' && (
+                            <Input
+                              placeholder="Ex: contato, sobre"
+                              value={newAdForm.page_name === 'custom' ? '' : newAdForm.page_name}
+                              onChange={(e) => setNewAdForm({...newAdForm, page_name: e.target.value})}
+                              className="flex-1"
+                            />
+                          )}
+                        </div>
                       </div>
                       <div className="space-y-2">
-                        <label className="block font-medium">Tipo de Anúncio</label>
-                        <select className="w-full p-2 border rounded">
-                          <option value="banner_image">Banner (Imagem)</option>
-                          <option value="google_adsense">Google AdSense</option>
-                        </select>
+                        <label className="block font-medium">Tipo de Anúncio *</label>
+                        <Select 
+                          value={newAdForm.ad_type} 
+                          onValueChange={(value) => setNewAdForm({...newAdForm, ad_type: value})}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione o tipo" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="banner_image">Banner (Imagem)</SelectItem>
+                            <SelectItem value="google_adsense">Google AdSense</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
-                      <div className="space-y-2 md:col-span-2">
-                        <label className="block font-medium">Conteúdo</label>
-                        <Textarea placeholder="Cole o código do AdSense ou URL da imagem" />
-                      </div>
-                      <div className="space-y-2 md:col-span-2">
-                        <label className="block font-medium">Link (opcional)</label>
-                        <Input placeholder="https://..." />
-                      </div>
-                    </div>
-                    <Button type="submit">Adicionar Anúncio</Button>
-                  </form>
-
-                  <div className="mt-8">
-                    <h3 className="text-lg font-medium mb-4">Anúncios Ativos</h3>
-                    <div className="border rounded-lg divide-y">
-                      {/* We'll implement the list of ads here */}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
-    </MainLayout>
-  );
-};
-
-export default AdminPanel;
+                      
+                      <div className="space-y-2 md:col-span-2

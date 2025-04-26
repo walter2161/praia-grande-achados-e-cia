@@ -1,4 +1,3 @@
-
 import { type Database } from '@/types/database';
 import { supabase } from '@/integrations/supabase/client';
 import { allListings } from '@/data/mockData';
@@ -486,3 +485,99 @@ export const getRandomBannerImage = async () => {
   const randomIndex = Math.floor(Math.random() * bannerImages.length);
   return bannerImages[randomIndex].url;
 };
+
+// New functions to handle page ads
+export async function getPageAds() {
+  try {
+    const { data, error } = await supabase
+      .from('page_ads')
+      .select('*, categories(name, slug)')
+      .order('page_name');
+
+    if (error) {
+      console.error('Error fetching page ads:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (err) {
+    console.error('Unexpected error fetching page ads:', err);
+    return [];
+  }
+}
+
+export async function addPageAd(adData: Omit<Database['public']['Tables']['page_ads']['Insert'], 'id'>) {
+  try {
+    const { data, error } = await supabase
+      .from('page_ads')
+      .insert([adData])
+      .select();
+
+    if (error) {
+      console.error('Error adding page ad:', error);
+      throw error;
+    }
+    
+    return data[0];
+  } catch (err) {
+    console.error('Unexpected error adding page ad:', err);
+    throw err;
+  }
+}
+
+export async function updatePageAd(id: string, adData: Partial<Database['public']['Tables']['page_ads']['Update']>) {
+  try {
+    const { error } = await supabase
+      .from('page_ads')
+      .update(adData)
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating page ad:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error updating page ad:', err);
+    throw err;
+  }
+}
+
+export async function deletePageAd(id: string) {
+  try {
+    const { error } = await supabase
+      .from('page_ads')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting page ad:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error deleting page ad:', err);
+    throw err;
+  }
+}
+
+export async function togglePageAdStatus(id: string, isActive: boolean) {
+  try {
+    const { error } = await supabase
+      .from('page_ads')
+      .update({ is_active: isActive })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error toggling page ad status:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error toggling page ad status:', err);
+    throw err;
+  }
+}
