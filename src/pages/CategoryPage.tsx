@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -9,7 +10,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import React from "react";
-import PageAdvertisement from "@/components/PageAdvertisement";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -183,16 +183,13 @@ const CategoryPage = () => {
 
   return (
     <MainLayout>
-      <div className="container py-12">
-        <div className="flex items-center gap-4 mb-8">
+      <div className="container py-8">
+        <div className="flex items-center gap-4 mb-6">
           {typeof category.icon === 'string' 
             ? <span className="h-10 w-10 text-beach-600">{category.icon}</span>
             : <category.icon className="h-10 w-10 text-beach-600" />}
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
-
-        {/* Add PageAdvertisement component here */}
-        <PageAdvertisement />
 
         {category.slug === "imoveis" && (
           <div className="mb-6 flex flex-wrap gap-4">
@@ -221,7 +218,7 @@ const CategoryPage = () => {
           </div>
         )}
 
-        <div className="mb-8">
+        <div className="mb-6">
           <RadioGroup
             value={selectedSubcategory}
             onValueChange={handleChangeFiltro}
