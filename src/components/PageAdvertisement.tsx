@@ -42,12 +42,12 @@ export default function PageAdvertisement() {
           <img 
             src={ad.content} 
             alt="Advertisement" 
-            className="w-[900px] h-[150px] object-cover rounded-lg shadow-md mx-auto"
+            className="w-[1200px] h-[200px] object-cover rounded-lg shadow-md mx-auto"
           />
         </a>
       ) : (
         <div 
-          className="w-[900px] h-[150px] mx-auto"
+          className="w-[1200px] h-[200px] mx-auto"
           dangerouslySetInnerHTML={{ __html: ad.content }} 
         />
       )}
