@@ -7,11 +7,52 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, User, Settings, Database, Image, Plus, Trash, Edit, Activity } from "lucide-react";
+import { Search, User, Settings, Database, Image as ImageIcon, Plus, Trash, Edit, Activity } from "lucide-react";
 import { toast } from "sonner";
 import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser } from "@/lib/adminService";
 import type { Profile, Listing } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { supabase } from "@/integrations/supabase/client";
+import { Image } from "lucide-react";
+
+// Add a new function in the component to handle banner image management
+const handleAddBannerImage = async (url: string) => {
+  if (!url.trim()) {
+    toast.error('Por favor, insira uma URL válida');
+    return;
+  }
+
+  try {
+    const { error } = await supabase
+      .from('banner_images')
+      .insert({ url, active: true });
+
+    if (error) throw error;
+
+    toast.success('Banner adicionado com sucesso');
+    // Refresh banner images list if needed
+  } catch (error) {
+    console.error('Erro ao adicionar banner:', error);
+    toast.error('Erro ao adicionar banner');
+  }
+};
+
+const handleRemoveBannerImage = async (id: string) => {
+  try {
+    const { error } = await supabase
+      .from('banner_images')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+
+    toast.success('Banner removido com sucesso');
+    // Refresh banner images list if needed
+  } catch (error) {
+    console.error('Erro ao remover banner:', error);
+    toast.error('Erro ao remover banner');
+  }
+};
 
 const AdminPanel = () => {
   const { isAdmin, isAuthenticated } = useAuth();
@@ -20,6 +61,7 @@ const AdminPanel = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [bannerImages, setBannerImages] = useState<Array<{id: string, url: string, title: string | null}>>([]);
 
   useEffect(() => {
     fetchData();
@@ -123,17 +165,36 @@ const AdminPanel = () => {
     return <Navigate to="/" />;
   }
 
+  useEffect(() => {
+    const fetchBannerImages = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('banner_images')
+          .select('*')
+          .order('created_at');
+
+        if (error) throw error;
+        setBannerImages(data || []);
+      } catch (error) {
+        console.error('Erro ao buscar imagens de banner:', error);
+      }
+    };
+
+    fetchBannerImages();
+  }, []);
+
   return (
     <MainLayout>
       <div className="container py-8">
         <h1 className="text-3xl font-bold mb-8">Painel Administrativo</h1>
         
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Usuários</TabsTrigger>
             <TabsTrigger value="listings">Anúncios</TabsTrigger>
             <TabsTrigger value="settings">Configurações</TabsTrigger>
+            <TabsTrigger value="banner-management">Banners</TabsTrigger>
           </TabsList>
           
           {/* Dashboard Tab */}
@@ -444,6 +505,56 @@ const AdminPanel = () => {
                   </div>
                   
                   <Button>Salvar Configurações</Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Banner Management Tab */}
+          <TabsContent value="banner-management">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gerenciamento de Banners</CardTitle>
+                <CardDescription>Adicione ou remova imagens de banner do site</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex space-x-2">
+                    <Input 
+                      placeholder="URL da imagem do banner" 
+                      id="banner-url-input"
+                    />
+                    <Button 
+                      onClick={() => {
+                        const urlInput = document.getElementById('banner-url-input') as HTMLInputElement;
+                        handleAddBannerImage(urlInput.value);
+                        urlInput.value = ''; // Clear input after adding
+                      }}
+                    >
+                      <Plus className="mr-2 h-4 w-4" /> Adicionar Banner
+                    </Button>
+                  </div>
+                  
+                  {/* List of current banner images */}
+                  <div className="grid grid-cols-3 gap-4">
+                    {bannerImages.map((image) => (
+                      <div key={image.id} className="relative">
+                        <img 
+                          src={image.url} 
+                          alt={image.title || 'Banner'} 
+                          className="w-full h-40 object-cover rounded"
+                        />
+                        <Button 
+                          variant="destructive" 
+                          size="icon" 
+                          className="absolute top-2 right-2"
+                          onClick={() => handleRemoveBannerImage(image.id)}
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </CardContent>
             </Card>

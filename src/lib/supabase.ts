@@ -172,3 +172,37 @@ export async function getUserListings(userId: string) {
 
   return data;
 }
+
+// Add this function to fetch active banner images
+export async function getBannerImages() {
+  try {
+    const { data, error } = await supabase
+      .from('banner_images')
+      .select('*')
+      .eq('active', true)
+      .order('created_at');
+
+    if (error) {
+      console.error('Error fetching banner images:', error);
+      return [];
+    }
+
+    return data.map(image => image.url);
+  } catch (err) {
+    console.error('Unexpected error fetching banner images:', err);
+    return [];
+  }
+}
+
+// Update the existing getRandomBannerImage function
+export const getRandomBannerImage = async () => {
+  const bannerImages = await getBannerImages();
+  
+  // If no banner images are found, fallback to the original method
+  if (bannerImages.length === 0) {
+    return '/lovable-uploads/239ae548-ca2d-41d4-bf2f-45fb03041253.png';
+  }
+  
+  const randomIndex = Math.floor(Math.random() * bannerImages.length);
+  return bannerImages[randomIndex];
+};

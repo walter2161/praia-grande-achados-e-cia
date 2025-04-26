@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,17 +7,24 @@ import { Input } from "@/components/ui/input";
 import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
-import { getRandomBannerImage } from "@/lib/bannerImages";
-import { getCategories, getListings } from "@/lib/supabase";
+import { getCategories, getListings, getRandomBannerImage } from '@/lib/supabase';
 import { useQuery } from "@tanstack/react-query";
 import { Category, Listing } from "@/types";
 import * as LucideIcons from "lucide-react";
-import { allListings } from "@/data/mockData";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const randomBanner = getRandomBannerImage();
+  const [randomBanner, setRandomBanner] = useState('');
+
+  useEffect(() => {
+    const fetchRandomBanner = async () => {
+      const banner = await getRandomBannerImage();
+      setRandomBanner(banner);
+    };
+
+    fetchRandomBanner();
+  }, []);
 
   const { data: categoriesData = [], error: categoriesError } = useQuery({
     queryKey: ['categories'],
