@@ -18,18 +18,17 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const [randomBanner, setRandomBanner] = useState('');
-  const [ctaBackground, setCtaBackground] = useState('');
+  const [ctaBanner, setCtaBanner] = useState('');
 
   useEffect(() => {
-    const fetchRandomBanner = async () => {
-      const banner = await getRandomBannerImage();
-      setRandomBanner(banner);
+    const fetchBanners = async () => {
+      const topBanner = await getRandomBannerImage();
+      const bottomBanner = await getRandomBannerImage();
+      setRandomBanner(topBanner);
+      setCtaBanner(bottomBanner);
     };
 
-    // Set a random business image for CTA section
-    setCtaBackground(getRandomHeroImage());
-
-    fetchRandomBanner();
+    fetchBanners();
   }, []);
 
   const { data: categoriesData = [], error: categoriesError } = useQuery({
@@ -181,10 +180,10 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Map and CTA sections */}
+      {/* Map section */}
       <BusinessFoodMap />
       
-      {/* CTA Section - Fixed with orange filter */}
+      {/* CTA Section - with updated banner */}
       <section 
         className="relative py-16 overflow-hidden"
         style={{ minHeight: "320px" }}
@@ -193,14 +192,14 @@ const Index = () => {
         <div
           className="absolute inset-0 w-full h-full"
           style={{
-            backgroundImage: `url("${ctaBackground}")`,
+            backgroundImage: `url("${ctaBanner}")`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
           aria-hidden="true"
         />
         
-        {/* Orange filter overlay - Using rgba for orange with 60% opacity */}
+        {/* Orange filter overlay */}
         <div
           className="absolute inset-0 w-full h-full"
           style={{
