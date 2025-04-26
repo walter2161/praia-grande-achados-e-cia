@@ -13,18 +13,19 @@ import { getCategories, getListings } from "@/lib/supabase";
 import { useQuery } from "@tanstack/react-query";
 import { Category, Listing } from "@/types";
 import * as LucideIcons from "lucide-react";
+import { allListings } from "@/data/mockData";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const randomBanner = getRandomBannerImage();
 
-  const { data: categoriesData = [] } = useQuery({
+  const { data: categoriesData = [], error: categoriesError } = useQuery({
     queryKey: ['categories'],
     queryFn: getCategories
   });
 
-  const { data: listings = [] } = useQuery({
+  const { data: listingsData = [], error: listingsError } = useQuery({
     queryKey: ['recentListings'],
     queryFn: getListings
   });
@@ -42,8 +43,16 @@ const Index = () => {
     icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : LucideIcons.Package
   }));
 
+  // Use mock data if there's an error from the API
+  const listings: Listing[] = listingsError ? 
+    (allListings as unknown as Listing[]).map(listing => ({
+      ...listing,
+      status: listing.status as "active" | "inactive" | "pending" | "rejected"
+    })) : 
+    (listingsData as unknown as Listing[]);
+
   // Get the 8 most recent listings with proper type casting
-  const recentListings = (listings as unknown as Listing[]).slice(0, 8);
+  const recentListings = listings.slice(0, 8);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +62,15 @@ const Index = () => {
       navigate("/todos-anuncios");
     }
   };
+
+  // Log errors to help with debugging
+  if (categoriesError) {
+    console.error("Error fetching categories:", categoriesError);
+  }
+  
+  if (listingsError) {
+    console.error("Error fetching listings:", listingsError);
+  }
 
   return (
     <MainLayout>
@@ -143,7 +161,16 @@ const Index = () => {
             </Link>
           </div>
           
-          <ListingGrid listings={recentListings} />
+          {recentListings.length > 0 ? (
+            <ListingGrid listings={recentListings} />
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-lg text-muted-foreground">Nenhum anúncio encontrado. Seja o primeiro a anunciar!</p>
+              <Link to="/criar-anuncio" className="mt-4 inline-block">
+                <Button className="mt-2">Criar Anúncio</Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
       

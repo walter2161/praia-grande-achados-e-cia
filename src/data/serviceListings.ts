@@ -111,6 +111,7 @@ export const serviceListings: ServiceListing[] = [
     service_type: "Montagem",
     availability: "A combinar",
     experience: "6 anos",
+    rating: 4.5, // Adding missing rating
     subcategory: "Montagem de Móveis",
     status: "active",
     created_at: "2023-04-19",
@@ -156,6 +157,7 @@ export const serviceListings: ServiceListing[] = [
     service_type: "Jardinagem",
     availability: "Segunda a Sexta",
     experience: "9 anos",
+    rating: 4.7, // Adding missing rating
     subcategory: "Jardinagem",
     status: "active",
     created_at: "2023-04-18",
@@ -201,6 +203,7 @@ export const serviceListings: ServiceListing[] = [
     service_type: "Aulas Particulares",
     availability: "Tarde/noite",
     experience: "12 anos",
+    rating: 5.0, // Adding missing rating
     subcategory: "Educação e Idiomas",
     status: "active",
     created_at: "2023-04-22",
@@ -246,6 +249,7 @@ export const serviceListings: ServiceListing[] = [
     service_type: "Pintura",
     availability: "Segunda a sábado",
     experience: "17 anos",
+    rating: 4.6, // Adding missing rating
     subcategory: "Reformas e Pintura",
     status: "active",
     created_at: "2023-04-23",
