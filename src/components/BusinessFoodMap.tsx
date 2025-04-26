@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Building, Store, Utensils, MapPin } from 'lucide-react';
+import { Building, Utensils } from 'lucide-react';
 import Map from './Map';
 import { getListingsByCategory } from '@/lib/supabase';
 import type { Listing } from '@/types';
@@ -14,11 +14,11 @@ const BusinessFoodMap = () => {
       try {
         // Fetch bars and restaurants
         const foodListings = await getListingsByCategory('bares-restaurantes');
-        setFoodPlaces(foodListings);
+        setFoodPlaces(foodListings as Listing[]);
 
         // Fetch businesses
         const businessListings = await getListingsByCategory('empresas');
-        setBusinesses(businessListings);
+        setBusinesses(businessListings as Listing[]);
       } catch (error) {
         console.error('Error fetching listings for map:', error);
       }

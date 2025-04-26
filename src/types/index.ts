@@ -1,10 +1,14 @@
+
 import type { Database } from './database';
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 
 export type Profile = Database['public']['Tables']['profiles']['Row'] & {
   approval_status?: 'pending' | 'approved' | 'rejected';
 };
-export type Listing = Database['public']['Tables']['listings']['Row'];
+
+export type Listing = Database['public']['Tables']['listings']['Row'] & {
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+};
 
 export interface CategoryIcon {
   className?: string;
