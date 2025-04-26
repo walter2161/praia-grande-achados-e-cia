@@ -1,6 +1,5 @@
-
 import { Category } from "@/types";
-import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
+import { Car, Briefcase, House, Settings, Package } from "lucide-react";
 import { autoListings } from "./autoListings";
 import { jobListings } from "./jobListings";
 import { realEstateListings } from "./realEstateListings";
@@ -39,19 +38,19 @@ export const categories: Category[] = [
     icon: Settings,
     slug: "empresas",
     subcategories: [
-      "Comércio Varejista",
-      "Comércio Atacadista",
-      "Indústria",
-      "Tecnologia",
-      "Consultoria",
-      "Bares & Restaurantes",
-      "Saúde",
-      "Educação",
-      "Construção Civil",
-      "Logística e Transporte",
-      "Turismo e Hotelaria",
-      "Agronegócio",
-      "Serviços Financeiros"
+      "Comércio Varejista",      // Lojas, mercados, etc
+      "Comércio Atacadista",     // Distribuidoras, etc
+      "Indústria",               // Fábricas, montadoras, etc
+      "Tecnologia",              // Software, hardware, etc
+      "Consultoria",             // Empresarial, financeira, etc
+      "Bares & Restaurantes",    // Bares, restaurantes, lanchonetes, delivery
+      "Saúde",                   // Clínicas, hospitais, etc
+      "Educação",                // Escolas, cursos, etc
+      "Construção Civil",        // Construtoras, empreiteiras, etc
+      "Logística e Transporte",  // Transportadoras, etc
+      "Turismo e Hotelaria",     // Hotéis, agências de viagem, etc
+      "Agronegócio",            // Agricultura, pecuária, etc
+      "Serviços Financeiros"     // Bancos, seguradoras, etc
     ],
     created_at: new Date().toISOString()
   },
