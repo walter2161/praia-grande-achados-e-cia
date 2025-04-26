@@ -1,30 +1,72 @@
-import type { Database } from './database';
-import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
-
-export type Profile = Database['public']['Tables']['profiles']['Row'] & {
-  approval_status?: 'pending' | 'approved' | 'rejected';
-};
-
-export type Listing = Database['public']['Tables']['listings']['Row'] & {
-  finalidade?: string;
-  sellerName?: string;
-  sellerContact?: string;
-};
-
-export interface CategoryIcon {
-  className?: string;
-}
-
-export type CategoryIconType = React.ComponentType<CategoryIcon> | string;
-
 export interface Category {
   id: string;
   name: string;
-  icon: CategoryIconType;
   slug: string;
-  subcategories?: string[];
+  icon: any;
   created_at: string;
-  parentCategory?: string;  // Added parentCategory as an optional property
+}
+
+export interface Listing {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string | null;
+  price: number | null;
+  price_description: string | null;
+  images: string[];
+  location: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  date: string;
+  category: string;
+  subcategory: string | null;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+  brand: string | null;
+  model: string | null;
+  year: number | null;
+  mileage: number | null;
+  fuel: string | null;
+  transmission: string | null;
+  color: string | null;
+  salary: number | null;
+  company_name: string | null;
+  company_contact: string | null;
+  job_type: string | null;
+  education: string | null;
+  experience: string | null;
+  benefits: string[] | null;
+  property_type: string | null;
+  size: number | null;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  has_garage: boolean | null;
+  amenities: string[] | null;
+  finalidade: string | null;
+  service_type: string | null;
+  provider_name: string | null;
+  provider_contact: string | null;
+  availability: string | null;
+  rating: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Profile {
+  id: string;
+  username: string | null;
+  document_type: 'cpf' | 'cnpj' | null;
+  document_number: string | null;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  zip_code: string | null;
+  role: 'user' | 'admin';
+  created_at: string;
+  approval_status?: 'pending' | 'approved' | 'rejected';
 }
 
 export interface SystemStatus {
@@ -55,7 +97,7 @@ export interface SystemStatus {
     title: string;
     message: string;
     timestamp: string;
-    severity: 'high' | 'medium' | 'low';
+    severity: string;
     location: string;
     resolved: boolean;
   }>;
@@ -69,54 +111,12 @@ export interface SystemStatus {
   }>;
 }
 
-export interface FormErrors {
-  [key: string]: string;
-}
-
-// Listing type extensions for different categories
-export interface AutoListing extends Listing {
-  sellerName?: string;
-  sellerContact?: string;
-}
-
-export interface JobListing extends Listing {
-  sellerName?: string;
-  sellerContact?: string;
-}
-
-export interface RealEstateListing extends Listing {
-  sellerName?: string;
-  sellerContact?: string;
-}
-
-export interface ServiceListing extends Listing {
-  sellerName?: string;
-  sellerContact?: string;
-}
-
-export interface BarRestaurantListing extends Listing {
-  sellerName?: string;
-  sellerContact?: string;
-}
-
-export interface ItemListing extends Listing {
-  sellerName?: string;
-  sellerContact?: string;
-}
-
-export interface BusinessListing extends Listing {
-  business_type?: string;
-  sellerName?: string;
-  sellerContact?: string;
-}
-
 export interface Ad {
   id: string;
-  page_name: string;
-  ad_type: 'google_adsense' | 'banner_image';
   content: string;
-  link?: string | null;
+  page_name: string;
+  ad_type: 'banner_image' | 'google_adsense';
+  link?: string;
   is_active: boolean;
-  created_at?: string;
-  updated_at?: string;
+  category_id?: string;
 }

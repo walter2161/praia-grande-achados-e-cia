@@ -212,6 +212,7 @@ export type Database = {
       page_ads: {
         Row: {
           ad_type: string
+          category_id: string | null
           content: string
           created_at: string | null
           id: string
@@ -222,6 +223,7 @@ export type Database = {
         }
         Insert: {
           ad_type: string
+          category_id?: string | null
           content: string
           created_at?: string | null
           id?: string
@@ -232,6 +234,7 @@ export type Database = {
         }
         Update: {
           ad_type?: string
+          category_id?: string | null
           content?: string
           created_at?: string | null
           id?: string
@@ -240,7 +243,15 @@ export type Database = {
           page_name?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "page_ads_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

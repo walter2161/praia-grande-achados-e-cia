@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import React from "react";
+import PageAdvertisement from "@/components/PageAdvertisement";
 
 const CategoryPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -189,6 +190,9 @@ const CategoryPage = () => {
             : <category.icon className="h-10 w-10 text-beach-600" />}
           <h1 className="text-3xl font-bold">{category.name}</h1>
         </div>
+
+        {/* Add PageAdvertisement component here */}
+        <PageAdvertisement />
 
         {category.slug === "imoveis" && (
           <div className="mb-6 flex flex-wrap gap-4">
