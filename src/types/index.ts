@@ -5,7 +5,11 @@ export type Profile = Database['public']['Tables']['profiles']['Row'] & {
   approval_status?: 'pending' | 'approved' | 'rejected';
 };
 
-export type Listing = Database['public']['Tables']['listings']['Row'];
+export type Listing = Database['public']['Tables']['listings']['Row'] & {
+  finalidade?: string;
+  sellerName?: string;
+  sellerContact?: string;
+};
 
 export interface CategoryIcon {
   className?: string;

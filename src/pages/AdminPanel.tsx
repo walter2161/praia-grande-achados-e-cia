@@ -215,12 +215,13 @@ const AdminPanel = () => {
         <h1 className="text-3xl font-bold mb-8">Painel Administrativo</h1>
         
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid grid-cols-2 md:grid-cols-5 gap-2">
+          <TabsList className="grid grid-cols-2 md:grid-cols-6 gap-2">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="users">Usuários</TabsTrigger>
             <TabsTrigger value="listings">Anúncios</TabsTrigger>
             <TabsTrigger value="settings">Configurações</TabsTrigger>
             <TabsTrigger value="banner-management">Banners</TabsTrigger>
+            <TabsTrigger value="page-ads">Publicidade</TabsTrigger>
           </TabsList>
           
           {/* Dashboard Tab */}
@@ -661,6 +662,51 @@ const AdminPanel = () => {
                         Nenhum banner cadastrado
                       </p>
                     )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Add Page Ads Tab */}
+          <TabsContent value="page-ads">
+            <Card>
+              <CardHeader>
+                <CardTitle>Gerenciamento de Publicidade</CardTitle>
+                <CardDescription>Configure os anúncios para cada página do site</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <form className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block font-medium">Página</label>
+                        <Input placeholder="Ex: home, categoria/autos" />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block font-medium">Tipo de Anúncio</label>
+                        <select className="w-full p-2 border rounded">
+                          <option value="banner_image">Banner (Imagem)</option>
+                          <option value="google_adsense">Google AdSense</option>
+                        </select>
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="block font-medium">Conteúdo</label>
+                        <Textarea placeholder="Cole o código do AdSense ou URL da imagem" />
+                      </div>
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="block font-medium">Link (opcional)</label>
+                        <Input placeholder="https://..." />
+                      </div>
+                    </div>
+                    <Button type="submit">Adicionar Anúncio</Button>
+                  </form>
+
+                  <div className="mt-8">
+                    <h3 className="text-lg font-medium mb-4">Anúncios Ativos</h3>
+                    <div className="border rounded-lg divide-y">
+                      {/* We'll implement the list of ads here */}
+                    </div>
                   </div>
                 </div>
               </CardContent>

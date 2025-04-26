@@ -209,6 +209,39 @@ export type Database = {
           },
         ]
       }
+      page_ads: {
+        Row: {
+          ad_type: string
+          content: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          link: string | null
+          page_name: string
+          updated_at: string | null
+        }
+        Insert: {
+          ad_type: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          link?: string | null
+          page_name: string
+          updated_at?: string | null
+        }
+        Update: {
+          ad_type?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          link?: string | null
+          page_name?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
