@@ -1,3 +1,4 @@
+
 import { BusinessListing } from '@/types';
 
 const businessListings: BusinessListing[] = [
@@ -20,7 +21,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 99999-8888',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Gastronomia'
   },
   {
     id: '2',
@@ -41,7 +44,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 98888-7777',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Automotivo'
   },
   {
     id: '3',
@@ -62,7 +67,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 97777-6666',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Imobiliária'
   },
   {
     id: '4',
@@ -83,7 +90,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 96666-5555',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Pet Shop'
   },
   {
     id: '5',
@@ -104,7 +113,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 95555-4444',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Moda'
   },
   {
     id: '6',
@@ -125,7 +136,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 94444-3333',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Salão de Beleza'
   },
   {
     id: '7',
@@ -146,7 +159,9 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 93333-2222',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Mercado'
   },
   {
     id: '8',
@@ -167,11 +182,10 @@ const businessListings: BusinessListing[] = [
     sellerContact: '(13) 92222-1111',
     status: 'active',
     created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
+    date: new Date().toISOString(),
+    brand: 'Educação'
   }
-].map(listing => ({
-  ...listing,
-  brand: listing.business_type,
-}));
+];
 
 export default businessListings;

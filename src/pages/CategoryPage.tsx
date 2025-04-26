@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -91,8 +90,9 @@ const CategoryPage = () => {
             break;
           case "empresas":
             import("@/data/businessListings").then(module => {
-              setListings(module.businessListings as Listing[]);
-              const subcats = [...new Set((module.businessListings || []).map((item: any) => item.subcategory))] as string[];
+              const businessListingsData = module.default;
+              setListings(businessListingsData as Listing[]);
+              const subcats = [...new Set((businessListingsData || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;

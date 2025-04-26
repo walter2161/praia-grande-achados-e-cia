@@ -1,7 +1,7 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { businessListings } from "@/data/businessListings";
+import businessListings from "@/data/businessListings";
 import { MapPin } from "lucide-react";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Card, CardContent } from "@/components/ui/card";

@@ -7,7 +7,7 @@ import { realEstateListings } from "./realEstateListings";
 import { serviceListings } from "./serviceListings";
 import { baresRestaurantesListings } from "./baresRestaurantesListings";
 import { itensListings } from "./itensListings";
-import { businessListings } from "./businessListings";
+import businessListings from "./businessListings";
 
 export const categories: Category[] = [
   {
@@ -81,8 +81,9 @@ export {
   serviceListings,
   baresRestaurantesListings,
   itensListings,
-  businessListings
 };
+
+export { businessListings };
 
 export const allListings = [
   ...autoListings,
