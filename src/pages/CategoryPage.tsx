@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import MainLayout from "@/components/layout/MainLayout";
@@ -88,10 +89,10 @@ const CategoryPage = () => {
               setSubcategories(subcats.filter(Boolean));
             });
             break;
-          case "bares-restaurantes":
-            import("@/data/baresRestaurantesListings").then(module => {
-              setListings(module.baresRestaurantesListings as Listing[]);
-              const subcats = [...new Set((module.baresRestaurantesListings || []).map((item: any) => item.subcategory))] as string[];
+          case "empresas":
+            import("@/data/businessListings").then(module => {
+              setListings(module.businessListings as Listing[]);
+              const subcats = [...new Set((module.businessListings || []).map((item: any) => item.subcategory))] as string[];
               setSubcategories(subcats.filter(Boolean));
             });
             break;

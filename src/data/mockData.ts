@@ -1,3 +1,4 @@
+
 import { Category } from "@/types";
 import { Car, Briefcase, House, Settings, Package } from "lucide-react";
 import { autoListings } from "./autoListings";
@@ -6,6 +7,7 @@ import { realEstateListings } from "./realEstateListings";
 import { serviceListings } from "./serviceListings";
 import { baresRestaurantesListings } from "./baresRestaurantesListings";
 import { itensListings } from "./itensListings";
+import { businessListings } from "./businessListings";
 
 export const categories: Category[] = [
   {
@@ -78,7 +80,8 @@ export {
   realEstateListings,
   serviceListings,
   baresRestaurantesListings,
-  itensListings
+  itensListings,
+  businessListings
 };
 
 export const allListings = [
@@ -87,5 +90,6 @@ export const allListings = [
   ...realEstateListings,
   ...serviceListings,
   ...baresRestaurantesListings,
-  ...itensListings
+  ...itensListings,
+  ...businessListings
 ];
