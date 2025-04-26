@@ -1,4 +1,3 @@
-
 import type { Database } from './database';
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 
@@ -21,6 +20,7 @@ export interface Category {
   slug: string;
   subcategories?: string[];
   created_at: string;
+  parentCategory?: string;  // Added parentCategory as an optional property
 }
 
 export interface SystemStatus {
