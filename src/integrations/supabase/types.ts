@@ -106,7 +106,7 @@ export type Database = {
           title: string
           transmission: string | null
           updated_at: string | null
-          user_id: string | null
+          user_id: string
           year: number | null
         }
         Insert: {
@@ -151,7 +151,7 @@ export type Database = {
           title: string
           transmission?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id: string
           year?: number | null
         }
         Update: {
@@ -196,7 +196,7 @@ export type Database = {
           title?: string
           transmission?: string | null
           updated_at?: string | null
-          user_id?: string | null
+          user_id?: string
           year?: number | null
         }
         Relationships: [

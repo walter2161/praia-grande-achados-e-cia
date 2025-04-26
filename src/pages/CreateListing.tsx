@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -76,6 +75,14 @@ const CreateListing = () => {
       return;
     }
 
+    if (!profile?.id) {
+      toast("Você precisa estar logado para criar um anúncio.", {
+        description: "Você precisa estar logado para criar um anúncio."
+      });
+      navigate("/login");
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -100,9 +107,6 @@ const CreateListing = () => {
           color: specificFormData.color || null
         };
       }
-      // Add similar handling for other category types as needed
-      
-      const userId = profile?.id || 'admin-user';
       
       const listingData = {
         title,
@@ -113,7 +117,7 @@ const CreateListing = () => {
         contact,
         category,
         subcategory,
-        user_id: userId,
+        user_id: profile.id, // Explicitly set the user_id to the current user's profile id
         status: isAdmin() ? "active" : "pending",
         date: new Date().toISOString(),
         ...additionalData
