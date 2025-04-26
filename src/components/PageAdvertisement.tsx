@@ -4,6 +4,9 @@ import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Ad } from "@/types";
 
+// Default placeholder image for advertisements
+const DEFAULT_AD_IMAGE = '/lovable-uploads/389511f0-a13a-4a75-bf54-d91d60c4a762.png';
+
 export default function PageAdvertisement() {
   const [ad, setAd] = useState<Ad | null>(null);
   const location = useLocation();
@@ -60,27 +63,35 @@ export default function PageAdvertisement() {
     fetchAd();
   }, [location.pathname]);
   
-  if (!ad) return null;
+  // If no ad is found, use default image
+  const adContent = ad?.content || DEFAULT_AD_IMAGE;
+  const adLink = ad?.link || '#';
+  const adType = ad?.ad_type || 'banner_image';
   
   return (
     <div className="container my-8">
-      {ad.ad_type === 'banner_image' ? (
+      {adType === 'banner_image' ? (
         <a 
-          href={ad.link || '#'} 
+          href={adLink} 
           target="_blank" 
           rel="noopener noreferrer"
           className="block w-full"
         >
           <img 
-            src={ad.content} 
+            src={adContent} 
             alt="Advertisement" 
             className="w-[1200px] h-[200px] object-cover rounded-lg shadow-md mx-auto"
+            onError={(e) => {
+              // Fallback to default image if the ad image fails to load
+              e.currentTarget.src = DEFAULT_AD_IMAGE;
+              e.currentTarget.className = 'w-[1200px] h-[200px] object-cover rounded-lg shadow-md mx-auto opacity-50';
+            }}
           />
         </a>
       ) : (
         <div 
           className="w-[1200px] h-[200px] mx-auto"
-          dangerouslySetInnerHTML={{ __html: ad.content }} 
+          dangerouslySetInnerHTML={{ __html: adContent || `<img src="${DEFAULT_AD_IMAGE}" alt="Default Advertisement" class="w-full h-full object-cover rounded-lg shadow-md" />` }} 
         />
       )}
     </div>
