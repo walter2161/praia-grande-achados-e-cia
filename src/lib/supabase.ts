@@ -173,10 +173,10 @@ export async function getUserListings(userId: string) {
   return data;
 }
 
-// Função atualizada para gerenciar banner images
+// Updated function for getBannerImages
 export async function getBannerImages() {
   try {
-    // Primeiro tentamos buscar as imagens como usuário autenticado (admin)
+    // First try to fetch images as authenticated user (admin)
     const { data, error } = await supabase
       .from('banner_images')
       .select('*')

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -6,10 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import type { User, Session } from '@supabase/supabase-js';
 import type { Profile } from '@/types';
 
-// Credenciais do admin criptografadas em base64
+// Admin credentials encoded in base64
 const ADMIN_CREDENTIALS = {
-  email: "d3BAbGVkbWt0LmNvbQ==", // wp@ledmkt.com em base64
-  password: "OTc2NDMxODUyQFd0", // 976431852@Wt em base64
+  email: "d3BAbGVkbWt0LmNvbQ==", // wp@ledmkt.com in base64
+  password: "OTc2NDMxODUyQFd0", // 976431852@Wt in base64
 };
 
 interface AuthContextType {
@@ -31,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdminUser, setIsAdminUser] = useState(false);
   const navigate = useNavigate();
 
-  // Função para decodificar base64
+  // Function to decode base64
   const decodeBase64 = (str: string) => {
     try {
       return atob(str);
@@ -40,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Verifica se as credenciais são do admin
+  // Check if credentials match admin
   const checkAdminCredentials = (email: string, password: string) => {
     const decodedEmail = decodeBase64(ADMIN_CREDENTIALS.email);
     const decodedPassword = decodeBase64(ADMIN_CREDENTIALS.password);
@@ -49,16 +48,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
-      // Verifica primeiro se são as credenciais do admin
+      // First check if these are admin credentials
       if (checkAdminCredentials(email, password)) {
         setIsAdminUser(true);
         setUser({ email } as User);
         setProfile({ email, role: 'admin', username: 'admin' } as Profile);
+        
+        // Store admin session in localStorage
+        localStorage.setItem('admin_session', JSON.stringify({
+          isAdmin: true,
+          email: email,
+          expiresAt: new Date().getTime() + (24 * 60 * 60 * 1000) // 24 hours
+        }));
+        
         toast.success("Login de administrador realizado com sucesso!");
         return;
       }
 
-      // Se não for admin, tenta login normal no Supabase
+      // If not admin, try regular Supabase login
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -85,6 +92,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
         setProfile(null);
         setSession(null);
+        localStorage.removeItem('admin_session');
       } else {
         await supabase.auth.signOut();
       }
@@ -104,11 +112,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return !!session || isAdminUser;
   };
 
-  // Mantém a sessão do Supabase para usuários normais
+  // Check for stored admin session on mount and when admin status changes
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!isAdminUser) {
+    const checkAdminSession = () => {
+      const storedSession = localStorage.getItem('admin_session');
+      if (storedSession) {
+        const session = JSON.parse(storedSession);
+        const now = new Date().getTime();
+        
+        // Check if session is still valid
+        if (session.expiresAt > now) {
+          setIsAdminUser(true);
+          setUser({ email: session.email } as User);
+          setProfile({ email: session.email, role: 'admin', username: 'admin' } as Profile);
+        } else {
+          // Clear expired session
+          localStorage.removeItem('admin_session');
+          setIsAdminUser(false);
+          setUser(null);
+          setProfile(null);
+        }
+      }
+    };
+
+    checkAdminSession();
+
+    // Keep regular Supabase session for non-admin users
+    if (!isAdminUser) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
           setSession(session);
           setUser(session?.user ?? null);
           
@@ -126,33 +158,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setProfile(null);
           }
         }
-      }
-    );
+      );
 
-    // Check current session
-    if (!isAdminUser) {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        if (session?.user) {
-          supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', session.user.id)
-            .single()
-            .then(({ data: profile }) => {
-              if (profile) {
-                setProfile(profile as Profile);
-              }
-            });
-        }
-      });
+      return () => {
+        subscription.unsubscribe();
+      };
     }
-
-    return () => {
-      subscription.unsubscribe();
-    };
   }, [isAdminUser]);
 
   return (
