@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { memo, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { Search, User, Plus, LogOut, Menu, ChevronDown } from "lucide-react";
@@ -19,6 +19,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { categories } from "@/data/mockData";
+
+const LogoLink = memo(() => (
+  <Link to="/" className="flex items-center">
+    <img
+      src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
+      alt="Logo GuíaPG"
+      className="h-8 md:h-10 max-h-10 w-auto object-contain"
+      style={{ maxWidth: 140, width: 'auto' }}
+    />
+  </Link>
+));
 
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,14 +69,7 @@ export default function Header() {
       <div className="container flex h-14 md:h-16 items-center justify-between px-2 sm:px-4 relative">
         {/* Left: logo - make it smaller on mobile */}
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center">
-            <img
-              src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
-              alt="Logo GuíaPG"
-              className="h-8 md:h-10 max-h-10 w-auto object-contain"
-              style={{ maxWidth: 140, width: 'auto' }}
-            />
-          </Link>
+          <LogoLink />
         </div>
 
         {/* Center: menu + search - adjust spacing */}
