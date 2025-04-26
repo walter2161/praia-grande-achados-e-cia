@@ -1,74 +1,77 @@
 
-import React, { useEffect, useState } from 'react';
-import { Building, Utensils } from 'lucide-react';
-import Map from './Map';
-import { getListingsByCategory } from '@/lib/supabase';
-import type { Listing } from '@/types';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { businessListings } from "@/data/businessListings";
+import { MapPin } from "lucide-react";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Card, CardContent } from "@/components/ui/card";
+import Map from "@/components/Map";
 
-const BusinessFoodMap = () => {
-  const [businesses, setBusinesses] = useState<Listing[]>([]);
+const BusinessFoodMap: React.FC = () => {
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchListings = async () => {
-      try {
-        // Fetch all businesses, including those with "Bares e Restaurantes" subcategory
-        const businessListings = await getListingsByCategory('empresas');
-        
-        // Ensure proper type casting with status as union type
-        setBusinesses((businessListings || []).map(listing => ({
-          ...listing,
-          status: listing.status as 'active' | 'inactive' | 'pending' | 'rejected'
-        })) as Listing[]);
-      } catch (error) {
-        console.error('Error fetching listings for map:', error);
-      }
-    };
+  // Filter only businesses with valid location/address
+  const validBusinesses = businessListings.map(business => ({
+    ...business,
+    // For now, all listings in Praia Grande
+    latitude: -24.00857,
+    longitude: -46.41298,
+    status: "active" as const,
+  }));
 
-    fetchListings();
-  }, []);
+  const handlePinClick = (businessId: string) => {
+    navigate(`/anuncio/empresas/${businessId}`);
+  };
 
-  // Combine all listings and format them for the map
-  const mapPins = businesses
-    .filter(listing => listing.latitude && listing.longitude)
-    .map(listing => ({
-      latitude: listing.latitude!,
-      longitude: listing.longitude!,
-      title: listing.title,
-      category: listing.subcategory,
-      icon: listing.subcategory === 'Bares e Restaurantes' ? Utensils : Building
-    }));
+  const renderPin = (business: typeof validBusinesses[0]) => (
+    <HoverCard key={business.id}>
+      <HoverCardTrigger asChild>
+        <button
+          onClick={() => handlePinClick(business.id)}
+          className="group relative"
+        >
+          <MapPin className="h-6 w-6 text-beach-600 hover:text-beach-700 transition-colors" />
+        </button>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-80 p-0">
+        <Card className="border-0 shadow-none">
+          <CardContent className="p-3">
+            <div className="flex gap-3">
+              <div className="relative h-16 w-16 overflow-hidden rounded-md">
+                <img
+                  src={business.images[0]}
+                  alt={business.title}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold line-clamp-1">{business.title}</h3>
+                <p className="text-sm text-muted-foreground">{business.subcategory}</p>
+                <p className="text-xs text-muted-foreground mt-1">{business.address}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </HoverCardContent>
+    </HoverCard>
+  );
 
   return (
     <section className="py-12 bg-gray-50">
-      <div className="container space-y-6">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold mb-2">Empresas em Praia Grande</h2>
-          <p className="text-muted-foreground">
-            Encontre os melhores estabelecimentos da cidade
-          </p>
-        </div>
-        
-        <div className="h-[500px] rounded-lg overflow-hidden shadow-lg">
-          <Map 
-            pins={mapPins} 
-            height="500px"
-            initialCenter={[-24.00857, -46.41298]} // Praia Grande coordinates
+      <div className="container">
+        <h2 className="text-3xl font-bold text-center mb-8">Empresas em Praia Grande</h2>
+        <div className="h-[400px] relative rounded-lg overflow-hidden">
+          <Map
+            pins={validBusinesses.map(business => ({
+              latitude: business.latitude,
+              longitude: business.longitude,
+              title: business.title,
+              category: business.subcategory,
+              render: () => renderPin(business)
+            }))}
+            height="400px"
             zoom={13}
-            address="Praia Grande, SP, Brasil" // Add explicit address for Praia Grande
-            neighborhood="Praia Grande" // Specify neighborhood as Praia Grande
-            category="empresas" // Ensure we're using the correct category
           />
-        </div>
-
-        <div className="flex justify-center gap-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Utensils className="h-4 w-4 text-beach-600" />
-            <span>Bares e Restaurantes</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Building className="h-4 w-4 text-beach-600" />
-            <span>Empresas</span>
-          </div>
         </div>
       </div>
     </section>
