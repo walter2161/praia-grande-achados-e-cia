@@ -1,306 +1,272 @@
+import { type Database } from '@/types/database';
+import { supabase } from '@/integrations/supabase/client';
+import { allListings } from '@/data/mockData';
 
-import { type SystemStatus } from '@/types';
-
-// Simulate delay for API calls
-const simulateDelay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
-export const getSystemStatus = async (): Promise<SystemStatus> => {
+export async function getListings() {
   try {
-    // Simulate API call delay
-    await simulateDelay(500);
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .order('created_at', { ascending: false });
 
-    return {
-      database: {
-        connection: true,
-        tables_count: 25,
-        users_count: 500,
-        listings_count: 2500,
-        query_time: 0.025
-      },
-      api: {
-        status: 'online',
-        response_time: 0.012,
-        functions_count: 120,
-        avg_latency: 0.008,
-        success_rate: 0.999
-      },
-      performance: {
-        memory_usage: 0.65,
-        cpu_usage: 0.22,
-        db_load: 0.15,
-        avg_response_time: 0.01,
-        active_connections: 85,
-        requests_per_minute: 1200
-      },
-      errors: [
-        {
-          title: "Database Connection Error",
-          message: "Failed to establish a connection to the primary database.",
-          severity: "high",
-          location: "Database Service",
-          timestamp: "2024-03-15T08:30:00Z"
-        },
-        {
-          title: "API Endpoint Timeout",
-          message: "One or more API endpoints are experiencing intermittent timeouts.",
-          severity: "medium",
-          location: "API Gateway",
-          timestamp: "2024-03-15T09:15:00Z"
-        },
-        {
-          title: "High CPU Usage",
-          message: "CPU usage on the main application server is consistently above 90%.",
-          severity: "medium",
-          location: "Application Server",
-          timestamp: "2024-03-15T10:00:00Z"
-        },
-        {
-          title: "Memory Leak Detected",
-          message: "A memory leak has been detected in the image processing service.",
-          severity: "medium",
-          location: "Image Processing Service",
-          timestamp: "2024-03-15T10:45:00Z"
-        },
-        {
-          title: "Failed Background Job",
-          message: "A background job for generating daily reports failed to complete.",
-          severity: "medium",
-          location: "Background Job Scheduler",
-          timestamp: "2024-03-15T11:30:00Z"
-        },
-        {
-          title: "Slow Query Performance",
-          message: "Database queries are taking longer than expected, impacting overall performance.",
-          severity: "medium",
-          location: "Database Service",
-          timestamp: "2024-03-15T12:15:00Z"
-        },
-        {
-          title: "Disk Space Warning",
-          message: "Disk space on the logging server is running low.",
-          severity: "low",
-          location: "Logging Server",
-          timestamp: "2024-03-15T13:00:00Z"
-        },
-        {
-          title: "Authentication Service Unavailable",
-          message: "The authentication service is temporarily unavailable.",
-          severity: "high",
-          location: "Authentication Service",
-          timestamp: "2024-03-15T13:45:00Z"
-        },
-        {
-          title: "Cache Server Overload",
-          message: "The cache server is experiencing high load, leading to slower response times.",
-          severity: "medium",
-          location: "Cache Server",
-          timestamp: "2024-03-15T14:30:00Z"
-        },
-        {
-          title: "Network Latency Spike",
-          message: "There has been a sudden spike in network latency between the application server and the database server.",
-          severity: "medium",
-          location: "Network Infrastructure",
-          timestamp: "2024-03-15T15:15:00Z"
-        }
-      ],
-      logs: [
-        {
-          level: "error",
-          message: "Failed to connect to the database server.",
-          timestamp: "2024-03-15T08:30:00Z",
-          source: "Database Service"
-        },
-        {
-          level: "warning",
-          message: "API endpoint /users is experiencing intermittent timeouts.",
-          timestamp: "2024-03-15T09:15:00Z",
-          source: "API Gateway"
-        },
-        {
-          level: "info",
-          message: "Application server CPU usage is at 92%.",
-          timestamp: "2024-03-15T10:00:00Z",
-          source: "Application Server"
-        },
-        {
-          level: "debug",
-          message: "Memory usage in the image processing service is increasing.",
-          timestamp: "2024-03-15T10:45:00Z",
-          source: "Image Processing Service"
-        },
-        {
-          level: "error",
-          message: "Background job for generating daily reports failed with error code 500.",
-          timestamp: "2024-03-15T11:30:00Z",
-          source: "Background Job Scheduler"
-        },
-        {
-          level: "warning",
-          message: "Database query for fetching user profiles is taking 5 seconds.",
-          timestamp: "2024-03-15T12:15:00Z",
-          source: "Database Service"
-        },
-        {
-          level: "info",
-          message: "Disk space on the logging server is at 85%.",
-          timestamp: "2024-03-15T13:00:00Z",
-          source: "Logging Server"
-        },
-        {
-          level: "error",
-          message: "Authentication service is unavailable due to a server outage.",
-          timestamp: "2024-03-15T13:45:00Z",
-          source: "Authentication Service"
-        },
-        {
-          level: "warning",
-          message: "Cache server is experiencing high load, with 95% utilization.",
-          timestamp: "2024-03-15T14:30:00Z",
-          source: "Cache Server"
-        },
-        {
-          level: "info",
-          message: "Network latency between the application server and the database server has increased to 200ms.",
-          timestamp: "2024-03-15T15:15:00Z",
-          source: "Network Infrastructure"
-        }
-      ],
-      integrations: [
-        {
-          name: "Supabase",
-          description: "Banco de dados e autenticação",
-          status: "online",
-          latency: 75
-        },
-        {
-          name: "Stripe",
-          description: "Pagamentos",
-          status: Math.random() > 0.8 ? "degraded" : "online",
-          latency: Math.floor(Math.random() * 150) + 50
-        },
-        {
-          name: "SendGrid",
-          description: "Envio de emails",
-          status: Math.random() > 0.95 ? "offline" : "online",
-          latency: Math.floor(Math.random() * 200) + 100
-        },
-        {
-          name: "Google Maps",
-          description: "Mapas e geolocalização",
-          status: "online",
-          latency: 120
-        }
-      ]
-    };
-  } catch (error) {
-    console.error("Error fetching system status:", error);
-    throw error;
-  }
-};
+    if (error) {
+      console.error('Error fetching listings:', error);
+      throw error;
+    }
 
-// Specific request functions for AdminSystemReport.tsx
-export const getDatabaseStatus = async (): Promise<SystemStatus['database']> => {
-  const status = await getSystemStatus();
-  return status.database;
-};
-
-export const getApiStatus = async (): Promise<SystemStatus['api']> => {
-  const status = await getSystemStatus();
-  return status.api;
-};
-
-export const getPerformanceMetrics = async (): Promise<SystemStatus['performance']> => {
-  const status = await getSystemStatus();
-  return status.performance;
-};
-
-export const getErrorLogs = async (): Promise<SystemStatus['errors']> => {
-  const status = await getSystemStatus();
-  return status.errors;
-};
-
-// Update the getIntegrations function to properly handle the readonly array
-export const getIntegrations = async (): Promise<SystemStatus['integrations']> => {
-  try {
-    // Simulate API call delay
-    await simulateDelay(600);
-
-    // Return as non-readonly array
-    return [
-      {
-        name: "Supabase",
-        description: "Banco de dados e autenticação",
-        status: "online",
-        latency: 75
-      },
-      {
-        name: "Stripe",
-        description: "Pagamentos",
-        status: Math.random() > 0.8 ? "degraded" : "online",
-        latency: Math.floor(Math.random() * 150) + 50
-      },
-      {
-        name: "SendGrid",
-        description: "Envio de emails",
-        status: Math.random() > 0.95 ? "offline" : "online",
-        latency: Math.floor(Math.random() * 200) + 100
-      },
-      {
-        name: "Google Maps",
-        description: "Mapas e geolocalização",
-        status: "online",
-        latency: 120
-      }
-    ];
-  } catch (error) {
-    console.error("Error fetching integrations data:", error);
+    return data || [];
+  } catch (err) {
+    console.error('Unexpected error fetching listings:', err);
     return [];
   }
-};
+}
 
-// Functions for AdminPanel.tsx
-export const getUsers = async () => {
-  await simulateDelay(500);
-  return [];
-};
+export async function getListingsByCategory(category: string) {
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('category', category)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
 
-export const deleteUser = async (id: string) => {
-  await simulateDelay(300);
-  return true;
-};
+    if (error) {
+      console.error('Error fetching listings by category:', error);
+      // Return filtered mock data for the specific category
+      console.log(`Returning mock data for category ${category} due to database error`);
+      return allListings.filter(listing => listing.category === category);
+    }
 
-export const updateUser = async (id: string, data: any) => {
-  await simulateDelay(300);
-  return { id, ...data };
-};
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching listings by category:', err);
+    return allListings.filter(listing => listing.category === category);
+  }
+}
 
-export const getListings = async () => {
-  await simulateDelay(500);
-  return [];
-};
+export async function getListing(id: string) {
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-export const deleteListing = async (id: string) => {
-  await simulateDelay(300);
-  return true;
-};
+    if (error) {
+      console.error('Error fetching listing:', error);
+      // Return a mock listing with the requested ID if possible
+      const mockListing = allListings.find(listing => listing.id === id);
+      return mockListing || null;
+    }
 
-export const updateListing = async (id: string, data: any) => {
-  await simulateDelay(300);
-  return { id, ...data };
-};
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching listing:', err);
+    const mockListing = allListings.find(listing => listing.id === id);
+    return mockListing || null;
+  }
+}
 
-export const getPendingUsers = async () => {
-  await simulateDelay(500);
-  return [];
-};
+export async function getCategories() {
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
 
-export const approveUser = async (id: string) => {
-  await simulateDelay(300);
-  return { id, approval_status: 'approved' };
-};
+    if (error) {
+      console.error('Error fetching categories:', error);
+      // Import and return mock categories
+      const { categories } = await import('@/data/mockData');
+      return categories;
+    }
 
-export const rejectUser = async (id: string) => {
-  await simulateDelay(300);
-  return { id, approval_status: 'rejected' };
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching categories:', err);
+    const { categories } = await import('@/data/mockData');
+    return categories;
+  }
+}
+
+export async function getUserProfile(userId: string) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single();
+
+  if (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function updateUserProfile(userId: string, profile: Partial<Database['public']['Tables']['profiles']['Update']>) {
+  const { error } = await supabase
+    .from('profiles')
+    .update(profile)
+    .eq('id', userId);
+
+  if (error) {
+    console.error('Error updating profile:', error);
+    throw error;
+  }
+}
+
+export async function createListing(listing: Database['public']['Tables']['listings']['Insert']) {
+  const { data, error } = await supabase
+    .from('listings')
+    .insert(listing)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating listing:', error);
+    throw error;
+  }
+
+  return data;
+}
+
+export async function updateListing(id: string, listing: Partial<Database['public']['Tables']['listings']['Update']>) {
+  const { error } = await supabase
+    .from('listings')
+    .update(listing)
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error updating listing:', error);
+    throw error;
+  }
+}
+
+export async function deleteListing(id: string) {
+  const { error } = await supabase
+    .from('listings')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting listing:', error);
+    throw error;
+  }
+}
+
+export async function getUserListings(userId: string) {
+  const { data, error } = await supabase
+    .from('listings')
+    .select('*')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching user listings:', error);
+    return [];
+  }
+
+  return data;
+}
+
+// Updated function for getBannerImages
+export async function getBannerImages() {
+  try {
+    // First try to fetch images as authenticated user (admin)
+    const { data, error } = await supabase
+      .from('banner_images')
+      .select('*')
+      .order('created_at');
+
+    if (error) {
+      console.error('Error fetching banner images:', error);
+      return [];
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching banner images:', err);
+    return [];
+  }
+}
+
+// Updated function for addBannerImage with proper return type
+export async function addBannerImage(imageData: { url: string, title?: string }) {
+  try {
+    const { data, error } = await supabase
+      .from('banner_images')
+      .insert([{ 
+        url: imageData.url, 
+        title: imageData.title || null, 
+        active: true 
+      }])
+      .select();
+
+    if (error) {
+      console.error('Error adding banner image:', error);
+      throw error;
+    }
+
+    return { data: data[0], error: null };
+  } catch (err) {
+    console.error('Unexpected error adding banner image:', err);
+    return { data: null, error: err };
+  }
+}
+
+// Função para remover imagem de banner (para uso administrativo)
+export async function removeBannerImage(id: string) {
+  try {
+    const { error } = await supabase
+      .from('banner_images')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error removing banner image:', error);
+      throw error;
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Unexpected error removing banner image:', err);
+    throw err;
+  }
+}
+
+// Função para atualizar o status de uma imagem (para uso administrativo)
+export async function toggleBannerImageStatus(id: string, active: boolean) {
+  try {
+    const { error } = await supabase
+      .from('banner_images')
+      .update({ 
+        active, 
+        updated_at: new Date().toISOString() // Fix here: Convert Date to ISO string
+      })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating banner image status:', error);
+      throw error;
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Unexpected error updating banner image status:', err);
+    throw err;
+  }
+}
+
+// Update the existing getRandomBannerImage function
+export const getRandomBannerImage = async () => {
+  const bannerImages = await getBannerImages();
+  
+  // If no banner images are found, fallback to the original method
+  if (bannerImages.length === 0) {
+    return '/lovable-uploads/239ae548-ca2d-41d4-bf2f-45fb03041253.png';
+  }
+  
+  const randomIndex = Math.floor(Math.random() * bannerImages.length);
+  return bannerImages[randomIndex].url;
 };

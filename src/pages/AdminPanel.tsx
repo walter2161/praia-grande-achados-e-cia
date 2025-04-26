@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -7,14 +8,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, User, Settings, Database, Image as ImageIcon, Plus, Trash, Edit, Activity, Eye, EyeOff } from "lucide-react";
+import { Search, User, Settings, Database, Image as ImageIcon, Plus, Trash, Edit, Activity, Eye, EyeOff, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser } from "@/lib/adminService";
 import { addBannerImage, removeBannerImage, toggleBannerImageStatus, getBannerImages } from "@/lib/supabase";
 import type { Profile, Listing } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
-import { Image } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 const AdminPanel = () => {
@@ -24,6 +24,7 @@ const AdminPanel = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [listingSearchTerm, setListingSearchTerm] = useState("");
   const [bannerImages, setBannerImages] = useState<Array<{id: string, url: string, title: string | null, active: boolean}>>([]);
   const [bannerUrl, setBannerUrl] = useState("");
   const [bannerTitle, setBannerTitle] = useState("");
@@ -187,6 +188,12 @@ const AdminPanel = () => {
     user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (user.full_name && user.full_name.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
+
+  const filteredListings = listings.filter(listing => 
+    listing.title?.toLowerCase().includes(listingSearchTerm.toLowerCase()) ||
+    listing.category?.toLowerCase().includes(listingSearchTerm.toLowerCase()) ||
+    listing.description?.toLowerCase().includes(listingSearchTerm.toLowerCase())
   );
 
   // If not authenticated, redirect to login
@@ -432,6 +439,9 @@ const AdminPanel = () => {
                   <CardTitle>Gerenciamento de Anúncios</CardTitle>
                   <CardDescription>Gerencie todos os anúncios do sistema</CardDescription>
                 </div>
+                <Button onClick={fetchData} variant="outline" className="ml-auto">
+                  Atualizar
+                </Button>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center mb-4 gap-2">
@@ -441,41 +451,64 @@ const AdminPanel = () => {
                       type="search"
                       placeholder="Buscar anúncios..."
                       className="pl-8"
+                      value={listingSearchTerm}
+                      onChange={(e) => setListingSearchTerm(e.target.value)}
                     />
                   </div>
-                  <Button variant="outline">Filtrar</Button>
+                  <Button variant="outline" onClick={() => setListingSearchTerm("")}>Limpar</Button>
                 </div>
                 
                 <div className="border rounded-md">
                   <div className="grid grid-cols-12 gap-2 p-4 font-semibold border-b bg-muted/50">
                     <div className="col-span-1">#</div>
-                    <div className="col-span-4">Título</div>
+                    <div className="col-span-3">Título</div>
                     <div className="col-span-2">Categoria</div>
-                    <div className="col-span-2">Status</div>
+                    <div className="col-span-2">Usuário</div>
+                    <div className="col-span-1">Status</div>
                     <div className="col-span-3">Ações</div>
                   </div>
                   
-                  {listings.map((listing, index) => (
-                    <div key={listing.id} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
-                      <div className="col-span-1">{index + 1}</div>
-                      <div className="col-span-4">{listing.title}</div>
-                      <div className="col-span-2">{listing.category}</div>
-                      <div className="col-span-2">{listing.status}</div>
-                      <div className="col-span-3 flex gap-2">
-                        <Button size="sm" variant="outline">
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() => handleDeleteListing(listing.id)}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+                  {filteredListings.length > 0 ? (
+                    filteredListings.map((listing, index) => (
+                      <div key={listing.id} className="grid grid-cols-12 gap-2 p-4 border-b items-center">
+                        <div className="col-span-1">{index + 1}</div>
+                        <div className="col-span-3 truncate" title={listing.title}>{listing.title}</div>
+                        <div className="col-span-2">{listing.category}</div>
+                        <div className="col-span-2">
+                          {users.find(u => u.id === listing.user_id)?.username || 
+                           users.find(u => u.id === listing.user_id)?.email || 
+                           'N/A'}
+                        </div>
+                        <div className="col-span-1">
+                          <Badge variant={listing.status === 'active' ? "default" : "secondary"}>
+                            {listing.status}
+                          </Badge>
+                        </div>
+                        <div className="col-span-3 flex gap-2">
+                          <Link to={`/anuncio/${listing.category?.toLowerCase().replace(/\s+/g, '-')}/${listing.id}`} target="_blank">
+                            <Button size="sm" variant="outline">
+                              <ExternalLink className="h-4 w-4" />
+                            </Button>
+                          </Link>
+                          <Button size="sm" variant="outline">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="text-red-500 hover:text-red-700"
+                            onClick={() => handleDeleteListing(listing.id)}
+                          >
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="p-4 text-center text-muted-foreground">
+                      {loading ? 'Carregando anúncios...' : 'Nenhum anúncio encontrado'}
                     </div>
-                  ))}
+                  )}
                 </div>
               </CardContent>
             </Card>
