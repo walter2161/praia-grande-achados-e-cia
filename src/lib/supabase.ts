@@ -1,3 +1,4 @@
+
 import { type Database } from '@/types/database';
 import { supabase } from '@/integrations/supabase/client';
 import { allListings } from '@/data/mockData';
@@ -244,7 +245,10 @@ export async function toggleBannerImageStatus(id: string, active: boolean) {
   try {
     const { error } = await supabase
       .from('banner_images')
-      .update({ active, updated_at: new Date() })
+      .update({ 
+        active, 
+        updated_at: new Date().toISOString() // Fix here: Convert Date to ISO string
+      })
       .eq('id', id);
 
     if (error) {
@@ -271,3 +275,4 @@ export const getRandomBannerImage = async () => {
   const randomIndex = Math.floor(Math.random() * bannerImages.length);
   return bannerImages[randomIndex].url;
 };
+
