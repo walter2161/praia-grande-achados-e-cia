@@ -6,6 +6,12 @@ import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import WeatherCapsule from "./WeatherCapsule";
 import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -62,7 +68,7 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Center: menu + search - now with tighter spacing */}
+        {/* Center: menu + search */}
         <div className="flex items-center flex-1 justify-center min-w-[200px] max-w-full md:basis-1/2 px-2" style={{ flexBasis: "50%", minWidth: 0 }}>
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
@@ -83,29 +89,37 @@ export default function Header() {
             >
               <div className="py-1">
                 {categories.map((cat) => (
-                  <div key={cat.slug}>
-                    <Link
-                      to={`/categoria/${cat.slug}`}
-                      className="flex items-center gap-2 px-3 py-1.5 hover:bg-accent text-foreground transition-all"
-                      onClick={() => setCategoryMenuOpen(false)}
-                    >
+                  <div key={cat.slug} className="border-b last:border-b-0">
+                    <div className="flex items-center gap-2 px-3 py-1.5 hover:bg-accent text-foreground transition-all">
                       <cat.icon className="h-4 w-4 text-[#F97316]" />
-                      <span className="font-medium text-sm">{cat.name}</span>
-                    </Link>
-                    {/* Subcategorias with tighter spacing */}
+                      <Link
+                        to={`/categoria/${cat.slug}`}
+                        className="font-medium text-sm flex-grow"
+                        onClick={() => setCategoryMenuOpen(false)}
+                      >
+                        {cat.name}
+                      </Link>
+                    </div>
+                    
                     {cat.subcategories && cat.subcategories.length > 0 && (
-                      <div className="ml-7 pb-1">
-                        {cat.subcategories.map((sub) => (
-                          <Link
-                            key={sub}
-                            to={`/categoria/${cat.slug}?subcategoria=${encodeURIComponent(sub)}`}
-                            className="block px-2 py-1 text-muted-foreground hover:text-foreground rounded hover:bg-accent/70 text-xs transition-all"
-                            onClick={() => setCategoryMenuOpen(false)}
-                          >
-                            {sub}
-                          </Link>
-                        ))}
-                      </div>
+                      <Accordion type="single" collapsible className="px-2">
+                        <AccordionItem value={cat.slug} className="border-none">
+                          <AccordionContent className="pb-1 pt-0">
+                            <div className="ml-6 space-y-0.5">
+                              {cat.subcategories.map((sub) => (
+                                <Link
+                                  key={sub}
+                                  to={`/categoria/${cat.slug}?subcategoria=${encodeURIComponent(sub)}`}
+                                  className="block px-2 py-1 text-xs text-muted-foreground hover:text-foreground rounded hover:bg-accent/70 transition-all"
+                                  onClick={() => setCategoryMenuOpen(false)}
+                                >
+                                  {sub}
+                                </Link>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
                     )}
                   </div>
                 ))}
@@ -113,7 +127,7 @@ export default function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          {/* Barra de busca */}
+          {/* Search bar */}
           <form
             onSubmit={handleSearch}
             className="
