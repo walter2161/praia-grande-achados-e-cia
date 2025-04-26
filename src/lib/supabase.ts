@@ -1,65 +1,95 @@
-
 import { type Database } from '@/types/database';
 import { supabase } from '@/integrations/supabase/client';
+import { allListings } from '@/data/mockData';
 
 export async function getListings() {
-  const { data, error } = await supabase
-    .from('listings')
-    .select('*')
-    .eq('status', 'active')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching listings:', error);
-    return [];
+    if (error) {
+      console.error('Error fetching listings:', error);
+      // Return mock data when there's a database error
+      console.log('Returning mock data due to database error');
+      return allListings;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching listings:', err);
+    return allListings;
   }
-
-  return data;
 }
 
 export async function getListingsByCategory(category: string) {
-  const { data, error } = await supabase
-    .from('listings')
-    .select('*')
-    .eq('category', category)
-    .eq('status', 'active')
-    .order('created_at', { ascending: false });
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('category', category)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false });
 
-  if (error) {
-    console.error('Error fetching listings by category:', error);
-    return [];
+    if (error) {
+      console.error('Error fetching listings by category:', error);
+      // Return filtered mock data for the specific category
+      console.log(`Returning mock data for category ${category} due to database error`);
+      return allListings.filter(listing => listing.category === category);
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching listings by category:', err);
+    return allListings.filter(listing => listing.category === category);
   }
-
-  return data;
 }
 
 export async function getListing(id: string) {
-  const { data, error } = await supabase
-    .from('listings')
-    .select('*')
-    .eq('id', id)
-    .single();
+  try {
+    const { data, error } = await supabase
+      .from('listings')
+      .select('*')
+      .eq('id', id)
+      .single();
 
-  if (error) {
-    console.error('Error fetching listing:', error);
-    return null;
+    if (error) {
+      console.error('Error fetching listing:', error);
+      // Return a mock listing with the requested ID if possible
+      const mockListing = allListings.find(listing => listing.id === id);
+      return mockListing || null;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching listing:', err);
+    const mockListing = allListings.find(listing => listing.id === id);
+    return mockListing || null;
   }
-
-  return data;
 }
 
 export async function getCategories() {
-  const { data, error } = await supabase
-    .from('categories')
-    .select('*')
-    .order('name');
+  try {
+    const { data, error } = await supabase
+      .from('categories')
+      .select('*')
+      .order('name');
 
-  if (error) {
-    console.error('Error fetching categories:', error);
-    return [];
+    if (error) {
+      console.error('Error fetching categories:', error);
+      // Import and return mock categories
+      const { categories } = await import('@/data/mockData');
+      return categories;
+    }
+
+    return data;
+  } catch (err) {
+    console.error('Unexpected error fetching categories:', err);
+    const { categories } = await import('@/data/mockData');
+    return categories;
   }
-
-  return data;
 }
 
 export async function getUserProfile(userId: string) {

@@ -43,15 +43,8 @@ const Index = () => {
     icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : LucideIcons.Package
   }));
 
-  // Use mock data if there's an error from the API
-  const listings: Listing[] = listingsError ? 
-    (allListings as unknown as Listing[]).map(listing => ({
-      ...listing,
-      status: listing.status as "active" | "inactive" | "pending" | "rejected"
-    })) : 
-    (listingsData as unknown as Listing[]);
-
   // Get the 8 most recent listings with proper type casting
+  const listings: Listing[] = listingsData as unknown as Listing[];
   const recentListings = listings.slice(0, 8);
 
   const handleSearch = (e: React.FormEvent) => {
