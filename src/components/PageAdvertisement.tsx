@@ -11,18 +11,50 @@ export default function PageAdvertisement() {
   useEffect(() => {
     const fetchAd = async () => {
       // Convert route to page_name format (e.g., /categoria/autos -> categoria/autos)
-      const pageName = location.pathname.substring(1) || 'home';
+      let pageName = location.pathname.substring(1) || 'home';
       
-      const { data: ads, error } = await supabase
+      // First try to fetch specific ad for this exact page
+      let { data: ads, error } = await supabase
         .from('page_ads')
         .select('*')
         .eq('page_name', pageName)
         .eq('is_active', true)
-        .single();
+        .maybeSingle();
       
-      if (!error && ads) {
+      // If no specific ad found for this page, try to get a generic category ad
+      if (!ads && pageName.startsWith('categoria/')) {
+        const { data: categoryAds, error: categoryError } = await supabase
+          .from('page_ads')
+          .select('*')
+          .eq('page_name', 'categoria')
+          .eq('is_active', true)
+          .maybeSingle();
+          
+        if (!categoryError && categoryAds) {
+          ads = categoryAds;
+        }
+      }
+      
+      // If still no ad found, try to get a default ad
+      if (!ads) {
+        const { data: defaultAds, error: defaultError } = await supabase
+          .from('page_ads')
+          .select('*')
+          .eq('page_name', 'default')
+          .eq('is_active', true)
+          .maybeSingle();
+          
+        if (!defaultError && defaultAds) {
+          ads = defaultAds;
+        }
+      }
+      
+      if (ads) {
         setAd(ads as Ad);
       }
+      
+      // Log the process for debugging
+      console.log('Page ad fetch for:', pageName, ads ? 'found' : 'not found');
     };
     
     fetchAd();
