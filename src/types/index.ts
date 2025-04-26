@@ -1,9 +1,11 @@
+
 export interface Category {
   id: string;
   name: string;
   slug: string;
   icon: any;
   created_at: string;
+  subcategories?: string[]; // Add subcategories to the Category type
 }
 
 export interface Listing {
@@ -50,6 +52,61 @@ export interface Listing {
   rating: number | null;
   created_at: string;
   updated_at: string;
+  sellerName?: string;
+  sellerContact?: string;
+}
+
+// Add specific listing types that extend the base Listing type
+export interface AutoListing extends Listing {
+  brand: string;
+  model: string;
+  year: number;
+  mileage: number;
+  fuel: string;
+  transmission: string;
+  color: string;
+}
+
+export interface JobListing extends Listing {
+  salary: number;
+  company_name: string;
+  company_contact: string;
+  job_type: string;
+  education: string;
+  experience: string;
+  benefits: string[];
+}
+
+export interface RealEstateListing extends Listing {
+  property_type: string;
+  size: number;
+  bedrooms: number;
+  bathrooms: number;
+  has_garage: boolean;
+  amenities: string[];
+  finalidade: string;
+}
+
+export interface ServiceListing extends Listing {
+  service_type: string;
+  provider_name: string;
+  provider_contact: string;
+  availability: string;
+  experience: string;
+  rating: number;
+}
+
+export interface ItemListing extends Listing {
+  // Item-specific properties can be added here if needed
+}
+
+export interface BusinessListing extends Listing {
+  company_name: string;
+  // Business-specific properties
+}
+
+export interface BarRestaurantListing extends Listing {
+  // Bar/Restaurant-specific properties
 }
 
 export interface Profile {
@@ -119,4 +176,9 @@ export interface Ad {
   link?: string;
   is_active: boolean;
   category_id?: string;
+}
+
+// Add FormErrors type
+export interface FormErrors {
+  [key: string]: string;
 }
