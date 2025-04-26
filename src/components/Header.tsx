@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
-import { Search, User, Plus, LogOut, Menu } from "lucide-react";
+import { Search, User, Plus, LogOut, Menu, ChevronDown } from "lucide-react";
 import { Input } from "./ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import WeatherCapsule from "./WeatherCapsule";
@@ -104,6 +104,12 @@ export default function Header() {
                     {cat.subcategories && cat.subcategories.length > 0 && (
                       <Accordion type="single" collapsible className="px-2">
                         <AccordionItem value={cat.slug} className="border-none">
+                          <AccordionTrigger className="hover:no-underline px-2 py-1">
+                            <span className="text-xs text-muted-foreground">
+                              Ver subcategorias
+                              <ChevronDown className="inline-block ml-2 h-3 w-3" />
+                            </span>
+                          </AccordionTrigger>
                           <AccordionContent className="pb-1 pt-0">
                             <div className="ml-6 space-y-0.5">
                               {cat.subcategories.map((sub) => (

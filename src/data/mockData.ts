@@ -1,4 +1,3 @@
-
 import { Category } from "@/types";
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 import { autoListings } from "./autoListings";
@@ -35,6 +34,17 @@ export const categories: Category[] = [
   },
   {
     id: "4",
+    name: "EMPRESAS",
+    icon: Settings,
+    slug: "empresas",
+    subcategories: [
+      "Serviços",
+      "Bares & Restaurantes"
+    ],
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "5",
     name: "SERVIÇOS",
     icon: Settings,
     slug: "servicos",
@@ -93,15 +103,16 @@ export const categories: Category[] = [
     created_at: new Date().toISOString()
   },
   {
-    id: "5",
+    id: "6",
     name: "BARES & RESTAURANTES",
     icon: Utensils,
     slug: "bares-restaurantes",
     subcategories: ["Bares", "Restaurantes", "Lanchonetes", "Delivery"],
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    parentCategory: "Empresas"
   },
   {
-    id: "6",
+    id: "7",
     name: "ITENS",
     icon: Package,
     slug: "itens",
