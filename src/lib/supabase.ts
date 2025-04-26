@@ -24,26 +24,39 @@ export async function getListings() {
   }
 }
 
-export async function getListingsByCategory(category: string) {
+export async function getListingsByCategory(category: string, subcategory?: string) {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from('listings')
       .select('*')
       .eq('category', category)
-      .eq('status', 'active')
-      .order('created_at', { ascending: false });
+      .eq('status', 'active');
+
+    if (subcategory) {
+      query = query.eq('subcategory', subcategory);
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching listings by category:', error);
       // Return filtered mock data for the specific category
       console.log(`Returning mock data for category ${category} due to database error`);
-      return allListings.filter(listing => listing.category === category);
+      
+      // Filter mock data based on category and optional subcategory
+      return allListings.filter(listing => 
+        listing.category === category && 
+        (!subcategory || listing.subcategory === subcategory)
+      );
     }
 
     return data;
   } catch (err) {
     console.error('Unexpected error fetching listings by category:', err);
-    return allListings.filter(listing => listing.category === category);
+    return allListings.filter(listing => 
+      listing.category === category && 
+      (!subcategory || listing.subcategory === subcategory)
+    );
   }
 }
 

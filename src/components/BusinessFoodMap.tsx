@@ -7,16 +7,11 @@ import type { Listing } from '@/types';
 
 const BusinessFoodMap = () => {
   const [businesses, setBusinesses] = useState<Listing[]>([]);
-  const [foodPlaces, setFoodPlaces] = useState<Listing[]>([]);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        // Fetch bars and restaurants
-        const foodListings = await getListingsByCategory('bares-restaurantes');
-        setFoodPlaces(foodListings as Listing[]);
-
-        // Fetch businesses
+        // Fetch all businesses, including those with "Bares e Restaurantes" subcategory
         const businessListings = await getListingsByCategory('empresas');
         setBusinesses(businessListings as Listing[]);
       } catch (error) {
@@ -28,21 +23,21 @@ const BusinessFoodMap = () => {
   }, []);
 
   // Combine all listings and format them for the map
-  const mapPins = [...businesses, ...foodPlaces]
+  const mapPins = businesses
     .filter(listing => listing.latitude && listing.longitude)
     .map(listing => ({
       latitude: listing.latitude!,
       longitude: listing.longitude!,
       title: listing.title,
-      category: listing.category,
-      icon: listing.category === 'empresas' ? Building : Utensils
+      category: listing.subcategory,
+      icon: listing.subcategory === 'Bares e Restaurantes' ? Utensils : Building
     }));
 
   return (
     <section className="py-12 bg-gray-50">
       <div className="container space-y-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold mb-2">Empresas e Gastronomia em Praia Grande</h2>
+          <h2 className="text-3xl font-bold mb-2">Empresas em Praia Grande</h2>
           <p className="text-muted-foreground">
             Encontre os melhores estabelecimentos da cidade
           </p>
