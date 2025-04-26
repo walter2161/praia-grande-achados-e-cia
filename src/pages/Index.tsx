@@ -184,7 +184,7 @@ const Index = () => {
       {/* Map and CTA sections */}
       <BusinessFoodMap />
       
-      {/* CTA Section */}
+      {/* CTA Section - Fixed with orange filter */}
       <section 
         className="relative py-16 overflow-hidden"
         style={{ minHeight: "320px" }}
@@ -193,11 +193,21 @@ const Index = () => {
         <div
           className="absolute inset-0 w-full h-full"
           style={{
-            backgroundImage: `url(${ctaBackground})`,
+            backgroundImage: `url("${ctaBackground}")`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            filter: 'brightness(0.3)',
           }}
+          aria-hidden="true"
+        />
+        
+        {/* Orange filter overlay - Using rgba for orange with 60% opacity */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundColor: 'rgba(255, 102, 0, 0.6)',
+            mixBlendMode: 'overlay',
+          }}
+          aria-hidden="true"
         />
         
         {/* Content */}
