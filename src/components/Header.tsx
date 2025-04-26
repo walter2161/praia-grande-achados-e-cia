@@ -62,28 +62,16 @@ export default function Header() {
           </Link>
         </div>
 
-        {/* Center: menu + search - now using flex-1 to allow 50% width */}
-        <div
-          className="
-            flex items-center
-            flex-1
-            justify-center
-            min-w-[200px]
-            max-w-full
-            md:basis-1/2
-            px-2
-          "
-          style={{ flexBasis: "50%", minWidth: 0 }}
-        >
-          {/* Menu Hamburguer (Categorias c/ Subcategorias) */}
+        {/* Center: menu + search - now with tighter spacing */}
+        <div className="flex items-center flex-1 justify-center min-w-[200px] max-w-full md:basis-1/2 px-2" style={{ flexBasis: "50%", minWidth: 0 }}>
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className="flex h-10 w-10 items-center justify-center ml-0 p-0 rounded-md"
-                style={{ background: "none", border: "none", marginRight: 10 }}
+                className="flex h-8 w-8 items-center justify-center ml-0 p-0 rounded-md"
+                style={{ background: "none", border: "none", marginRight: 8 }}
                 aria-label="Categorias"
               >
-                <Menu className="h-7 w-7 text-[#F97316]" />
+                <Menu className="h-6 w-6 text-[#F97316]" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent
@@ -91,27 +79,27 @@ export default function Header() {
               side="bottom"
               sideOffset={0}
               className="w-[290px] p-0 border rounded-md bg-background z-[60] shadow-xl"
-              style={{ marginTop: 6 }}
+              style={{ marginTop: 4 }}
             >
-              <div className="py-2">
+              <div className="py-1">
                 {categories.map((cat) => (
                   <div key={cat.slug}>
                     <Link
                       to={`/categoria/${cat.slug}`}
-                      className="flex items-center gap-3 px-4 py-2 hover:bg-accent text-foreground transition-all"
+                      className="flex items-center gap-2 px-3 py-1.5 hover:bg-accent text-foreground transition-all"
                       onClick={() => setCategoryMenuOpen(false)}
                     >
-                      <cat.icon className="h-5 w-5 text-[#F97316]" />
-                      <span className="font-medium">{cat.name}</span>
+                      <cat.icon className="h-4 w-4 text-[#F97316]" />
+                      <span className="font-medium text-sm">{cat.name}</span>
                     </Link>
-                    {/* Subcategorias */}
+                    {/* Subcategorias with tighter spacing */}
                     {cat.subcategories && cat.subcategories.length > 0 && (
-                      <div className="ml-9 pt-1 pb-2">
+                      <div className="ml-7 pb-1">
                         {cat.subcategories.map((sub) => (
                           <Link
                             key={sub}
                             to={`/categoria/${cat.slug}?subcategoria=${encodeURIComponent(sub)}`}
-                            className="block px-2 py-1 text-muted-foreground hover:text-foreground rounded hover:bg-accent/70 text-sm transition-all"
+                            className="block px-2 py-1 text-muted-foreground hover:text-foreground rounded hover:bg-accent/70 text-xs transition-all"
                             onClick={() => setCategoryMenuOpen(false)}
                           >
                             {sub}
@@ -124,6 +112,7 @@ export default function Header() {
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
+          
           {/* Barra de busca */}
           <form
             onSubmit={handleSearch}

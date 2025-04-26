@@ -1,9 +1,14 @@
 
 import { CloudRain, CloudSun, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getWeatherData, type WeatherData } from "@/lib/services/weatherService";
 
 export default function WeatherCapsule() {
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [weather, setWeather] = useState<WeatherData>({
+    condition: "partly_cloudy",
+    temperature: 25
+  });
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -13,10 +18,19 @@ export default function WeatherCapsule() {
     return () => clearInterval(timer);
   }, []);
 
-  // Hardcoded weather for demo purposes
-  const weather = {
-    condition: "partly_cloudy", // could be sunny, partly_cloudy, or rainy
-    temperature: 28
+  useEffect(() => {
+    // Fetch weather initially
+    fetchWeather();
+    
+    // Update weather every 30 minutes
+    const weatherTimer = setInterval(fetchWeather, 30 * 60 * 1000);
+    
+    return () => clearInterval(weatherTimer);
+  }, []);
+
+  const fetchWeather = async () => {
+    const data = await getWeatherData();
+    setWeather(data);
   };
 
   const WeatherIcon = () => {
@@ -31,7 +45,7 @@ export default function WeatherCapsule() {
   };
 
   return (
-    <div className="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full text-sm border">
+    <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full text-sm border">
       <span className="text-muted-foreground">
         {currentTime.toLocaleTimeString('pt-BR', { 
           hour: '2-digit', 
@@ -45,3 +59,4 @@ export default function WeatherCapsule() {
     </div>
   );
 }
+
