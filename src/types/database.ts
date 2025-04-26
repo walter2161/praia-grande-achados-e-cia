@@ -1,4 +1,3 @@
-
 export type Json =
   | string
   | number
@@ -25,6 +24,7 @@ export interface Database {
           zip_code: string | null
           role: 'user' | 'admin'
           created_at: string
+          approval_status?: 'pending' | 'approved' | 'rejected'
         }
         Insert: {
           id: string
@@ -40,6 +40,7 @@ export interface Database {
           zip_code?: string | null
           role?: 'user' | 'admin'
           created_at?: string
+          approval_status?: 'pending' | 'approved' | 'rejected'
         }
         Update: {
           id?: string
@@ -55,6 +56,7 @@ export interface Database {
           zip_code?: string | null
           role?: 'user' | 'admin'
           created_at?: string
+          approval_status?: 'pending' | 'approved' | 'rejected'
         }
       }
       categories: {

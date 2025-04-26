@@ -1,7 +1,26 @@
-import type { Database } from './database';
 
-export type Profile = Database['public']['Tables']['profiles']['Row'];
+import type { Database } from './database';
+import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
+
+export type Profile = Database['public']['Tables']['profiles']['Row'] & {
+  approval_status?: 'pending' | 'approved' | 'rejected';
+};
 export type Listing = Database['public']['Tables']['listings']['Row'];
+
+export interface CategoryIcon {
+  className?: string;
+}
+
+export type CategoryIconType = React.ComponentType<CategoryIcon> | string;
+
+export interface Category {
+  id: string;
+  name: string;
+  icon: CategoryIconType;
+  slug: string;
+  subcategories?: string[];
+  created_at: string;
+}
 
 export interface SystemStatus {
   database: {
@@ -43,4 +62,47 @@ export interface SystemStatus {
     latency: number;
     lastChecked: string;
   }>;
+}
+
+export interface FormErrors {
+  [key: string]: string;
+}
+
+// Listing type extensions for different categories
+export interface AutoListing extends Omit<Listing, 'status'> {
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+}
+
+export interface JobListing extends Omit<Listing, 'status'> {
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+}
+
+export interface RealEstateListing extends Omit<Listing, 'status'> {
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+}
+
+export interface ServiceListing extends Omit<Listing, 'status' | 'price'> {
+  price: any; // Using any for price since it can be string or number in mockdata
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+}
+
+export interface BarRestaurantListing extends Omit<Listing, 'status' | 'price'> {
+  price: any; // Using any for price since it can be string or number in mockdata
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+}
+
+export interface ItemListing extends Omit<Listing, 'status'> {
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
