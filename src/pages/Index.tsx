@@ -74,11 +74,12 @@ const Index = () => {
 
   return (
     <MainLayout>
-      {/* Hero Section */}
+      {/* Hero Section - adjust padding and text size */}
       <section 
-        className="relative bg-gradient-to-b from-[#FF6600] to-[#FF6600]/80 text-white py-16 overflow-hidden"
+        className="relative bg-gradient-to-b from-[#FF6600] to-[#FF6600]/80 text-white py-8 md:py-16 overflow-hidden"
         style={{
-          minHeight: "420px",
+          minHeight: "320px",
+          maxHeight: "420px",
         }}
       >
         {/* BG image */}
@@ -100,11 +101,12 @@ const Index = () => {
             zIndex: 1,
           }}
         />
-        <div className="container relative z-10 text-center space-y-6">
-          <h1 className="text-4xl md:text-5xl font-bold">
+        
+        <div className="container relative z-10 text-center space-y-4 md:space-y-6 px-4">
+          <h1 className="text-3xl md:text-5xl font-bold">
             Compre, venda e encontre tudo em Praia Grande
           </h1>
-          <p className="text-xl max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl max-w-2xl mx-auto">
             O melhor guia local de produtos e serviços para todas as suas necessidades.
           </p>
           
@@ -135,12 +137,12 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Categories Section */}
-      <section className="py-12 bg-gray-50">
-        <div className="container space-y-8">
-          <h2 className="text-3xl font-bold text-center">Navegue por Categorias</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {categories.map((category) => (
+      {/* Categories Section - 2 columns x 3 rows on mobile */}
+      <section className="py-8 md:py-12 bg-gray-50">
+        <div className="container space-y-6 md:space-y-8 px-4">
+          <h2 className="text-2xl md:text-3xl font-bold text-center">Navegue por Categorias</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6">
+            {categories.slice(0, 6).map((category) => (
               <CategoryCard 
                 key={category.id} 
                 category={category}
@@ -151,9 +153,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Recent Listings Section */}
-      <section className="py-12">
-        <div className="container space-y-8">
+      {/* Recent Listings Section - adjust spacing */}
+      <section className="py-8 md:py-12">
+        <div className="container space-y-6 md:space-y-8 px-4">
           <div className="flex justify-between items-center">
             <h2 className="text-3xl font-bold">Anúncios Recentes</h2>
             <Link to="/todos-anuncios">
@@ -174,7 +176,7 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Add Map Section before CTA */}
+      {/* Map and CTA sections */}
       <BusinessFoodMap />
       
       {/* CTA Section */}

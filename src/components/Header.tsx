@@ -55,21 +55,21 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container flex h-16 items-center justify-between px-4 sm:px-4 relative">
-        {/* Left: logo */}
+      <div className="container flex h-14 md:h-16 items-center justify-between px-2 sm:px-4 relative">
+        {/* Left: logo - make it smaller on mobile */}
         <div className="flex items-center gap-2">
-          <Link to="/" className="flex items-center ml-2">
+          <Link to="/" className="flex items-center">
             <img
               src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
               alt="Logo GuíaPG"
-              className="h-10 max-h-10 w-auto object-contain"
-              style={{ maxWidth: 180 }}
+              className="h-8 md:h-10 max-h-10 w-auto object-contain"
+              style={{ maxWidth: 140, width: 'auto' }}
             />
           </Link>
         </div>
 
-        {/* Center: menu + search */}
-        <div className="flex items-center flex-1 justify-center min-w-[200px] max-w-full md:basis-1/2 px-2" style={{ flexBasis: "50%", minWidth: 0 }}>
+        {/* Center: menu + search - adjust spacing */}
+        <div className="flex items-center flex-1 justify-center min-w-[200px] max-w-full md:basis-1/2 px-1 md:px-2" style={{ flexBasis: "50%", minWidth: 0 }}>
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
@@ -159,8 +159,8 @@ export default function Header() {
           </form>
         </div>
 
-        {/* Right: actions */}
-        <div className="flex items-center gap-2">
+        {/* Right: actions - compact layout for mobile */}
+        <div className="flex items-center gap-1 md:gap-2">
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
               <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
@@ -178,7 +178,7 @@ export default function Header() {
           )}
 
           {/* NOVO LINK PLANOS */}
-          <Link to="/planos" className="text-foreground hover:text-primary">
+          <Link to="/planos" className="text-foreground hover:text-primary text-sm">
             Planos
           </Link>
           
