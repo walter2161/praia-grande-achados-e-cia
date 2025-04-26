@@ -63,6 +63,11 @@ export default function PageAdvertisement() {
     fetchAd();
   }, [location.pathname]);
   
+  // Return null if we're in the admin panel
+  if (location.pathname.includes('/admin')) {
+    return null;
+  }
+  
   // If no ad is found, use default image
   const adContent = ad?.content || DEFAULT_AD_IMAGE;
   const adLink = ad?.link || '#';
