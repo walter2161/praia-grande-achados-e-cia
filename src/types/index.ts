@@ -1,4 +1,5 @@
 
+
 export interface Category {
   id: string;
   name: string;
@@ -102,7 +103,7 @@ export interface ItemListing extends Listing {
 
 export interface BusinessListing extends Listing {
   company_name: string;
-  // Business-specific properties
+  business_type: string; // Add business_type property to fix the TypeScript error
 }
 
 export interface BarRestaurantListing extends Listing {
@@ -182,3 +183,4 @@ export interface Ad {
 export interface FormErrors {
   [key: string]: string;
 }
+
