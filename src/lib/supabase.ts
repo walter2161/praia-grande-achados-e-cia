@@ -1,4 +1,3 @@
-
 import { type Database } from '@/types/database';
 import { supabase } from '@/integrations/supabase/client';
 import { allListings } from '@/data/mockData';
@@ -181,7 +180,6 @@ export async function getBannerImages() {
     const { data, error } = await supabase
       .from('banner_images')
       .select('*')
-      .eq('active', true)
       .order('created_at');
 
     if (error) {
@@ -196,7 +194,7 @@ export async function getBannerImages() {
   }
 }
 
-// Função para adicionar nova imagem de banner (para uso administrativo)
+// Updated function for addBannerImage with proper return type
 export async function addBannerImage(imageData: { url: string, title?: string }) {
   try {
     const { data, error } = await supabase
@@ -213,10 +211,10 @@ export async function addBannerImage(imageData: { url: string, title?: string })
       throw error;
     }
 
-    return data[0];
+    return { data: data[0], error: null };
   } catch (err) {
     console.error('Unexpected error adding banner image:', err);
-    throw err;
+    return { data: null, error: err };
   }
 }
 
@@ -275,4 +273,3 @@ export const getRandomBannerImage = async () => {
   const randomIndex = Math.floor(Math.random() * bannerImages.length);
   return bannerImages[randomIndex].url;
 };
-

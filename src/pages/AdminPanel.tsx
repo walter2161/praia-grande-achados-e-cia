@@ -134,14 +134,14 @@ const AdminPanel = () => {
 
     try {
       setAddingBanner(true);
-      const { data, error } = await addBannerImage({
+      const result = await addBannerImage({
         url: bannerUrl,
         title: bannerTitle || undefined
       });
       
-      if (error) {
-        console.error('Erro ao adicionar banner:', error);
-        if (error.message?.includes('policy')) {
+      if (result.error) {
+        console.error('Erro ao adicionar banner:', result.error);
+        if (result.error.message?.includes('policy')) {
           toast.error('Você não tem permissão para adicionar banners. Apenas administradores podem gerenciar banners.');
         } else {
           toast.error('Erro ao adicionar banner. Por favor, tente novamente.');
