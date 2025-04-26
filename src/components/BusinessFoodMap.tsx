@@ -13,6 +13,7 @@ const BusinessFoodMap = () => {
       try {
         // Fetch all businesses, including those with "Bares e Restaurantes" subcategory
         const businessListings = await getListingsByCategory('empresas');
+        
         // Ensure proper type casting with status as union type
         setBusinesses((businessListings || []).map(listing => ({
           ...listing,
