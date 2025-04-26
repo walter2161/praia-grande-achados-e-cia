@@ -53,6 +53,9 @@ const BusinessFoodMap = () => {
             height="500px"
             initialCenter={[-24.00857, -46.41298]} // Praia Grande coordinates
             zoom={13}
+            address="Praia Grande, SP, Brasil" // Add explicit address for Praia Grande
+            neighborhood="Praia Grande" // Specify neighborhood as Praia Grande
+            category="empresas" // Ensure we're using the correct category
           />
         </div>
 

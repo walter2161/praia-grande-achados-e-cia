@@ -1,3 +1,4 @@
+
 import React from "react";
 import type { LucideIcon } from "lucide-react";
 
@@ -15,11 +16,11 @@ type MapProps = {
   initialCenter?: [number, number];
   zoom?: number;
   category?: string;
-  neighborhood?: string; // New prop for neighborhood name
-  address?: string; // Adding address prop for complete location info
+  neighborhood?: string;
+  address?: string;
 };
 
-// Generate iframe src for Google Maps based on category
+// Generate iframe src for Google Maps based on parameters
 function generateGoogleMapsEmbedSrc({
   latitude,
   longitude,
@@ -37,48 +38,53 @@ function generateGoogleMapsEmbedSrc({
   neighborhood?: string;
   address?: string;
 }) {
-  // For services and bars/restaurants, show exact location with pin and address
-  if (category === 'servicos' || category === 'bares-restaurantes') {
-    const locationQuery = address ? encodeURIComponent(address) : `${latitude},${longitude}`;
-    return `https://www.google.com/maps?q=${locationQuery}&z=${zoom}&output=embed`;
+  // If address is provided, use it directly for a more accurate location
+  if (address) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(address)}&z=${zoom}&output=embed`;
   }
   
-  // For other categories, show the neighborhood area
-  // Using the neighborhood name instead of coordinates
-  return `https://www.google.com/maps?q=${encodeURIComponent(neighborhood + ', Praia Grande, SP')}&z=14&output=embed`;
+  // If it's a category view, use neighborhood name if available
+  if (category && neighborhood) {
+    return `https://www.google.com/maps?q=${encodeURIComponent(neighborhood + ', SP, Brasil')}&z=${zoom}&output=embed`;
+  }
+  
+  // Default to coordinates
+  return `https://www.google.com/maps?q=${latitude},${longitude}&z=${zoom}&output=embed`;
 }
 
 const Map: React.FC<MapProps> = ({
   pins,
   height = "300px",
-  initialCenter = [-24.00857, -46.41298],
+  initialCenter = [-24.00857, -46.41298], // Default is Praia Grande center
   zoom = 15,
   category,
-  neighborhood = "Centro",
+  neighborhood = "Praia Grande",
   address,
 }) => {
-  // Use the first pin as the map center if it's a service or restaurant
-  const centerPin =
-    pins && pins.length > 0
-      ? pins[0]
-      : { latitude: -24.01556, longitude: -46.41322, title: "" };
+  // Use the provided address or coordinates to center the map
+  const mapSrc = address 
+    ? generateGoogleMapsEmbedSrc({
+        latitude: initialCenter[0],
+        longitude: initialCenter[1],
+        zoom,
+        category,
+        neighborhood,
+        address,
+      })
+    : generateGoogleMapsEmbedSrc({
+        latitude: initialCenter[0],
+        longitude: initialCenter[1],
+        zoom,
+        category,
+        neighborhood,
+      });
 
-  const mapSrc = generateGoogleMapsEmbedSrc({
-    latitude: centerPin.latitude,
-    longitude: centerPin.longitude,
-    zoom: category === 'servicos' || category === 'bares-restaurantes' ? zoom : 14,
-    title: centerPin.title,
-    category,
-    neighborhood,
-    address,  // Pass the address to the src generator function
-  });
-
-  // Update the map title based on the pin category
-  let mapTitle = "Mapa";
+  // Update the map title based on the category
+  let mapTitle = neighborhood ? `Mapa de ${neighborhood}` : "Mapa";
   if (category === 'empresas') {
-    mapTitle = "Empresas em Praia Grande";
-  } else if (category === 'bares-restaurantes') {
-    mapTitle = "Bares e Restaurantes em Praia Grande";
+    mapTitle = `Empresas em ${neighborhood || 'Praia Grande'}`;
+  } else if (category === 'bares-restaurantes' || (category === 'empresas' && pins.some(pin => pin.category === 'Bares e Restaurantes'))) {
+    mapTitle = `Estabelecimentos em ${neighborhood || 'Praia Grande'}`;
   }
 
   return (
