@@ -7,52 +7,15 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Search, User, Settings, Database, Image as ImageIcon, Plus, Trash, Edit, Activity } from "lucide-react";
+import { Search, User, Settings, Database, Image as ImageIcon, Plus, Trash, Edit, Activity, Eye, EyeOff } from "lucide-react";
 import { toast } from "sonner";
 import { getUsers, deleteUser, updateUser, getListings, deleteListing, updateListing, getPendingUsers, approveUser, rejectUser } from "@/lib/adminService";
+import { addBannerImage, removeBannerImage, toggleBannerImageStatus, getBannerImages } from "@/lib/supabase";
 import type { Profile, Listing } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { supabase } from "@/integrations/supabase/client";
 import { Image } from "lucide-react";
-
-// Add a new function in the component to handle banner image management
-const handleAddBannerImage = async (url: string) => {
-  if (!url.trim()) {
-    toast.error('Por favor, insira uma URL válida');
-    return;
-  }
-
-  try {
-    const { error } = await supabase
-      .from('banner_images')
-      .insert({ url, active: true });
-
-    if (error) throw error;
-
-    toast.success('Banner adicionado com sucesso');
-    // Refresh banner images list if needed
-  } catch (error) {
-    console.error('Erro ao adicionar banner:', error);
-    toast.error('Erro ao adicionar banner');
-  }
-};
-
-const handleRemoveBannerImage = async (id: string) => {
-  try {
-    const { error } = await supabase
-      .from('banner_images')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
-
-    toast.success('Banner removido com sucesso');
-    // Refresh banner images list if needed
-  } catch (error) {
-    console.error('Erro ao remover banner:', error);
-    toast.error('Erro ao remover banner');
-  }
-};
+import { Badge } from "@/components/ui/badge";
 
 const AdminPanel = () => {
   const { isAdmin, isAuthenticated } = useAuth();
@@ -61,10 +24,14 @@ const AdminPanel = () => {
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [bannerImages, setBannerImages] = useState<Array<{id: string, url: string, title: string | null}>>([]);
+  const [bannerImages, setBannerImages] = useState<Array<{id: string, url: string, title: string | null, active: boolean}>>([]);
+  const [bannerUrl, setBannerUrl] = useState("");
+  const [bannerTitle, setBannerTitle] = useState("");
+  const [addingBanner, setAddingBanner] = useState(false);
 
   useEffect(() => {
     fetchData();
+    fetchBannerImages();
   }, []);
 
   const fetchData = async () => {
@@ -93,6 +60,16 @@ const AdminPanel = () => {
       toast.error('Erro ao carregar dados');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchBannerImages = async () => {
+    try {
+      const data = await getBannerImages();
+      setBannerImages(data);
+    } catch (error) {
+      console.error('Erro ao buscar imagens de banner:', error);
+      toast.error('Erro ao carregar banners');
     }
   };
 
@@ -149,6 +126,53 @@ const AdminPanel = () => {
     }
   };
 
+  const handleAddBannerImage = async () => {
+    if (!bannerUrl.trim()) {
+      toast.error('Por favor, insira uma URL válida');
+      return;
+    }
+
+    try {
+      setAddingBanner(true);
+      await addBannerImage({
+        url: bannerUrl,
+        title: bannerTitle || undefined
+      });
+      
+      toast.success('Banner adicionado com sucesso');
+      setBannerUrl('');
+      setBannerTitle('');
+      fetchBannerImages();
+    } catch (error) {
+      console.error('Erro ao adicionar banner:', error);
+      toast.error('Erro ao adicionar banner. Verifique se você tem permissões de administrador.');
+    } finally {
+      setAddingBanner(false);
+    }
+  };
+
+  const handleRemoveBannerImage = async (id: string) => {
+    try {
+      await removeBannerImage(id);
+      toast.success('Banner removido com sucesso');
+      fetchBannerImages();
+    } catch (error) {
+      console.error('Erro ao remover banner:', error);
+      toast.error('Erro ao remover banner');
+    }
+  };
+
+  const handleToggleBannerStatus = async (id: string, currentActive: boolean) => {
+    try {
+      await toggleBannerImageStatus(id, !currentActive);
+      toast.success(`Banner ${!currentActive ? 'ativado' : 'desativado'} com sucesso`);
+      fetchBannerImages();
+    } catch (error) {
+      console.error('Erro ao alterar status do banner:', error);
+      toast.error('Erro ao alterar status do banner');
+    }
+  };
+
   const filteredUsers = users.filter(user => 
     user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -164,24 +188,6 @@ const AdminPanel = () => {
   if (!isAdmin()) {
     return <Navigate to="/" />;
   }
-
-  useEffect(() => {
-    const fetchBannerImages = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('banner_images')
-          .select('*')
-          .order('created_at');
-
-        if (error) throw error;
-        setBannerImages(data || []);
-      } catch (error) {
-        console.error('Erro ao buscar imagens de banner:', error);
-      }
-    };
-
-    fetchBannerImages();
-  }, []);
 
   return (
     <MainLayout>
@@ -518,42 +524,97 @@ const AdminPanel = () => {
                 <CardDescription>Adicione ou remova imagens de banner do site</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="flex space-x-2">
-                    <Input 
-                      placeholder="URL da imagem do banner" 
-                      id="banner-url-input"
-                    />
-                    <Button 
-                      onClick={() => {
-                        const urlInput = document.getElementById('banner-url-input') as HTMLInputElement;
-                        handleAddBannerImage(urlInput.value);
-                        urlInput.value = ''; // Clear input after adding
-                      }}
-                    >
-                      <Plus className="mr-2 h-4 w-4" /> Adicionar Banner
-                    </Button>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="md:col-span-2">
+                      <Input 
+                        placeholder="URL da imagem do banner" 
+                        value={bannerUrl}
+                        onChange={(e) => setBannerUrl(e.target.value)}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Você pode usar URLs de imagens externas ou imagens carregadas no sistema
+                      </p>
+                    </div>
+                    <div>
+                      <Input 
+                        placeholder="Título do banner (opcional)" 
+                        value={bannerTitle}
+                        onChange={(e) => setBannerTitle(e.target.value)}
+                      />
+                    </div>
                   </div>
                   
-                  {/* List of current banner images */}
-                  <div className="grid grid-cols-3 gap-4">
-                    {bannerImages.map((image) => (
-                      <div key={image.id} className="relative">
-                        <img 
-                          src={image.url} 
-                          alt={image.title || 'Banner'} 
-                          className="w-full h-40 object-cover rounded"
-                        />
-                        <Button 
-                          variant="destructive" 
-                          size="icon" 
-                          className="absolute top-2 right-2"
-                          onClick={() => handleRemoveBannerImage(image.id)}
-                        >
-                          <Trash className="h-4 w-4" />
-                        </Button>
+                  <Button 
+                    onClick={handleAddBannerImage}
+                    disabled={addingBanner || !bannerUrl.trim()}
+                    className="w-full md:w-auto"
+                  >
+                    {addingBanner ? 'Adicionando...' : (
+                      <>
+                        <Plus className="mr-2 h-4 w-4" /> Adicionar Banner
+                      </>
+                    )}
+                  </Button>
+                  
+                  <div className="mt-8">
+                    <h3 className="text-lg font-medium mb-4">Banners Cadastrados</h3>
+                    {bannerImages.length > 0 ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {bannerImages.map((image) => (
+                          <div key={image.id} className="relative border rounded-md overflow-hidden">
+                            <div className="aspect-[16/9] bg-gray-100 relative">
+                              <img 
+                                src={image.url} 
+                                alt={image.title || 'Banner'} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.src = '/lovable-uploads/239ae548-ca2d-41d4-bf2f-45fb03041253.png';
+                                  e.currentTarget.className = 'w-full h-full object-cover opacity-50';
+                                }}
+                              />
+                              <div className="absolute top-2 right-2 flex space-x-1">
+                                <Badge variant={image.active ? "default" : "secondary"}>
+                                  {image.active ? "Ativo" : "Inativo"}
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="p-3">
+                              <p className="font-medium truncate">{image.title || "Sem título"}</p>
+                              <p className="text-xs text-muted-foreground truncate">{image.url}</p>
+                              <div className="flex space-x-2 mt-2">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleToggleBannerStatus(image.id, image.active)}
+                                >
+                                  {image.active ? (
+                                    <>
+                                      <EyeOff className="h-4 w-4 mr-1" /> Desativar
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Eye className="h-4 w-4 mr-1" /> Ativar
+                                    </>
+                                  )}
+                                </Button>
+                                <Button 
+                                  variant="destructive" 
+                                  size="sm"
+                                  onClick={() => handleRemoveBannerImage(image.id)}
+                                >
+                                  <Trash className="h-4 w-4 mr-1" /> Excluir
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      <p className="text-muted-foreground text-center py-8">
+                        Nenhum banner cadastrado
+                      </p>
+                    )}
                   </div>
                 </div>
               </CardContent>

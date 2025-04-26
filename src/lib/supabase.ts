@@ -173,9 +173,10 @@ export async function getUserListings(userId: string) {
   return data;
 }
 
-// Add this function to fetch active banner images
+// Função atualizada para gerenciar banner images
 export async function getBannerImages() {
   try {
+    // Primeiro tentamos buscar as imagens como usuário autenticado (admin)
     const { data, error } = await supabase
       .from('banner_images')
       .select('*')
@@ -187,10 +188,74 @@ export async function getBannerImages() {
       return [];
     }
 
-    return data.map(image => image.url);
+    return data;
   } catch (err) {
     console.error('Unexpected error fetching banner images:', err);
     return [];
+  }
+}
+
+// Função para adicionar nova imagem de banner (para uso administrativo)
+export async function addBannerImage(imageData: { url: string, title?: string }) {
+  try {
+    const { data, error } = await supabase
+      .from('banner_images')
+      .insert([{ 
+        url: imageData.url, 
+        title: imageData.title || null, 
+        active: true 
+      }])
+      .select();
+
+    if (error) {
+      console.error('Error adding banner image:', error);
+      throw error;
+    }
+
+    return data[0];
+  } catch (err) {
+    console.error('Unexpected error adding banner image:', err);
+    throw err;
+  }
+}
+
+// Função para remover imagem de banner (para uso administrativo)
+export async function removeBannerImage(id: string) {
+  try {
+    const { error } = await supabase
+      .from('banner_images')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error removing banner image:', error);
+      throw error;
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Unexpected error removing banner image:', err);
+    throw err;
+  }
+}
+
+// Função para atualizar o status de uma imagem (para uso administrativo)
+export async function toggleBannerImageStatus(id: string, active: boolean) {
+  try {
+    const { error } = await supabase
+      .from('banner_images')
+      .update({ active, updated_at: new Date() })
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error updating banner image status:', error);
+      throw error;
+    }
+
+    return true;
+  } catch (err) {
+    console.error('Unexpected error updating banner image status:', err);
+    throw err;
   }
 }
 
@@ -204,5 +269,5 @@ export const getRandomBannerImage = async () => {
   }
   
   const randomIndex = Math.floor(Math.random() * bannerImages.length);
-  return bannerImages[randomIndex];
+  return bannerImages[randomIndex].url;
 };
