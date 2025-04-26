@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -841,4 +842,191 @@ const AdminPanel = () => {
                         </Select>
                       </div>
                       
-                      <div className="space-y-2 md:col-span
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="block font-medium">
+                          {newAdForm.ad_type === 'banner_image' ? 'URL da Imagem *' : 'Código AdSense *'}
+                        </label>
+                        <Input
+                          placeholder={newAdForm.ad_type === 'banner_image' ? 'URL da imagem' : 'Cole o código do Google AdSense'}
+                          value={newAdForm.content}
+                          onChange={(e) => setNewAdForm({...newAdForm, content: e.target.value})}
+                        />
+                      </div>
+                      
+                      {newAdForm.ad_type === 'banner_image' && (
+                        <div className="space-y-2 md:col-span-2">
+                          <label className="block font-medium">Link do Banner (opcional)</label>
+                          <Input
+                            placeholder="URL para onde o banner direciona"
+                            value={newAdForm.link}
+                            onChange={(e) => setNewAdForm({...newAdForm, link: e.target.value})}
+                          />
+                        </div>
+                      )}
+                      
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="block font-medium">Categoria (opcional)</label>
+                        <Select
+                          value={newAdForm.category_id || "none"}
+                          onValueChange={(value) => setNewAdForm({...newAdForm, category_id: value === "none" ? "" : value})}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione uma categoria (opcional)" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getCategoryOptions().map(option => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Selecione uma categoria associada a este anúncio (opcional)
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <Button type="submit" className="mt-4">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Adicionar Anúncio
+                    </Button>
+                  </form>
+                  
+                  {editingAd && (
+                    <div className="mt-8 border-t pt-6">
+                      <h3 className="text-lg font-medium mb-4">Editar Anúncio</h3>
+                      <form className="space-y-4" onSubmit={handleUpdateAd}>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2 md:col-span-2">
+                            <label className="block font-medium">Página</label>
+                            <Input 
+                              value={editingAd.page_name} 
+                              disabled
+                            />
+                            <p className="text-xs text-muted-foreground mt-1">
+                              A página não pode ser alterada. Crie um novo anúncio se precisar mudar a página.
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <label className="block font-medium">Tipo de Anúncio</label>
+                            <Select 
+                              value={editingAd.ad_type} 
+                              onValueChange={(value: 'banner_image' | 'google_adsense') => 
+                                setEditingAd({...editingAd, ad_type: value})
+                              }
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="banner_image">Banner (Imagem)</SelectItem>
+                                <SelectItem value="google_adsense">Google AdSense</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <label className="block font-medium">
+                              {editingAd.ad_type === 'banner_image' ? 'URL da Imagem' : 'Código AdSense'}
+                            </label>
+                            <Input
+                              value={editingAd.content}
+                              onChange={(e) => setEditingAd({...editingAd, content: e.target.value})}
+                            />
+                          </div>
+                          
+                          {editingAd.ad_type === 'banner_image' && (
+                            <div className="space-y-2 md:col-span-2">
+                              <label className="block font-medium">Link do Banner (opcional)</label>
+                              <Input
+                                placeholder="URL para onde o banner direciona"
+                                value={editingAd.link || ''}
+                                onChange={(e) => setEditingAd({...editingAd, link: e.target.value})}
+                              />
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex gap-2 justify-end">
+                          <Button type="button" variant="outline" onClick={() => setEditingAd(null)}>
+                            Cancelar
+                          </Button>
+                          <Button type="submit">
+                            Atualizar Anúncio
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+                  
+                  <div className="mt-8">
+                    <h3 className="text-lg font-medium mb-4">Anúncios Cadastrados</h3>
+                    {pageAds.length > 0 ? (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Página</TableHead>
+                            <TableHead>Tipo</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Ações</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {pageAds.map((ad) => (
+                            <TableRow key={ad.id}>
+                              <TableCell>{ad.page_name}</TableCell>
+                              <TableCell>
+                                {ad.ad_type === 'banner_image' ? 'Banner (Imagem)' : 'Google AdSense'}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={ad.is_active ? "default" : "secondary"}>
+                                  {ad.is_active ? "Ativo" : "Inativo"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex gap-2">
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    onClick={() => setEditingAd(ad)}
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    onClick={() => handleToggleAdStatus(ad.id, ad.is_active)}
+                                  >
+                                    {ad.is_active ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline" 
+                                    className="text-red-500 hover:text-red-700"
+                                    onClick={() => handleDeleteAd(ad.id)}
+                                  >
+                                    <Trash className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    ) : (
+                      <p className="text-muted-foreground text-center py-8">
+                        Nenhum anúncio cadastrado
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </div>
+    </MainLayout>
+  );
+};
+
+export default AdminPanel;
