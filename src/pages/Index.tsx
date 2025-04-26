@@ -11,6 +11,7 @@ import { getCategories, getListings, getRandomBannerImage } from '@/lib/supabase
 import { useQuery } from "@tanstack/react-query";
 import { Category, Listing } from "@/types";
 import * as LucideIcons from "lucide-react";
+import BusinessFoodMap from '@/components/BusinessFoodMap';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -172,6 +173,9 @@ const Index = () => {
           )}
         </div>
       </section>
+      
+      {/* Add Map Section before CTA */}
+      <BusinessFoodMap />
       
       {/* CTA Section */}
       <section className="py-16 bg-beach-50">

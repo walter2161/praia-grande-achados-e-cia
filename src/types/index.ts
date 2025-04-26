@@ -1,4 +1,3 @@
-
 import type { Database } from './database';
 import { Car, Briefcase, House, Settings, Utensils, Package } from "lucide-react";
 
@@ -102,6 +101,13 @@ export interface BarRestaurantListing extends Omit<Listing, 'status' | 'price'> 
 }
 
 export interface ItemListing extends Omit<Listing, 'status'> {
+  sellerName?: string;
+  sellerContact?: string;
+  status: 'active' | 'inactive' | 'pending' | 'rejected';
+}
+
+export interface BusinessListing extends Omit<Listing, 'status'> {
+  business_type?: string;
   sellerName?: string;
   sellerContact?: string;
   status: 'active' | 'inactive' | 'pending' | 'rejected';

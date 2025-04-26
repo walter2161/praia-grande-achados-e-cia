@@ -1,10 +1,12 @@
-
 import React from "react";
+import type { LucideIcon } from "lucide-react";
 
 type Pin = {
   latitude: number;
   longitude: number;
   title: string;
+  category?: string;
+  icon?: LucideIcon;
 };
 
 type MapProps = {
@@ -49,10 +51,10 @@ function generateGoogleMapsEmbedSrc({
 const Map: React.FC<MapProps> = ({
   pins,
   height = "300px",
-  initialCenter,
+  initialCenter = [-24.00857, -46.41298],
   zoom = 15,
   category,
-  neighborhood = "Centro", // Default to Centro if no neighborhood provided
+  neighborhood = "Centro",
   address,
 }) => {
   // Use the first pin as the map center if it's a service or restaurant
@@ -71,15 +73,12 @@ const Map: React.FC<MapProps> = ({
     address,  // Pass the address to the src generator function
   });
 
-  // Determine the appropriate title for the map
+  // Update the map title based on the pin category
   let mapTitle = "Mapa";
-  
-  if (category === 'servicos' || category === 'bares-restaurantes') {
-    // For services and restaurants, use the full address when available
-    mapTitle = address ? address : centerPin.title || "Localização";
-  } else {
-    // For other categories, show the neighborhood
-    mapTitle = `Região: ${neighborhood}`;
+  if (category === 'empresas') {
+    mapTitle = "Empresas em Praia Grande";
+  } else if (category === 'bares-restaurantes') {
+    mapTitle = "Bares e Restaurantes em Praia Grande";
   }
 
   return (
