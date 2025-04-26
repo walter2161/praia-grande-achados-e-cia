@@ -109,3 +109,14 @@ export interface BusinessListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
 }
+
+export interface Ad {
+  id: string;
+  page_name: string;
+  ad_type: 'google_adsense' | 'banner_image';
+  content: string;
+  link?: string | null;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}

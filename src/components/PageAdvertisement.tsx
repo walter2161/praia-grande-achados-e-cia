@@ -2,15 +2,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-
-interface Ad {
-  id: string;
-  page_name: string;
-  ad_type: 'google_adsense' | 'banner_image';
-  content: string;
-  link?: string | null;
-  is_active: boolean;
-}
+import { Ad } from "@/types";
 
 export default function PageAdvertisement() {
   const [ad, setAd] = useState<Ad | null>(null);
@@ -29,7 +21,7 @@ export default function PageAdvertisement() {
         .single();
       
       if (!error && ads) {
-        setAd(ads);
+        setAd(ads as Ad);
       }
     };
     
@@ -50,11 +42,14 @@ export default function PageAdvertisement() {
           <img 
             src={ad.content} 
             alt="Advertisement" 
-            className="w-full h-auto rounded-lg shadow-md"
+            className="w-[900px] h-[150px] object-cover rounded-lg shadow-md mx-auto"
           />
         </a>
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: ad.content }} />
+        <div 
+          className="w-[900px] h-[150px] mx-auto"
+          dangerouslySetInnerHTML={{ __html: ad.content }} 
+        />
       )}
     </div>
   );
