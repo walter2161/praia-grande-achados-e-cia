@@ -37,7 +37,7 @@ const AdminPanel = () => {
     ad_type: 'banner_image',
     content: '',
     link: '',
-    category_id: 'none' // Changed from empty string to 'none'
+    category_id: ''
   });
   const [editingAd, setEditingAd] = useState<Ad | null>(null);
 

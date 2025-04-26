@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import CategoryCard from "@/components/CategoryCard";
 import ListingGrid from "@/components/ListingGrid";
 import MainLayout from "@/components/layout/MainLayout";
-import { getCategories, getListings, getRandomBannerImage } from '@/lib/adminService';
+import { getCategories, getListings, getRandomBannerImage } from '@/lib/supabase';
 import { useQuery } from "@tanstack/react-query";
 import { Category, Listing } from "@/types";
 import * as LucideIcons from "lucide-react";
@@ -16,9 +16,9 @@ import { getRandomBannerImage as getRandomHeroImage } from '@/lib/heroImages';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [randomBanner, setRandomBanner] = useState('');
-  const [ctaBackground, setCtaBackground] = useState("/lovable-uploads/239ae548-ca2d-41d4-bf2f-45fb03041253.png"); // Set default image
   const navigate = useNavigate();
+  const [randomBanner, setRandomBanner] = useState('');
+  const [ctaBackground, setCtaBackground] = useState('');
 
   useEffect(() => {
     const fetchRandomBanner = async () => {
@@ -26,12 +26,11 @@ const Index = () => {
       setRandomBanner(banner);
     };
 
-    // Always set a new random business image for CTA section and ensure it's not empty
-    const newBackground = getRandomHeroImage();
-    setCtaBackground(newBackground || "/lovable-uploads/239ae548-ca2d-41d4-bf2f-45fb03041253.png");
+    // Set a random business image for CTA section
+    setCtaBackground(getRandomHeroImage());
 
     fetchRandomBanner();
-  }, []); // This effect runs only once when the component mounts
+  }, []);
 
   const { data: categoriesData = [], error: categoriesError } = useQuery({
     queryKey: ['categories'],
@@ -188,14 +187,20 @@ const Index = () => {
       {/* CTA Section - Fixed with orange filter */}
       <section 
         className="relative py-16 overflow-hidden"
-        style={{ 
-          minHeight: "320px",
-          backgroundImage: `url("${ctaBackground}")`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
+        style={{ minHeight: "320px" }}
       >
-        {/* Orange filter overlay */}
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: `url("${ctaBackground}")`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+          aria-hidden="true"
+        />
+        
+        {/* Orange filter overlay - Using rgba for orange with 60% opacity */}
         <div
           className="absolute inset-0 w-full h-full"
           style={{
