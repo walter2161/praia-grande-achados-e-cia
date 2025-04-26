@@ -12,17 +12,22 @@ import { useQuery } from "@tanstack/react-query";
 import { Category, Listing } from "@/types";
 import * as LucideIcons from "lucide-react";
 import BusinessFoodMap from '@/components/BusinessFoodMap';
+import { getRandomBannerImage as getRandomHeroImage } from '@/lib/heroImages';
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const [randomBanner, setRandomBanner] = useState('');
+  const [ctaBackground, setCtaBackground] = useState('');
 
   useEffect(() => {
     const fetchRandomBanner = async () => {
       const banner = await getRandomBannerImage();
       setRandomBanner(banner);
     };
+
+    // Set a random business image for CTA section
+    setCtaBackground(getRandomHeroImage());
 
     fetchRandomBanner();
   }, []);
@@ -180,10 +185,25 @@ const Index = () => {
       <BusinessFoodMap />
       
       {/* CTA Section */}
-      <section className="py-16 bg-beach-50">
-        <div className="container text-center space-y-6">
-          <h2 className="text-3xl font-bold">Tem algo para vender ou anunciar?</h2>
-          <p className="text-xl max-w-2xl mx-auto text-muted-foreground">
+      <section 
+        className="relative py-16 overflow-hidden"
+        style={{ minHeight: "320px" }}
+      >
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 w-full h-full"
+          style={{
+            backgroundImage: `url(${ctaBackground})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            filter: 'brightness(0.3)',
+          }}
+        />
+        
+        {/* Content */}
+        <div className="container relative z-10 text-center space-y-6">
+          <h2 className="text-3xl font-bold text-white">Tem algo para vender ou anunciar?</h2>
+          <p className="text-xl max-w-2xl mx-auto text-gray-200">
             Anuncie gratuitamente e alcance milhares de pessoas em Praia Grande.
           </p>
           <Link to="/criar-anuncio">
