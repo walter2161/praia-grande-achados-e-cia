@@ -30,17 +30,38 @@ const Map: React.FC<MapProps> = ({
   neighborhood = "Praia Grande",
   address,
 }) => {
-  // Use the first pin's location or provided center
-  const centerPin = pins[0] || { latitude: initialCenter[0], longitude: initialCenter[1] };
+  // Filter out pins with invalid coordinates
+  const validPins = pins.filter(pin => 
+    typeof pin.latitude === 'number' && 
+    !isNaN(pin.latitude) && 
+    typeof pin.longitude === 'number' && 
+    !isNaN(pin.longitude)
+  );
   
-  // Create a static map URL using OpenStreetMap or Google Maps Static API
+  // Use the first valid pin's location or provided center
+  const centerPin = validPins.length > 0 
+    ? validPins[0] 
+    : { latitude: initialCenter[0], longitude: initialCenter[1] };
+  
+  // Create a static map URL using OpenStreetMap
   const getStaticMapUrl = () => {
-    // OpenStreetMap with Leaflet (no API key needed)
-    const mapCenter = `${centerPin.latitude},${centerPin.longitude}`;
-    const mapZoom = zoom;
+    // Calculate the bounding box for the map to show all pins
+    // Default to a reasonable view if no valid pins
+    let minLat = centerPin.latitude - 0.01;
+    let maxLat = centerPin.latitude + 0.01;
+    let minLng = centerPin.longitude - 0.02;
+    let maxLng = centerPin.longitude + 0.02;
+    
+    if (validPins.length > 1) {
+      // Calculate the bounding box that contains all pins
+      minLat = Math.min(...validPins.map(pin => pin.latitude)) - 0.005;
+      maxLat = Math.max(...validPins.map(pin => pin.latitude)) + 0.005;
+      minLng = Math.min(...validPins.map(pin => pin.longitude)) - 0.005;
+      maxLng = Math.max(...validPins.map(pin => pin.longitude)) + 0.005;
+    }
     
     // Return an iframe source for OpenStreetMap
-    return `https://www.openstreetmap.org/export/embed.html?bbox=${centerPin.longitude - 0.02},${centerPin.latitude - 0.01},${centerPin.longitude + 0.02},${centerPin.latitude + 0.01}&layer=mapnik&marker=${centerPin.latitude},${centerPin.longitude}`;
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${minLng},${minLat},${maxLng},${maxLat}&layer=mapnik`;
   };
 
   let mapTitle = neighborhood ? `Mapa de ${neighborhood}` : "Mapa";
@@ -66,7 +87,7 @@ const Map: React.FC<MapProps> = ({
       {/* Render pins on top of the map */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="relative w-full h-full">
-          {pins.map((pin, index) => (
+          {validPins.map((pin, index) => (
             pin.render?.() || (
               <div
                 key={`pin-${index}`}

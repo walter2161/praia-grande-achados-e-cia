@@ -13,7 +13,10 @@ const BusinessFoodMap: React.FC = () => {
 
   // Filter only businesses with valid location data
   const validBusinesses = businessListings.filter(business => 
-    business.latitude != null && business.longitude != null
+    business.latitude != null && 
+    business.longitude != null &&
+    !isNaN(business.latitude) && 
+    !isNaN(business.longitude)
   );
 
   const handlePinClick = (businessId: string) => {
@@ -67,17 +70,23 @@ const BusinessFoodMap: React.FC = () => {
       <div className="container">
         <h2 className="text-3xl font-bold text-center mb-8">Empresas em Praia Grande</h2>
         <div className="h-[600px] relative rounded-lg overflow-hidden">
-          <Map
-            pins={validBusinesses.map(business => ({
-              latitude: business.latitude,
-              longitude: business.longitude,
-              title: business.title,
-              category: business.subcategory,
-              render: () => renderPin(business)
-            }))}
-            height="600px"
-            zoom={13}
-          />
+          {validBusinesses.length > 0 ? (
+            <Map
+              pins={validBusinesses.map(business => ({
+                latitude: business.latitude!,
+                longitude: business.longitude!,
+                title: business.title,
+                category: business.subcategory,
+                render: () => renderPin(business)
+              }))}
+              height="600px"
+              zoom={13}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+              <p className="text-gray-500">Não há empresas com localização disponível</p>
+            </div>
+          )}
         </div>
       </div>
     </section>
