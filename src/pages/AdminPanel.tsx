@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -55,7 +54,11 @@ const AdminPanel = () => {
         document_type: (user.document_type as 'cpf' | 'cnpj' | null),
       })) as Profile[]);
       
-      setListings(listingsData);
+      // Ensure listings data conforms to Listing type with status as union type
+      setListings(listingsData.map(listing => ({
+        ...listing,
+        status: listing.status as 'active' | 'inactive' | 'pending' | 'rejected'
+      })) as Listing[]);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast.error('Erro ao carregar dados');

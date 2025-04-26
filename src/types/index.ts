@@ -6,9 +6,7 @@ export type Profile = Database['public']['Tables']['profiles']['Row'] & {
   approval_status?: 'pending' | 'approved' | 'rejected';
 };
 
-export type Listing = Database['public']['Tables']['listings']['Row'] & {
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
-};
+export type Listing = Database['public']['Tables']['listings']['Row'];
 
 export interface CategoryIcon {
   className?: string;
@@ -72,47 +70,38 @@ export interface FormErrors {
 }
 
 // Listing type extensions for different categories
-export interface AutoListing extends Omit<Listing, 'status'> {
+export interface AutoListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
 
-export interface JobListing extends Omit<Listing, 'status'> {
+export interface JobListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
 
-export interface RealEstateListing extends Omit<Listing, 'status'> {
+export interface RealEstateListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
 
-export interface ServiceListing extends Omit<Listing, 'status' | 'price'> {
-  price: any; // Using any for price since it can be string or number in mockdata
+export interface ServiceListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
 
-export interface BarRestaurantListing extends Omit<Listing, 'status' | 'price'> {
-  price: any; // Using any for price since it can be string or number in mockdata
+export interface BarRestaurantListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
 
-export interface ItemListing extends Omit<Listing, 'status'> {
+export interface ItemListing extends Listing {
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
 
-export interface BusinessListing extends Omit<Listing, 'status'> {
+export interface BusinessListing extends Listing {
   business_type?: string;
   sellerName?: string;
   sellerContact?: string;
-  status: 'active' | 'inactive' | 'pending' | 'rejected';
 }
