@@ -1,7 +1,7 @@
 import { type Database } from '@/types/database';
 import { supabase } from '@/integrations/supabase/client';
 import { allListings } from '@/data/mockData';
-import type { SystemStatus } from '@/types';
+import type { SystemStatus, Ad } from '@/types';
 
 export async function getListings() {
   try {
@@ -506,7 +506,14 @@ export async function getPageAds() {
   }
 }
 
-export async function addPageAd(adData: Omit<Database['public']['Tables']['page_ads']['Insert'], 'id'>) {
+export async function addPageAd(adData: {
+  page_name: string;
+  ad_type: 'banner_image' | 'google_adsense';
+  content: string;
+  link?: string | null;
+  category_id?: string | null;
+  is_active?: boolean;
+}) {
   try {
     const { data, error } = await supabase
       .from('page_ads')
@@ -518,14 +525,21 @@ export async function addPageAd(adData: Omit<Database['public']['Tables']['page_
       throw error;
     }
     
-    return data[0];
+    return data?.[0];
   } catch (err) {
     console.error('Unexpected error adding page ad:', err);
     throw err;
   }
 }
 
-export async function updatePageAd(id: string, adData: Partial<Database['public']['Tables']['page_ads']['Update']>) {
+export async function updatePageAd(id: string, adData: {
+  content?: string;
+  link?: string | null;
+  ad_type?: 'banner_image' | 'google_adsense';
+  is_active?: boolean;
+  page_name?: string;
+  category_id?: string | null;
+}) {
   try {
     const { error } = await supabase
       .from('page_ads')
