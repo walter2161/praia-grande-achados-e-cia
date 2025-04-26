@@ -11,20 +11,16 @@ import Map from "@/components/Map";
 const BusinessFoodMap: React.FC = () => {
   const navigate = useNavigate();
 
-  // Filter only businesses with valid location/address and spread them around Praia Grande
-  const validBusinesses = businessListings.map((business, index) => ({
-    ...business,
-    // Spread businesses around Praia Grande with slight variations
-    latitude: -24.00857 + (Math.random() - 0.5) * 0.02,
-    longitude: -46.41298 + (Math.random() - 0.5) * 0.02,
-    status: "active" as const,
-  }));
+  // Filter only businesses with valid location data
+  const validBusinesses = businessListings.filter(business => 
+    business.latitude != null && business.longitude != null
+  );
 
   const handlePinClick = (businessId: string) => {
     navigate(`/anuncio/empresas/${businessId}`);
   };
 
-  const renderPin = (business: typeof validBusinesses[0]) => (
+  const renderPin = (business: typeof businessListings[0]) => (
     <TooltipProvider key={business.id}>
       <Tooltip>
         <HoverCard>
