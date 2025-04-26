@@ -1,6 +1,8 @@
+
 import { type Database } from '@/types/database';
 import { supabase } from '@/integrations/supabase/client';
 import { allListings } from '@/data/mockData';
+import type { SystemStatus } from '@/types';
 
 export async function getListings() {
   try {
@@ -168,6 +170,220 @@ export async function getUserListings(userId: string) {
   }
 
   return data;
+}
+
+// New functions to handle users
+export async function getUsers() {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching users:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (err) {
+    console.error('Unexpected error fetching users:', err);
+    return [];
+  }
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .delete()
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error deleting user:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error deleting user:', err);
+    throw err;
+  }
+}
+
+export async function updateUser(userId: string, userData: Partial<Database['public']['Tables']['profiles']['Update']>) {
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update(userData)
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error updating user:', err);
+    throw err;
+  }
+}
+
+export async function getPendingUsers() {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('approval_status', 'pending')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Error fetching pending users:', error);
+      return [];
+    }
+
+    return data || [];
+  } catch (err) {
+    console.error('Unexpected error fetching pending users:', err);
+    return [];
+  }
+}
+
+export async function approveUser(userId: string) {
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ approval_status: 'approved' })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error approving user:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error approving user:', err);
+    throw err;
+  }
+}
+
+export async function rejectUser(userId: string) {
+  try {
+    const { error } = await supabase
+      .from('profiles')
+      .update({ approval_status: 'rejected' })
+      .eq('id', userId);
+
+    if (error) {
+      console.error('Error rejecting user:', error);
+      throw error;
+    }
+    
+    return true;
+  } catch (err) {
+    console.error('Unexpected error rejecting user:', err);
+    throw err;
+  }
+}
+
+// System report related functions
+export async function getDatabaseStatus(): Promise<SystemStatus['database']> {
+  // Mock data for database status
+  return {
+    connection: true,
+    tables_count: 8,
+    users_count: 45,
+    listings_count: 287,
+    query_time: 63
+  };
+}
+
+export async function getApiStatus(): Promise<SystemStatus['api']> {
+  // Mock data for API status
+  return {
+    status: 'operational',
+    response_time: 128,
+    functions_count: 19,
+    avg_latency: 86,
+    success_rate: 99.8
+  };
+}
+
+export async function getPerformanceMetrics(): Promise<SystemStatus['performance']> {
+  // Mock data for performance metrics
+  return {
+    memory_usage: 752,
+    cpu_usage: 24,
+    db_load: 18,
+    avg_response_time: 95,
+    active_connections: 12,
+    requests_per_minute: 42
+  };
+}
+
+export async function getErrorLogs(): Promise<SystemStatus['errors']> {
+  // Mock data for error logs
+  return [
+    {
+      id: '1',
+      title: 'Database Connection Timeout',
+      message: 'Database connection timed out after 30 seconds',
+      timestamp: '2023-04-26T15:32:18Z',
+      severity: 'high',
+      location: 'src/lib/supabase.ts:125',
+      resolved: false
+    },
+    {
+      id: '2',
+      title: 'Image Upload Failed',
+      message: 'Failed to upload image: size exceeds limit',
+      timestamp: '2023-04-26T12:21:44Z',
+      severity: 'medium',
+      location: 'src/lib/storage.ts:87',
+      resolved: true
+    },
+    {
+      id: '3',
+      title: 'Authentication Error',
+      message: 'Invalid token provided for user authentication',
+      timestamp: '2023-04-25T23:14:02Z',
+      severity: 'high',
+      location: 'src/lib/auth.ts:213',
+      resolved: false
+    }
+  ];
+}
+
+export async function getIntegrations(): Promise<SystemStatus['integrations']> {
+  // Mock data for integrations
+  return [
+    {
+      id: '1',
+      name: 'Payment Gateway',
+      description: 'Stripe payment processing integration',
+      status: 'operational',
+      latency: 152,
+      lastChecked: '2023-04-26T16:10:23Z'
+    },
+    {
+      id: '2',
+      name: 'Email Service',
+      description: 'SendGrid email delivery service',
+      status: 'operational',
+      latency: 205,
+      lastChecked: '2023-04-26T16:10:23Z'
+    },
+    {
+      id: '3',
+      name: 'Storage Service',
+      description: 'Supabase storage for media files',
+      status: 'operational',
+      latency: 87,
+      lastChecked: '2023-04-26T16:10:23Z'
+    }
+  ];
 }
 
 // Updated function for getBannerImages
