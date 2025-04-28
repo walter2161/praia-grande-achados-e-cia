@@ -59,18 +59,18 @@ const DesktopHeader = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        <Link to="/planos" className="text-foreground hover:text-primary text-sm">
-          Planos
-        </Link>
-        
-        <WeatherCapsule />
-
         {/* Always show the Announce button, but with different paths based on auth status */}
         <Link to={isAuthenticated() ? "/criar-anuncio" : "/login?redirect=/criar-anuncio"}>
           <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
             Anunciar
           </Button>
         </Link>
+        
+        <Link to="/planos" className="text-foreground hover:text-primary text-sm">
+          Planos
+        </Link>
+        
+        <WeatherCapsule />
 
         {isAuthenticated() ? (
           <DropdownMenu>
