@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogTitle,
   DialogDescription,
+  DialogTrigger
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
