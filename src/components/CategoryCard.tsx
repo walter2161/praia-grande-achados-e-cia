@@ -22,16 +22,22 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const renderIcon = () => {
     if (typeof icon === 'string') {
       // Se for uma string, tentar mapear para o componente correto do Lucide
-      if (LucideIcons[icon as keyof typeof LucideIcons]) {
-        const IconComponent = LucideIcons[icon as keyof typeof LucideIcons];
-        return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+      const iconName = icon as keyof typeof LucideIcons;
+      if (LucideIcons[iconName]) {
+        // Usando a propriedade diretamente do objeto LucideIcons
+        const IconComponent = LucideIcons[iconName];
+        // TypeScript agora entende que IconComponent é um componente React válido
+        return React.createElement(IconComponent, {
+          className: "h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600"
+        });
       }
       // Se a string não corresponder a um ícone conhecido, mostrar o texto
       return <span className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 text-3xl">{icon}</span>;
     } 
-    // Se já for um componente, usá-lo diretamente
-    else if (icon) {
-      return <icon className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+    // Se já for um componente, usá-lo diretamente (com primeira letra maiúscula)
+    else if (icon && typeof icon === 'function') {
+      const IconComponent = icon;
+      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
     }
     // Fallback para o ícone Package
     return <Package className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
