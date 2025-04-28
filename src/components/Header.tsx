@@ -67,8 +67,54 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
       <div className="container flex flex-col md:flex-row h-auto md:h-16 items-center justify-between px-2 sm:px-4 relative">
-        {/* Mobile: First row - menu, logo, weather, login */}
+        {/* Mobile: First row - logo, plans, weather, login */}
         <div className="w-full md:hidden flex items-center justify-between py-2">
+          <LogoLink />
+
+          <div className="flex items-center gap-2">
+            <Link to="/planos" className="text-foreground hover:text-primary text-sm whitespace-nowrap">
+              Planos
+            </Link>
+            
+            <WeatherCapsule />
+            
+            {isAuthenticated() ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="ghost">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="px-2 py-1.5 text-sm font-medium">
+                    {profile?.username || user?.email}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/perfil">Meu Perfil</Link>
+                  </DropdownMenuItem>
+                  {isAdmin() && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin">Painel Admin</Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button variant="outline">Entrar</Button>
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile: Second row - menu, search, announce */}
+        <div className="w-full md:hidden flex items-center gap-2 py-2">
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
@@ -132,47 +178,6 @@ export default function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <LogoLink />
-
-          <div className="flex items-center gap-2">
-            <WeatherCapsule />
-            {isAuthenticated() ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="icon" variant="ghost">
-                    <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div className="px-2 py-1.5 text-sm font-medium">
-                    {profile?.username || user?.email}
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/perfil">Meu Perfil</Link>
-                  </DropdownMenuItem>
-                  {isAdmin() && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin">Painel Admin</Link>
-                    </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logout} className="text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link to="/login">
-                <Button variant="outline">Entrar</Button>
-              </Link>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile: Second row - search, announce, plans */}
-        <div className="w-full md:hidden flex items-center gap-2 py-2">
           <form
             onSubmit={handleSearch}
             className="flex-1 relative"
@@ -185,26 +190,20 @@ export default function Header() {
               className="pl-10 w-full"
             />
           </form>
-          
+
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
               <Button className="whitespace-nowrap bg-[#FF6600] hover:bg-[#FF6600]/90">
-                <Plus className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">Anunciar</span>
+                Anunciar
               </Button>
             </Link>
           ) : (
             <Link to="/login?redirect=/criar-anuncio">
               <Button className="whitespace-nowrap bg-[#FF6600] hover:bg-[#FF6600]/90">
-                <Plus className="h-4 w-4 md:mr-2" />
-                <span className="hidden md:inline">Anunciar</span>
+                Anunciar
               </Button>
             </Link>
           )}
-
-          <Link to="/planos" className="text-foreground hover:text-primary text-sm whitespace-nowrap">
-            Planos
-          </Link>
         </div>
 
         {/* Desktop layout */}
