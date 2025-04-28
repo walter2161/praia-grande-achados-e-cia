@@ -65,41 +65,40 @@ const DesktopHeader = () => {
         
         <WeatherCapsule />
 
-        {isAuthenticated() ? (
-          <>
-            <Link to="/criar-anuncio">
-              <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
-                Anunciar
-              </Button>
-            </Link>
+        {/* Always show the Announce button, but with different paths based on auth status */}
+        <Link to={isAuthenticated() ? "/criar-anuncio" : "/login?redirect=/criar-anuncio"}>
+          <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
+            Anunciar
+          </Button>
+        </Link>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button size="icon" variant="ghost">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <div className="px-2 py-1.5 text-sm font-medium">
-                  {profile?.username || user?.email}
-                </div>
-                <DropdownMenuSeparator />
+        {isAuthenticated() ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="ghost">
+                <User className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <div className="px-2 py-1.5 text-sm font-medium">
+                {profile?.username || user?.email}
+              </div>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/perfil">Meu Perfil</Link>
+              </DropdownMenuItem>
+              {isAdmin() && (
                 <DropdownMenuItem asChild>
-                  <Link to="/perfil">Meu Perfil</Link>
+                  <Link to="/admin">Painel Admin</Link>
                 </DropdownMenuItem>
-                {isAdmin() && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/admin">Painel Admin</Link>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={logout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </>
+              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logout} className="text-red-600">
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         ) : (
           <Link to="/login">
             <Button variant="outline">Entrar</Button>
