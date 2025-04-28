@@ -58,18 +58,22 @@ const DesktopHeader = () => {
         </form>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* Always show the Announce button, but with different paths based on auth status */}
-        <Link to={isAuthenticated() ? "/criar-anuncio" : "/login?redirect=/criar-anuncio"}>
-          <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
-            Anunciar
-          </Button>
-        </Link>
-        
-        <Link to="/planos" className="text-foreground hover:text-primary text-sm">
-          Planos
-        </Link>
-        
+      {/* Anunciar button positioned after search and before right-aligned elements */}
+      <Link to={isAuthenticated() ? "/criar-anuncio" : "/login?redirect=/criar-anuncio"}>
+        <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
+          Anunciar
+        </Button>
+      </Link>
+      
+      <Link to="/planos" className="text-foreground hover:text-primary text-sm">
+        Planos
+      </Link>
+      
+      {/* Spacer div to push the following items to the right */}
+      <div className="flex-grow"></div>
+      
+      {/* Right-aligned elements: Weather and Login/User menu */}
+      <div className="flex items-center gap-2 ml-auto">
         <WeatherCapsule />
 
         {isAuthenticated() ? (
