@@ -5,7 +5,6 @@ import { Card, CardContent } from "./ui/card";
 import { ChevronDown, ChevronUp, Package } from "lucide-react";
 import { Category } from "@/types";
 import * as LucideIcons from "lucide-react";
-import { LucideIcon } from "lucide-react";
 
 type CategoryCardProps = {
   category: Category;
@@ -24,8 +23,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     // Caso 1: O ícone é uma string que corresponde a um ícone Lucide
     if (typeof icon === 'string') {
       const iconName = icon as keyof typeof LucideIcons;
-      if (LucideIcons[iconName] && typeof LucideIcons[iconName] !== 'function') {
-        const IconComponent = LucideIcons[iconName] as LucideIcon;
+      if (LucideIcons[iconName]) {
+        const IconComponent = LucideIcons[iconName];
         return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
       }
       // Se a string não corresponder a um ícone conhecido, mostrar o texto
@@ -33,8 +32,9 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     }
     // Caso 2: O ícone é um componente React diretamente
     else if (icon && typeof icon === 'function') {
-      const IconComponent = icon as LucideIcon;
-      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+      return React.createElement(icon, {
+        className: "h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600"
+      });
     }
     // Fallback para o ícone Package
     return <Package className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
