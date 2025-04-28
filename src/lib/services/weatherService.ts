@@ -1,8 +1,7 @@
-
 // Using OpenWeatherMap API for weather data
 const PRAIA_GRANDE_LAT = -24.0083;
 const PRAIA_GRANDE_LON = -46.4121;
-const API_KEY = "d5a8f02f0d017dc9771ddb7de606049f"; // Free OpenWeatherMap API key
+const API_KEY = "b91edb11c0e9c91f834177591c613c20"; // Valid OpenWeatherMap API key
 
 export interface WeatherData {
   condition: "sunny" | "partly_cloudy" | "rainy";
@@ -37,11 +36,9 @@ export async function getWeatherData(): Promise<WeatherData> {
     };
   } catch (error) {
     console.error('Error fetching weather:', error);
-    // Return default values if API fails
     return {
       condition: "partly_cloudy",
       temperature: 25
     };
   }
 }
-
