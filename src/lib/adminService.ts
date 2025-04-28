@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 // Get users
@@ -318,29 +319,35 @@ export async function togglePageAdStatus(id: string, isActive: boolean) {
 // Database status
 export async function getDatabaseStatus() {
   try {
-    const { data, error } = await supabase
-      .rpc('get_db_status')
+    // Since there is no get_db_status RPC function available,
+    // we'll use a direct query to get database status info
+    const { data: profiles, error: profilesError } = await supabase
+      .from('profiles')
+      .select('count')
+      .single();
+      
+    const { data: listings, error: listingsError } = await supabase
+      .from('listings')
+      .select('count')
       .single();
 
-    if (error) {
-      console.error('Error fetching database status:', error);
-      // Return mock data if RPC function is not available
-      return {
-        status: 'healthy',
-        connections: 42,
-        uptime: '98.7%',
-        size: '1.2 GB'
-      };
-    }
-
-    return data;
+    // Return data in the format expected by AdminSystemReport.tsx
+    return {
+      connection: true, // If we got this far, connection is established
+      tables_count: 5, // Hardcoded for now (profiles, listings, categories, page_ads, banner_images)
+      users_count: profiles?.count || 0,
+      listings_count: listings?.count || 0,
+      query_time: 120 // Mock query time in ms
+    };
   } catch (error) {
     console.error('Error in getDatabaseStatus:', error);
+    // Return fallback data that matches the expected type
     return {
-      status: 'healthy',
-      connections: 42,
-      uptime: '98.7%',
-      size: '1.2 GB'
+      connection: false,
+      tables_count: 5,
+      users_count: 0,
+      listings_count: 0,
+      query_time: 0
     };
   }
 }
@@ -348,16 +355,13 @@ export async function getDatabaseStatus() {
 // API status
 export async function getApiStatus() {
   try {
-    // In a real app, you'd make an API call to check status
+    // Return data in the format expected by AdminSystemReport.tsx
     return {
       status: 'operational',
-      responseTime: '120ms',
-      requests: {
-        total: 15872,
-        successful: 15810,
-        failed: 62
-      },
-      lastIncident: '2025-03-15T10:30:00'
+      response_time: 120, // in ms
+      functions_count: 4,
+      avg_latency: 180, // in ms
+      success_rate: 99.6 // percentage
     };
   } catch (error) {
     console.error('Error in getApiStatus:', error);
@@ -369,24 +373,12 @@ export async function getApiStatus() {
 export async function getPerformanceMetrics() {
   try {
     return {
-      averageResponseTime: '180ms',
-      serverLoad: '42%',
-      memoryUsage: '2.8 GB / 8 GB',
-      storageUsage: '65%',
-      trafficByHour: [
-        { hour: '00:00', requests: 120 },
-        { hour: '01:00', requests: 85 },
-        { hour: '02:00', requests: 65 },
-        { hour: '03:00', requests: 45 },
-        { hour: '04:00', requests: 35 },
-        { hour: '05:00', requests: 48 },
-        { hour: '06:00', requests: 98 },
-        { hour: '07:00', requests: 210 },
-        { hour: '08:00', requests: 320 },
-        { hour: '09:00', requests: 450 },
-        { hour: '10:00', requests: 520 },
-        { hour: '11:00', requests: 580 }
-      ]
+      memory_usage: 2800, // in MB
+      cpu_usage: 42, // percentage
+      db_load: 35, // percentage
+      avg_response_time: 180, // in ms
+      active_connections: 24,
+      requests_per_minute: 320
     };
   } catch (error) {
     console.error('Error in getPerformanceMetrics:', error);
@@ -400,31 +392,39 @@ export async function getErrorLogs() {
     return [
       {
         id: 'err-001',
-        timestamp: '2025-04-26T08:30:12',
+        title: 'Database Timeout',
         message: 'Database connection timeout',
-        component: 'API',
-        severity: 'high'
+        timestamp: '2025-04-26T08:30:12',
+        severity: 'high',
+        location: 'API Server',
+        resolved: false
       },
       {
         id: 'err-002',
-        timestamp: '2025-04-25T14:22:45',
+        title: 'File Upload Failed',
         message: 'File upload failed: size limit exceeded',
-        component: 'Storage',
-        severity: 'medium'
+        timestamp: '2025-04-25T14:22:45',
+        severity: 'medium',
+        location: 'Storage Service',
+        resolved: false
       },
       {
         id: 'err-003',
-        timestamp: '2025-04-25T10:15:33',
+        title: 'Auth Rate Limit',
         message: 'Auth rate limit exceeded for IP 192.168.1.22',
-        component: 'Auth',
-        severity: 'low'
+        timestamp: '2025-04-25T10:15:33',
+        severity: 'low',
+        location: 'Auth Service',
+        resolved: true
       },
       {
         id: 'err-004',
-        timestamp: '2025-04-24T19:08:51',
+        title: 'Function Timeout',
         message: 'Edge function timeout: payment-processor',
-        component: 'Functions',
-        severity: 'high'
+        timestamp: '2025-04-24T19:08:51',
+        severity: 'high',
+        location: 'Edge Functions',
+        resolved: false
       }
     ];
   } catch (error) {
@@ -438,24 +438,36 @@ export async function getIntegrations() {
   try {
     return [
       {
+        id: 'int-001',
         name: 'Payment Gateway',
+        description: 'Processes customer payments',
         status: 'operational',
-        lastSync: '2025-04-26T10:45:22'
+        latency: 230, // in ms
+        lastChecked: '2025-04-26T10:45:22'
       },
       {
+        id: 'int-002',
         name: 'Email Service',
+        description: 'Sends transactional emails',
         status: 'degraded',
-        lastSync: '2025-04-26T09:30:15'
+        latency: 850, // in ms
+        lastChecked: '2025-04-26T09:30:15'
       },
       {
+        id: 'int-003',
         name: 'Storage Provider',
+        description: 'Manages file storage',
         status: 'operational',
-        lastSync: '2025-04-26T11:15:00'
+        latency: 120, // in ms
+        lastChecked: '2025-04-26T11:15:00'
       },
       {
+        id: 'int-004',
         name: 'Authentication Provider',
+        description: 'Handles user authentication',
         status: 'operational',
-        lastSync: '2025-04-26T11:22:47'
+        latency: 95, // in ms
+        lastChecked: '2025-04-26T11:22:47'
       }
     ];
   } catch (error) {
