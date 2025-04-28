@@ -2,9 +2,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
-import { ChevronDown, ChevronUp, Package } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { Category } from "@/types";
-import * as LucideIcons from "lucide-react";
+import { 
+  FaCar, 
+  FaBriefcase, 
+  FaHome, 
+  FaCog, 
+  FaBox,
+  FaStore 
+} from "react-icons/fa";
+
+const iconMap: { [key: string]: React.ComponentType } = {
+  Car: FaCar,
+  Briefcase: FaBriefcase,
+  House: FaHome,
+  Settings: FaCog,
+  Package: FaBox,
+  Store: FaStore
+};
 
 type CategoryCardProps = {
   category: Category;
@@ -18,26 +34,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const { name, icon, slug, subcategories } = category;
   const [showSubcategories, setShowSubcategories] = React.useState(false);
 
-  // Renderizar o ícone corretamente
   const renderIcon = () => {
-    // Caso 1: O ícone é uma string que corresponde a um ícone Lucide
+    // If icon is a string, try to get it from our icon map
     if (typeof icon === 'string') {
-      const iconName = icon as keyof typeof LucideIcons;
-      if (LucideIcons[iconName]) {
-        const IconComponent = LucideIcons[iconName];
-        return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
-      }
-      // Se a string não corresponder a um ícone conhecido, mostrar o texto
-      return <span className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 text-3xl">{icon}</span>;
+      const IconComponent = iconMap[icon] || FaBox; // FaBox as fallback
+      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
     }
-    // Caso 2: O ícone é um componente React diretamente
-    else if (icon && typeof icon === 'function') {
-      return React.createElement(icon, {
-        className: "h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600"
-      });
-    }
-    // Fallback para o ícone Package
-    return <Package className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+    // Fallback to default icon
+    return <FaBox className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
   };
 
   return (
