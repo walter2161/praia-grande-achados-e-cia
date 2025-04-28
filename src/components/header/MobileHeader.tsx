@@ -1,13 +1,10 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
-import { User, LogOut, Search, Menu } from "lucide-react";
+import { User, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import WeatherCapsule from "../WeatherCapsule";
-import { useNavigate } from "react-router-dom";
-import { Input } from "../ui/input";
-import CategoryMenu from "./CategoryMenu";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,18 +15,6 @@ import {
 
 const MobileHeader = () => {
   const { user, profile, logout, isAdmin, isAuthenticated } = useAuth();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [categoryMenuOpen, setCategoryMenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/todos-anuncios?busca=${encodeURIComponent(searchQuery)}`);
-    } else {
-      navigate("/todos-anuncios");
-    }
-  };
 
   return (
     <div className="w-full md:hidden bg-background">

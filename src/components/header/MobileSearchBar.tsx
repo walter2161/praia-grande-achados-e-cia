@@ -28,27 +28,36 @@ const MobileSearchBar = () => {
     <div className="md:hidden sticky top-0 z-50 bg-background border-t shadow-sm">
       <div className="container flex items-center gap-2 py-2 px-2 sm:px-4">
         <div className="flex items-center gap-2">
-          {/* Menu button and Category Menu */}
-          <CategoryMenu isOpen={categoryMenuOpen} onOpenChange={setCategoryMenuOpen} />
-          
-          {/* Search form - Integrated on the same line */}
-          <form
-            onSubmit={handleSearch}
-            className="relative flex-1"
-          >
-            <div className="relative flex items-center">
-              <Search className="absolute left-3 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar em Praia Grande"
-                className="pl-10 w-full"
+          {/* Favicon - only show when scrolled */}
+          {isScrolled && (
+            <Link to="/" className="flex items-center">
+              <img
+                src="/lovable-uploads/8b19a879-d092-4f91-b356-9a3930d28679.png"
+                alt="Logo GuíaPG"
+                className="h-6 w-6 object-contain"
               />
-            </div>
-          </form>
+            </Link>
+          )}
+          
+          {/* Menu second */}
+          <CategoryMenu isOpen={categoryMenuOpen} onOpenChange={setCategoryMenuOpen} />
         </div>
 
-        {/* Announce button */}
+        {/* Search third */}
+        <form
+          onSubmit={handleSearch}
+          className="flex-1 relative"
+        >
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Buscar em Praia Grande"
+            className="pl-10 w-full"
+          />
+        </form>
+
+        {/* Announce button fourth */}
         {isAuthenticated() ? (
           <Link to="/criar-anuncio">
             <Button className="whitespace-nowrap bg-[#FF6600] hover:bg-[#FF6600]/90">

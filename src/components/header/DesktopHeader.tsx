@@ -31,7 +31,7 @@ const DesktopHeader = () => {
   };
 
   return (
-    <div className="hidden md:flex w-full items-center justify-between container py-2 px-4">
+    <div className="hidden md:flex w-full items-center container py-2 px-4">
       {/* Logo on left */}
       <div className="flex-none">
         <Link to="/" className="flex items-center">
@@ -44,9 +44,12 @@ const DesktopHeader = () => {
         </Link>
       </div>
       
-      {/* Center content: Search and buttons */}
-      <div className="flex items-center gap-4">
-        <div className="relative max-w-[500px] min-w-[200px]">
+      {/* Spacer to push content to center */}
+      <div className="flex-grow"></div>
+      
+      {/* Center content: Search (40%) and buttons */}
+      <div className="flex items-center gap-4 justify-center">
+        <div className="relative w-[40%] min-w-[200px] max-w-[500px]">
           <CategoryMenu isOpen={categoryMenuOpen} onOpenChange={setCategoryMenuOpen} />
 
           <form
@@ -73,6 +76,9 @@ const DesktopHeader = () => {
           Planos
         </Link>
       </div>
+      
+      {/* Spacer to push content to right */}
+      <div className="flex-grow"></div>
       
       {/* Right-aligned elements: Weather and Login/User menu */}
       <div className="flex items-center gap-2">
