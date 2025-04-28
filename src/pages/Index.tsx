@@ -41,19 +41,22 @@ const Index = () => {
     queryFn: getListings
   });
 
-  // Função para converter nomes de ícones string para componentes Lucide
-  const mapIconStringToComponent = (iconName: string) => {
-    // Se o iconName for o nome de um ícone Lucide conhecido
-    const icons = LucideIcons as Record<string, unknown>;
-    return iconName in icons ? iconName : "Package";
-  };
-
-  // Mapear os dados de categorias para incluir os ícones corretos
-  const categories: Category[] = categoriesData.map((category: any) => ({
-    ...category,
-    // Apenas mapeia o nome do ícone, o componente CategoryCard se encarrega de renderizá-lo
-    icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : "Package"
-  }));
+  // Função para mapear os dados de categoria para incluir os ícones corretos
+  const categories: Category[] = categoriesData.map((category: any) => {
+    // Verificar se o ícone existe como uma string
+    if (typeof category.icon === 'string') {
+      // Mapeie diretamente a string do ícone - o CategoryCard vai lidar com a renderização
+      return {
+        ...category,
+        icon: category.icon
+      };
+    }
+    // Se o ícone não for uma string, use o nome do componente como string para compatibilidade
+    return {
+      ...category,
+      icon: category.icon?.name || "Package"
+    };
+  });
 
   // Get the 8 most recent listings with proper type casting
   const listings: Listing[] = listingsData as unknown as Listing[];

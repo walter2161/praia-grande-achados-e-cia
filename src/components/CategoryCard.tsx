@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
 import { ChevronDown, ChevronUp, Package } from "lucide-react";
@@ -16,24 +16,28 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   showSubcategoriesButton = true,
 }) => {
   const { name, icon, slug, subcategories } = category;
-  const [showSubcategories, setShowSubcategories] = useState(false);
+  const [showSubcategories, setShowSubcategories] = React.useState(false);
 
-  // Renderizar o ícone corretamente baseado no tipo
+  // Renderizar o ícone corretamente
   const renderIcon = () => {
+    // Caso 1: O ícone é uma string que corresponde a um ícone Lucide
     if (typeof icon === 'string') {
-      // Se for uma string, tentar mapear para o componente correto do Lucide
       const iconName = icon as keyof typeof LucideIcons;
       if (LucideIcons[iconName]) {
-        const IconComponent = LucideIcons[iconName] as React.ElementType;
-        return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+        // Esse é o método que funciona no menu flutuante
+        const IconComponent = LucideIcons[iconName];
+        return React.createElement(IconComponent, {
+          className: "h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600"
+        });
       }
       // Se a string não corresponder a um ícone conhecido, mostrar o texto
       return <span className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 text-3xl">{icon}</span>;
-    } 
-    // Se já for um componente, usá-lo diretamente (com primeira letra maiúscula)
+    }
+    // Caso 2: O ícone é um componente React diretamente
     else if (icon && typeof icon === 'function') {
-      const IconComponent = icon as React.ElementType;
-      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+      return React.createElement(icon, {
+        className: "h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600"
+      });
     }
     // Fallback para o ícone Package
     return <Package className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
