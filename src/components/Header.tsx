@@ -66,14 +66,153 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background">
-      <div className="container flex h-14 md:h-16 items-center justify-between px-2 sm:px-4 relative">
-        {/* Left: logo - make it smaller on mobile */}
-        <div className="flex items-center gap-2">
+      <div className="container flex flex-col md:flex-row h-auto md:h-16 items-center justify-between px-2 sm:px-4 relative">
+        {/* Mobile: First row - menu, logo, weather, login */}
+        <div className="w-full md:hidden flex items-center justify-between py-2">
+          <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className="flex h-8 w-8 items-center justify-center p-0 rounded-md"
+                style={{ background: "none", border: "none" }}
+                aria-label="Categorias"
+              >
+                <Menu className="h-6 w-6 text-[#F97316]" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              side="bottom"
+              sideOffset={0}
+              className="w-[290px] p-0 border rounded-md bg-background z-[60] shadow-xl"
+              style={{ marginTop: 4 }}
+            >
+              <div className="py-1">
+                {categories.map((cat) => (
+                  <div key={cat.slug} className="border-b last:border-b-0">
+                    <div className="flex items-center gap-2 px-3 py-1.5 hover:bg-accent text-foreground transition-all">
+                      <cat.icon className="h-4 w-4 text-[#F97316]" />
+                      <Link
+                        to={`/categoria/${cat.slug}`}
+                        className="font-medium text-sm flex-grow"
+                        onClick={() => setCategoryMenuOpen(false)}
+                      >
+                        {cat.name}
+                      </Link>
+                    </div>
+                    
+                    {cat.subcategories && cat.subcategories.length > 0 && (
+                      <Accordion type="single" collapsible className="px-2">
+                        <AccordionItem value={cat.slug} className="border-none">
+                          <AccordionTrigger className="hover:no-underline px-2 py-1">
+                            <span className="text-xs text-muted-foreground">
+                              Ver subcategorias
+                              <ChevronDown className="inline-block ml-2 h-3 w-3" />
+                            </span>
+                          </AccordionTrigger>
+                          <AccordionContent className="pb-1 pt-0">
+                            <div className="ml-6 space-y-0.5">
+                              {cat.subcategories.map((sub) => (
+                                <Link
+                                  key={sub}
+                                  to={`/categoria/${cat.slug}?subcategoria=${encodeURIComponent(sub)}`}
+                                  className="block px-2 py-1 text-xs text-muted-foreground hover:text-foreground rounded hover:bg-accent/70 transition-all"
+                                  onClick={() => setCategoryMenuOpen(false)}
+                                >
+                                  {sub}
+                                </Link>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <LogoLink />
+
+          <div className="flex items-center gap-2">
+            <WeatherCapsule />
+            {isAuthenticated() ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="icon" variant="ghost">
+                    <User className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <div className="px-2 py-1.5 text-sm font-medium">
+                    {profile?.username || user?.email}
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/perfil">Meu Perfil</Link>
+                  </DropdownMenuItem>
+                  {isAdmin() && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin">Painel Admin</Link>
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={logout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/login">
+                <Button variant="outline">Entrar</Button>
+              </Link>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile: Second row - search, announce, plans */}
+        <div className="w-full md:hidden flex items-center gap-2 py-2">
+          <form
+            onSubmit={handleSearch}
+            className="flex-1 relative"
+          >
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar em Praia Grande"
+              className="pl-10 w-full"
+            />
+          </form>
+          
+          {isAuthenticated() ? (
+            <Link to="/criar-anuncio">
+              <Button className="whitespace-nowrap bg-[#FF6600] hover:bg-[#FF6600]/90">
+                <Plus className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Anunciar</span>
+              </Button>
+            </Link>
+          ) : (
+            <Link to="/login?redirect=/criar-anuncio">
+              <Button className="whitespace-nowrap bg-[#FF6600] hover:bg-[#FF6600]/90">
+                <Plus className="h-4 w-4 md:mr-2" />
+                <span className="hidden md:inline">Anunciar</span>
+              </Button>
+            </Link>
+          )}
+
+          <Link to="/planos" className="text-foreground hover:text-primary text-sm whitespace-nowrap">
+            Planos
+          </Link>
+        </div>
+
+        {/* Desktop layout */}
+        <div className="hidden md:flex items-center gap-2">
           <LogoLink />
         </div>
 
-        {/* Center: menu + search - adjust spacing */}
-        <div className="flex items-center flex-1 justify-center min-w-[200px] max-w-full md:basis-1/2 px-1 md:px-2" style={{ flexBasis: "50%", minWidth: 0 }}>
+        <div className="hidden md:flex items-center flex-1 justify-center min-w-[200px] max-w-full md:basis-1/2 px-1 md:px-2" style={{ flexBasis: "50%", minWidth: 0 }}>
           <DropdownMenu open={categoryMenuOpen} onOpenChange={setCategoryMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
@@ -163,8 +302,7 @@ export default function Header() {
           </form>
         </div>
 
-        {/* Right: actions - compact layout for mobile */}
-        <div className="flex items-center gap-1 md:gap-2">
+        <div className="hidden md:flex items-center gap-1 md:gap-2">
           {isAuthenticated() ? (
             <Link to="/criar-anuncio">
               <Button className="hidden md:flex gap-2 bg-[#FF6600] hover:bg-[#FF6600]/90">
