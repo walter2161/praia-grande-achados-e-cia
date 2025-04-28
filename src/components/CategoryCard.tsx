@@ -1,37 +1,24 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Car, Briefcase, Home, Settings, Package, Store, Utensils, Hammer, BookOpen, Plus } from "lucide-react";
 import { Category } from "@/types";
-import { 
-  FaCar, 
-  FaBriefcase, 
-  FaHome, 
-  FaCog, 
-  FaBox,
-  FaStore,
-  FaUtensils,
-  FaHammer,
-  FaBookOpen,
-  FaPlus
-} from "react-icons/fa";
 
 const iconMap: { [key: string]: React.ComponentType } = {
   // Mapeamento correto baseado no nome da categoria
-  AUTOS: FaCar,
-  EMPREGOS: FaBriefcase,
-  IMÓVEIS: FaHome,
-  EMPRESAS: FaStore,
-  SERVIÇOS: FaHammer,
-  ITENS: FaBox,
+  AUTOS: Car,
+  EMPREGOS: Briefcase,
+  IMÓVEIS: Home,
+  EMPRESAS: Store,
+  SERVIÇOS: Hammer,
+  ITENS: Package,
   // Mapeamento baseado no ícone original
-  Car: FaCar,
-  Briefcase: FaBriefcase,
-  House: FaHome,
-  Settings: FaCog,
-  Package: FaBox,
-  Store: FaStore
+  Car: Car,
+  Briefcase: Briefcase,
+  House: Home,
+  Settings: Settings,
+  Package: Package,
+  Store: Store
 };
 
 type CategoryCardProps = {
@@ -51,8 +38,8 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     if (iconMap[name]) {
       const IconComponent = iconMap[name];
       return (
-        <div className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
-          <IconComponent />
+        <div className="h-12 w-12 md:h-16 md:w-16 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
+          <IconComponent className="w-full h-full" strokeWidth={1.5} />
         </div>
       );
     }
@@ -61,16 +48,16 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     if (typeof icon === 'string' && iconMap[icon]) {
       const IconComponent = iconMap[icon];
       return (
-        <div className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
-          <IconComponent />
+        <div className="h-12 w-12 md:h-16 md:w-16 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
+          <IconComponent className="w-full h-full" strokeWidth={1.5} />
         </div>
       );
     }
     
     // Fallback para ícone padrão
     return (
-      <div className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
-        <FaPlus />
+      <div className="h-12 w-12 md:h-16 md:w-16 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
+        <Plus className="w-full h-full" strokeWidth={1.5} />
       </div>
     );
   };
