@@ -1,10 +1,13 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
 import { ChevronDown, ChevronUp, Car, Briefcase, Home, Settings, Package, Store, Utensils, Hammer, BookOpen, Plus } from "lucide-react";
 import { Category } from "@/types";
+import { LucideIcon } from "lucide-react";
 
-const iconMap: { [key: string]: React.ComponentType } = {
+// Update icon map with proper typings to use Lucide icons
+const iconMap: Record<string, LucideIcon> = {
   // Mapeamento correto baseado no nome da categoria
   AUTOS: Car,
   EMPREGOS: Briefcase,
