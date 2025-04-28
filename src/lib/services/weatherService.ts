@@ -1,7 +1,8 @@
+
 // Using OpenWeatherMap API for weather data
 const PRAIA_GRANDE_LAT = -24.0083;
 const PRAIA_GRANDE_LON = -46.4121;
-const API_KEY = "b91edb11c0e9c91f834177591c613c20"; // Valid OpenWeatherMap API key
+const API_KEY = "f20baaec273a934a5dae1a333f72173a"; // Valid OpenWeatherMap API key
 
 export interface WeatherData {
   condition: "sunny" | "partly_cloudy" | "rainy";
