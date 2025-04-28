@@ -31,49 +31,48 @@ const DesktopHeader = () => {
   };
 
   return (
-    <div className="hidden md:flex w-full items-center container py-2 px-4 gap-4">
-      <Link to="/" className="flex items-center">
-        <img
-          src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
-          alt="Logo GuíaPG"
-          className="h-8 md:h-10 max-h-10 w-auto object-contain"
-          style={{ maxWidth: 140, width: 'auto' }}
-        />
-      </Link>
-      
-      <div className="flex items-center flex-1 justify-start min-w-[200px] max-w-[500px] relative">
-        <CategoryMenu isOpen={categoryMenuOpen} onOpenChange={setCategoryMenuOpen} />
-
-        <form
-          onSubmit={handleSearch}
-          className="flex-1 relative"
-        >
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar em Praia Grande"
-            className="pl-10 w-full"
+    <div className="hidden md:flex w-full items-center container py-2 px-4">
+      {/* Left section with logo */}
+      <div className="flex-shrink-0 mr-4">
+        <Link to="/" className="flex items-center">
+          <img
+            src="/lovable-uploads/350c9a17-615f-4b3f-91d3-af25056c8f16.png"
+            alt="Logo GuíaPG"
+            className="h-8 md:h-[42px] max-h-[42px] w-auto object-contain"
+            style={{ maxWidth: 147, width: 'auto' }}
           />
-        </form>
+        </Link>
       </div>
+      
+      {/* Centered section with menu, search, anunciar, and planos */}
+      <div className="flex-1 flex items-center justify-center gap-4">
+        <div className="flex items-center relative">
+          <CategoryMenu isOpen={categoryMenuOpen} onOpenChange={setCategoryMenuOpen} />
+          
+          <form onSubmit={handleSearch} className="relative min-w-[200px] max-w-[500px]">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar em Praia Grande"
+              className="pl-10 w-full"
+            />
+          </form>
+        </div>
 
-      {/* Anunciar button positioned after search and before right-aligned elements */}
-      <Link to={isAuthenticated() ? "/criar-anuncio" : "/login?redirect=/criar-anuncio"}>
-        <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
-          Anunciar
-        </Button>
-      </Link>
+        <Link to={isAuthenticated() ? "/criar-anuncio" : "/login?redirect=/criar-anuncio"}>
+          <Button className="bg-[#FF6600] hover:bg-[#FF6600]/90 flex gap-2">
+            Anunciar
+          </Button>
+        </Link>
+        
+        <Link to="/planos" className="text-foreground hover:text-primary text-sm">
+          Planos
+        </Link>
+      </div>
       
-      <Link to="/planos" className="text-foreground hover:text-primary text-sm">
-        Planos
-      </Link>
-      
-      {/* Spacer div to push the following items to the right */}
-      <div className="flex-grow"></div>
-      
-      {/* Right-aligned elements: Weather and Login/User menu */}
-      <div className="flex items-center gap-2 ml-auto">
+      {/* Right section with weather and user */}
+      <div className="flex items-center gap-2 ml-4 flex-shrink-0">
         <WeatherCapsule />
 
         {isAuthenticated() ? (
