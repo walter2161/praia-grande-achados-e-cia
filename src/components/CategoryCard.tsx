@@ -1,8 +1,10 @@
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "./ui/card";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Package } from "lucide-react";
 import { Category } from "@/types";
+import * as LucideIcons from "lucide-react";
 
 type CategoryCardProps = {
   category: Category;
@@ -13,19 +15,34 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   category,
   showSubcategoriesButton = true,
 }) => {
-  const { name, icon: Icon, slug, subcategories } = category;
+  const { name, icon, slug, subcategories } = category;
   const [showSubcategories, setShowSubcategories] = useState(false);
+
+  // Renderizar o ícone corretamente baseado no tipo
+  const renderIcon = () => {
+    if (typeof icon === 'string') {
+      // Se for uma string, tentar mapear para o componente correto do Lucide
+      if (LucideIcons[icon as keyof typeof LucideIcons]) {
+        const IconComponent = LucideIcons[icon as keyof typeof LucideIcons];
+        return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+      }
+      // Se a string não corresponder a um ícone conhecido, mostrar o texto
+      return <span className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 text-3xl">{icon}</span>;
+    } 
+    // Se já for um componente, usá-lo diretamente
+    else if (icon) {
+      return <icon className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+    }
+    // Fallback para o ícone Package
+    return <Package className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+  };
 
   return (
     <div>
       <Link to={`/categoria/${slug}`}>
         <Card className="transition-all hover:shadow-md hover:-translate-y-1">
           <CardContent className="flex flex-col items-center justify-center p-3 md:p-6">
-            {typeof Icon === 'string' ? (
-              <span className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600">{Icon}</span>
-            ) : (
-              <Icon className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />
-            )}
+            {renderIcon()}
             <h3 className="text-base md:text-xl font-semibold text-center">{name}</h3>
             {showSubcategoriesButton &&
               subcategories &&

@@ -41,17 +41,18 @@ const Index = () => {
     queryFn: getListings
   });
 
-  // Function to convert string icon names to Lucide components
+  // Função para converter nomes de ícones string para componentes Lucide
   const mapIconStringToComponent = (iconName: string) => {
-    // Safe type assertion with a check
+    // Se o iconName for o nome de um ícone Lucide conhecido
     const icons = LucideIcons as Record<string, unknown>;
-    return (icons[iconName] as LucideIcons.LucideIcon) || LucideIcons.Package;
+    return iconName in icons ? iconName : "Package";
   };
 
-  // Map categories data to include proper icon components
+  // Mapear os dados de categorias para incluir os ícones corretos
   const categories: Category[] = categoriesData.map((category: any) => ({
     ...category,
-    icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : LucideIcons.Package
+    // Apenas mapeia o nome do ícone, o componente CategoryCard se encarrega de renderizá-lo
+    icon: typeof category.icon === 'string' ? mapIconStringToComponent(category.icon) : "Package"
   }));
 
   // Get the 8 most recent listings with proper type casting
