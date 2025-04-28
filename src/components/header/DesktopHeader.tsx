@@ -44,9 +44,9 @@ const DesktopHeader = () => {
         </Link>
       </div>
       
-      {/* Center content: Search (40%) and buttons */}
+      {/* Center content: Search and buttons */}
       <div className="flex items-center gap-4">
-        <div className="relative w-[40vw] max-w-[500px] min-w-[200px]">
+        <div className="relative max-w-[500px] min-w-[200px]">
           <CategoryMenu isOpen={categoryMenuOpen} onOpenChange={setCategoryMenuOpen} />
 
           <form
