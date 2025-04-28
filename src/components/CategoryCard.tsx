@@ -50,17 +50,29 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
     // Primeiro, tentar encontrar o ícone pelo nome da categoria
     if (iconMap[name]) {
       const IconComponent = iconMap[name];
-      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+      return (
+        <div className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
+          <IconComponent />
+        </div>
+      );
     }
     
     // Se não encontrar pelo nome, tentar pelo valor do ícone, se for string
     if (typeof icon === 'string' && iconMap[icon]) {
       const IconComponent = iconMap[icon];
-      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+      return (
+        <div className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
+          <IconComponent />
+        </div>
+      );
     }
     
     // Fallback para ícone padrão
-    return <FaPlus className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+    return (
+      <div className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600 flex items-center justify-center">
+        <FaPlus />
+      </div>
+    );
   };
 
   return (
