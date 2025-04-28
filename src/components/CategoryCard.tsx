@@ -10,10 +10,22 @@ import {
   FaHome, 
   FaCog, 
   FaBox,
-  FaStore 
+  FaStore,
+  FaUtensils,
+  FaHammer,
+  FaBookOpen,
+  FaPlus
 } from "react-icons/fa";
 
 const iconMap: { [key: string]: React.ComponentType } = {
+  // Mapeamento correto baseado no nome da categoria
+  AUTOS: FaCar,
+  EMPREGOS: FaBriefcase,
+  IMÓVEIS: FaHome,
+  EMPRESAS: FaStore,
+  SERVIÇOS: FaHammer,
+  ITENS: FaBox,
+  // Mapeamento baseado no ícone original
   Car: FaCar,
   Briefcase: FaBriefcase,
   House: FaHome,
@@ -35,13 +47,20 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   const [showSubcategories, setShowSubcategories] = React.useState(false);
 
   const renderIcon = () => {
-    // If icon is a string, try to get it from our icon map
-    if (typeof icon === 'string') {
-      const IconComponent = iconMap[icon] || FaBox; // FaBox as fallback
+    // Primeiro, tentar encontrar o ícone pelo nome da categoria
+    if (iconMap[name]) {
+      const IconComponent = iconMap[name];
       return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
     }
-    // Fallback to default icon
-    return <FaBox className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+    
+    // Se não encontrar pelo nome, tentar pelo valor do ícone, se for string
+    if (typeof icon === 'string' && iconMap[icon]) {
+      const IconComponent = iconMap[icon];
+      return <IconComponent className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
+    }
+    
+    // Fallback para ícone padrão
+    return <FaPlus className="h-8 w-8 md:h-12 md:w-12 mb-2 md:mb-4 text-beach-600" />;
   };
 
   return (
